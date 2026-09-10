@@ -3,6 +3,7 @@ import "@fontsource-variable/inter";
 import "../styles/global.css";
 import Header from "../components/Header.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import EnvBanner from "../components/EnvBanner.astro";
 import { SITE, PATHS, PORTRAIT, FAVICONS } from "../consts";
 
 interface Props {
@@ -191,6 +192,7 @@ const structuredData = {
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   </head>
   <body class="flex min-h-screen flex-col bg-white text-ink-900">
+    <EnvBanner />
     <a
       href="#main"
       class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-brand-700 focus:px-4 focus:py-2 focus:text-white"

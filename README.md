@@ -132,6 +132,46 @@ Links that genuinely cannot be repaired live in the `KNOWN` list at the top of
 that script, each with a reason. One of them is deliberate: a Codenight page
 about alt texts shows a missing image on purpose.
 
+## Environment banner
+
+Preview deployments show an amber strip above the header saying they are not
+the public site. Production shows nothing.
+
+**How it decides.** Cloudflare Pages sets `CF_PAGES_BRANCH` on every build.
+`src/deploy.ts` reads it:
+
+| build | `CF_PAGES_BRANCH` | banner |
+|---|---|---|
+| production | `main` | none |
+| preview branch | e.g. `int` | `Vorschau · Branch int` |
+| `astro dev` | unset | `Lokale Entwicklung` |
+| local `npm run build` | unset | none |
+
+The last row is deliberate: a banner that leaks into production is worse than
+one missing from a preview, so anything uncertain is treated as production.
+Cloudflare always sets the variable, so the only uncertain case is local.
+
+**Why not a branch that edits the code.** The old `int` branch carried a
+one-line source change to mark the environment. Every merge from `main` then
+had to preserve it, and the two branches drifted. With the banner, `int` can
+be a plain copy of `main` — no branch-only edits, nothing to reconcile.
+
+**Nothing is shipped to production.** `import.meta.env.CF_PAGES_BRANCH` is
+replaced at build time, so on `main` the condition is statically false and the
+markup is dropped. Verified: the strings do not appear in the production HTML.
+
+Test it locally:
+
+```bash
+CF_PAGES_BRANCH=int npm run build && npm run preview   # banner
+npm run build && npm run preview                       # no banner
+```
+
+To set up a preview environment: create the branch, add it under
+Settings → Builds & Deployments → Branch control in the Pages project, and
+give it a hostname (e.g. `int.felix-paul.de`) if you want a stable URL. No
+code change is needed — the banner appears automatically.
+
 ## Deploy
 
 Cloudflare Pages, git-connected: push to `main` → build → live. Build command

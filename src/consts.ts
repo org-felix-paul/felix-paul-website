@@ -177,7 +177,7 @@ export const NAV: readonly (NavItem | NavGroup)[] = [
       { href: "#publikationen", label: "Publikationen", spy: "publikationen" },
       // "Aktuelles" ist auf der Startseite auskommentiert (siehe index.astro).
       // Der Menüpunkt muss mitgehen, sonst zeigt er auf einen Abschnitt, den
-      // es nicht gibt — wieder einbauen, sobald der Abschnitt zurückkommt.
+      // es nicht gibt — wieder einbauen, sobald der Abschnitt zurückkommt.   { href: "#aktuelles", label: "Aktuelles", spy: "aktuelles" },
       { href: "#presse", label: "Material für Veranstalter", spy: "presse" },
     ],
   },
