@@ -1547,3 +1547,327 @@ Theoretisch übersetzt würden sie so:
 Der ehrliche Rat: eine Übersetzung lohnt sich pro Beitrag, nicht pauschal.
 Zwei oder drei Beiträge, die englischsprachige Veranstalter überzeugen, sind
 mehr wert als dreißig maschinell übersetzte.
+
+## 29. Inhalte für KI verfügbar machen — Ist-Zustand und Automatisierung
+
+Bericht, keine Umsetzung. Die Frage war: wie wird die `llms.txt` erzeugt,
+lässt sich das automatisieren, und ist es schon so?
+
+### Ist es schon automatisiert? Nein.
+
+```
+public/llms.txt          27 Zeilen, 1984 Bytes, von Hand geschrieben
+zuletzt geändert         0b9d7b1 (2026-09-10)
+im Build referenziert    nirgends
+```
+
+`public/` wird von Astro unverändert nach `dist/` kopiert. Kein Skript, kein
+Endpoint, kein Build-Schritt fasst die Datei an. Sie ist ein Dokument, das
+neben dem Code liegt und behauptet, ihn zu beschreiben — und genau das ist die
+Fehlerquelle.
+
+**Nachweisbare Abweichung, heute:** Die Startseite führt sieben Themenblöcke,
+darunter „Identity & Access Management". `SITE.description` nennt IAM an
+zweiter Stelle. In der `llms.txt` kommt IAM **nicht vor**. Eine KI, die sich
+auf die Datei verlässt, weiß von diesem Angebot nichts.
+
+(Der Jobtitel war die zweite Abweichung derselben Art — deshalb steht er in
+einem eigenen Commit, siehe Abschnitt oben.)
+
+### Was `llms.txt` überhaupt ist — und was sie nicht ist
+
+Ein 2024 vorgeschlagenes Format: eine Markdown-Datei unter `/llms.txt`, die
+einer KI in wenigen hundert Wörtern sagt, worum es auf der Domain geht und wo
+die wichtigen Seiten liegen. Gedacht als Abkürzung, damit ein Modell nicht
+erst 36 HTML-Seiten lesen muss.
+
+Ehrlich zum Nutzen: Es ist ein **Vorschlag, kein Standard**. Kein großer
+Anbieter hat bestätigt, die Datei beim Crawlen auszuwerten; Google hat
+öffentlich gesagt, dass es sie nicht verwendet. Der Aufwand lohnt sich als
+billige Wette — ein paar Kilobyte, die vielleicht gelesen werden — nicht als
+Ersatz für die Maßnahmen, die heute nachweislich wirken. Deshalb die
+Reihenfolge weiter unten.
+
+### Drei Stufen der Automatisierung
+
+**Stufe 1 — prüfen statt erzeugen. Der beste Schnitt.**
+
+Die Prosa in der `llms.txt` ist ihr eigentlicher Wert; generierte Prosa wäre
+schlechter als geschriebene. Automatisieren sollte man deshalb nicht das
+Schreiben, sondern das **Auffallen von Abweichungen**:
+
+```js
+// scripts/check-llms.mjs
+// 1. Jede URL aus llms.txt gegen dist/ auflösen — dieselbe Logik wie in
+//    check-links.mjs, die kennt die Cloudflare-Pages-Auflösung schon.
+// 2. Jeden Bereich aus AREAS in consts.ts suchen: taucht sein Pfad auf?
+// 3. SITE.description in Stichworte zerlegen und prüfen, ob jedes
+//    vorkommt — das hätte IAM gefunden.
+// Exit-Code 1 bei Fund.
+```
+
+Danach in `.githooks/pre-push` hinter den Linkcheck hängen. Aufwand: ein
+Nachmittag. Wirkung: die Datei kann nicht mehr unbemerkt veralten.
+
+**Stufe 2 — die Linkabschnitte generieren, die Prosa von Hand.**
+
+`public/llms.txt` löschen und durch einen Endpoint ersetzen. Astro darf auch
+Nicht-HTML ausliefern:
+
+```ts
+// src/pages/llms.txt.ts
+import type { APIRoute } from "astro";
+import { SITE, AREAS, PATHS } from "../consts";
+
+// Nur dieser Block wird von Hand gepflegt.
+const BESCHREIBUNG = `Felix Peter Paul – Informatiker & Mathematiker …`;
+
+export const GET: APIRoute = () => {
+  const zeilen = [
+    `# ${SITE.name}`,
+    "",
+    `> ${BESCHREIBUNG}`,
+    "",
+    "## Bereiche dieser Domain",
+    // AREAS trägt verschachtelte `items` (Bildungsangebote) und `external`
+    // (Software zeigt auf d-solve.de) — beides muss der Endpoint abbilden,
+    // sonst fehlen genau die drei Zielgruppenseiten.
+    ...AREAS.flatMap((a) => [
+      `- ${a.label}: ${a.external ? a.href : SITE.url + a.href} — ${a.note}`,
+      ...(a.items ?? []).map((i) => `  - ${i.label}: ${SITE.url}${i.href}`),
+    ]),
+    "",
+    "## Kontakt",
+    `- E-Mail: ${SITE.email}`,
+    `- LinkedIn: ${SITE.linkedin}`,
+  ];
+  return new Response(zeilen.join("\n"), {
+    headers: { "Content-Type": "text/plain; charset=utf-8" },
+  });
+};
+```
+
+Damit ist strukturell ausgeschlossen, dass die Datei einen Bereich vergisst
+oder auf eine gelöschte Seite zeigt: beides käme aus derselben Quelle wie die
+Navigation. Der Linkchecker prüft die Datei dann automatisch mit, weil sie im
+Build liegt.
+
+Das ist die Stufe, die ich empfehlen würde, sobald sich die Bereiche wieder
+einmal ändern. Vorher ist Stufe 1 billiger.
+
+**Stufe 3 — `llms-full.txt` aus der Content-Collection.**
+
+Dieselbe Technik, aber mit dem Volltext aller Blogposts:
+
+```ts
+// src/pages/llms-full.txt.ts
+const posts = await getCollection("blog", (p) => !p.data.draft && !p.data.preview);
+// posts[i].body ist das rohe Markdown
+```
+
+Ergäbe hier grob 21.000 Wörter in einer Datei. Sinnvoll, wenn jemand die
+Beiträge gezielt einem Modell geben soll; für Crawler eher nicht — die haben
+das HTML.
+
+### Was tatsächlich wirkt, in dieser Reihenfolge
+
+Alles, was KI-Systeme heute lesen, ist dasselbe, was Suchmaschinen lesen. Die
+Prioritäten sind entsprechend:
+
+1. **Sauberes, serverseitig gerendertes HTML.** ✅ Astro liefert das ohne
+   Zutun. Der größte Einzelvorteil gegenüber einer React-SPA.
+2. **schema.org als JSON-LD.** ✅ Vorhanden: Person, Organization, WebSite,
+   WebPage, BlogPosting, Service/Offer. Das ist der maschinenlesbare Kern und
+   wird von Google, Bing und den KI-Crawlern gleichermaßen ausgewertet.
+   Fehlt: `BreadcrumbList` (siehe SEO-Abschnitt).
+3. **Sitemap + robots.txt.** ✅ Beides da. Der Sitemap fehlt `lastmod` —
+   ohne das weiß kein Crawler, was sich geändert hat.
+4. **Ein RSS-Feed für den Blog.** ❌ Fehlt. Der am meisten unterschätzte
+   Punkt: RSS ist das einzige Format, mit dem ein Aggregator *neue* Beiträge
+   erfährt, ohne die Seite zu pollen. `@astrojs/rss`, eine halbe Stunde.
+5. **Eine bewusste Entscheidung über KI-Crawler.** ⚠️ `robots.txt` sagt
+   `User-agent: * / Allow: /`. Das erlaubt GPTBot, ClaudeBot, PerplexityBot,
+   CCBot und Google-Extended — durch Weglassen, nicht durch Entscheidung.
+   Für jemanden, der über KI spricht und gefunden werden will, ist Erlauben
+   vermutlich richtig; dann sollte es aber dastehen:
+
+   ```
+   # KI-Crawler ausdrücklich erlaubt: die Inhalte sollen in KI-Antworten
+   # auftauchen, das ist Teil der Sichtbarkeit.
+   User-agent: GPTBot
+   Allow: /
+   User-agent: ClaudeBot
+   Allow: /
+   ```
+   Ein explizites `Allow` ändert technisch nichts, dokumentiert aber die
+   Entscheidung — und macht sichtbar, wenn sie sich einmal ändern soll.
+6. **`llms.txt`.** ✅ Vorhanden, ⚠️ ungeprüft. Siehe oben.
+
+Die Punkte 1–3 sind erledigt. Der einzige echte Rückstand ist Punkt 4.
+
+## 30. SEO-Überblick — was änderungswürdig wäre
+
+Bericht, keine Umsetzung. Erhoben am gebauten `dist/` (36 deutsche Seiten,
+davon 26 aus Astro, 10 aus den Referenzprojekten in `public/`), nicht an der
+Quelle — bewertet wird, was ausgeliefert wird.
+
+Sortiert nach Wirkung geteilt durch Aufwand. Nichts davon ist ein Fehler;
+die Grundlagen stimmen.
+
+### Was bereits gut ist
+
+Damit der Rest im Verhältnis gelesen wird:
+
+- Statisches HTML, kein Client-Rendering. Der Punkt, an dem die meisten
+  Seiten scheitern, ist hier keiner.
+- Eine Domain statt fünf Subdomains — die Autorität sammelt sich an einer
+  Stelle. Das war der Sinn der Zusammenlegung.
+- `canonical` auf jeder Seite, `_redirects` mit 301 für jeden alten Pfad.
+- schema.org-Graph mit Person, Organization, WebSite, WebPage, BlogPosting
+  und 12 Service/Offer-Paaren.
+- Überschriftenhierarchie ohne einen einzigen Sprung (kein `h1 → h3`) auf
+  allen 26 eigenen Seiten.
+- 34 von 34 Bildern haben ein `alt`-Attribut. Kein leeres, kein fehlendes.
+- Alle 3914 internen Links lösen auf.
+
+### 1. Der Blog-Index liefert den Volltext aller Beiträge mit — 245 KB
+
+Der größte Einzelbefund. `/blog/` ist 245 KB HTML, davon ~197 KB im `<body>`.
+Die Ursache steht in `src/pages/blog/index.astro:49`:
+
+```ts
+searchText: [ post.data.title, post.data.description, …, post.body ?? "" ]
+  .join(" ").toLowerCase()
+```
+
+und wird in Zeile 170/198 als `data-search={post.searchText}` ausgegeben. Der
+komplette Markdown-Text jedes Beitrags steht also als HTML-Attribut auf der
+Übersichtsseite, damit die Suche im Browser ohne Netzwerk funktioniert.
+
+Drei Nebenwirkungen:
+
+- **Ladezeit.** 245 KB HTML sind für eine Übersichtsseite viel; das Dokument
+  ist render-blockierend, anders als ein nachgeladenes Skript.
+- **Doppelter Inhalt.** Jeder Beitrag steht zweimal im Index: einmal auf
+  seiner eigenen Seite, einmal hier. Google löst das über `canonical` sauber
+  auf, aber die Übersichtsseite wird dadurch für Begriffe relevant bewertet,
+  die auf ihr gar nicht sichtbar sind.
+- **Der Prompt-Injection-Beitrag.** Sein Text enthält absichtlich Zeichenfolgen
+  wie „ignore prior instructions" — die stehen jetzt im Klartext auf `/blog/`.
+  Auf der Beitragsseite ist das der Punkt der Demonstration, auf der
+  Übersichtsseite ist es ein Nebeneffekt.
+
+Der Kompromiss ist bewusst gewählt (Volltextsuche ohne Server), und das ist
+ein legitimer Grund. Wenn er neu bewertet wird, gäbe es zwei Wege: das
+Suchfeld auf Titel, Description und Schlagworte beschränken (eine Zeile,
+Suche wird schlechter), oder den Index als eigene `search-index.json`
+ausliefern und per `fetch` beim ersten Tastendruck nachladen (halbe Stunde,
+Suche bleibt gleich, HTML fällt auf ~50 KB).
+
+### 2. Kein RSS-Feed
+
+`@astrojs/rss` ist nicht installiert, `dist/` enthält keinen Feed. Für einen
+Blog mit sieben Beiträgen ist das die günstigste offene Maßnahme: es ist das
+einzige Format, über das Aggregatoren, Leser und KI-Dienste neue Beiträge
+erfahren, ohne die Seite abzufragen. Aufwand rund eine halbe Stunde.
+
+### 3. Die Sitemap hat kein `lastmod`
+
+27 URLs, null `lastmod`-Einträge. Crawler können damit nicht erkennen, welche
+Seiten sich geändert haben, und laufen die Domain gleichmäßig ab statt
+gezielt. Bei 27 URLs ist der Schaden klein, aber es ist eine
+Konfigurationszeile: `sitemap({ lastmod: new Date() })` wäre gelogen
+(dann trüge jede Seite dasselbe Datum) — richtig wäre, für Blogposts
+`post.data.pubDate` durchzureichen und für den Rest wegzulassen. Etwas mehr
+Arbeit als es aussieht, deshalb Platz 3 und nicht Platz 1.
+
+### 4. Sechs Blogpost-Titel sind zu lang für die Suchergebnisse
+
+Google zeigt rund 60 Zeichen. Betroffen:
+
+| Zeichen | Beitrag |
+|---:|---|
+| 84 | Prompt Injections. Wie KI in die Irre geführt wird – ein Beispiel mit zwei Produkten |
+| 82 | Wie die Google-Suche tatsächlich funktioniert – und wie man (und KI) gefunden wird |
+| 80 | Wie leicht wird man Opfer einer Phishing-Website? Nicht nur reden, selbst bauen! |
+| 67 | Kinder, Handys, Social Media und KI? Wie sollten wir damit umgehen? |
+| 65 | Wie Google und Facebook deine Daten sammeln · blogging@Felix Paul |
+
+Wichtig: **die Titel sind gut.** Sie sind Fragen, und Fragen gewinnen Klicks.
+Der Vorschlag ist deshalb nicht, sie zu kürzen, sondern die Beitragsseiten um
+ein optionales Frontmatter-Feld `seoTitle` zu ergänzen, das nur den
+`<title>`-Tag überschreibt und die Überschrift auf der Seite unangetastet
+lässt. So bleibt die kuratierte Fassung sichtbar und die Suchergebnisliste
+zeigt trotzdem den ganzen Satz.
+
+Der Sonderfall in Zeile 5: „· blogging@Felix Paul" ist der Markensuffix, den
+`Layout.astro` erst ab 45 Zeichen Titellänge weglässt. Hier greift die Regel
+knapp nicht. Die Schwelle von 45 auf 40 zu senken, würde diesen Fall lösen.
+
+### 5. Sieben Descriptions über 160 Zeichen
+
+Über 200 Zeichen: vier Blogposts und zwei Workshop-Seiten, Spitzenwert 245.
+Alles darüber wird abgeschnitten. Gleicher Rat wie bei den Titeln: die
+Descriptions sind inhaltlich gut, sie sind nur als Fließtext geschrieben statt
+als Anriss. Wo der erste Satz für sich steht, reicht es, den Rest zu streichen.
+
+Am anderen Ende: fünf CodeNight-Seiten teilen sich dieselbe Description
+(„Dieses Buch enthält alle wichtigen Informationen zur Codenight 2022").
+Das sind mdBook-Ausgaben in `public/`, kein Astro. Da sie in der Sitemap nur
+mit ihrer Einstiegsseite stehen, ist der Effekt nahe null — nur erwähnt, damit
+es nicht später als Überraschung auftaucht.
+
+### 6. Kein einziges eigenes `og:image`
+
+Alle 36 Seiten verwenden `/og-default.png`. Jeder geteilte Link — LinkedIn,
+Slack, WhatsApp — sieht identisch aus, egal ob es ein Blogpost oder ein
+Workshop-Angebot ist. Für jemanden, dessen Reichweite über LinkedIn läuft, ist
+das der sichtbarste Punkt in dieser Liste, auch wenn er streng genommen kein
+Ranking-Faktor ist.
+
+Zwei Wege: pro Beitrag ein Bild von Hand (beste Qualität, Daueraufwand), oder
+`@vercel/og`/`satori` zur Bauzeit aus Titel und Kategorie generieren (einmal
+Aufwand, danach automatisch). Bei sieben Beiträgen wäre Handarbeit
+wahrscheinlich schneller.
+
+### 7. Kein `BreadcrumbList`
+
+Der schema.org-Graph enthält kein Breadcrumb. Google verwendet es, um in den
+Ergebnissen `felix-paul.de › Bildungsangebote › Schulen` statt der nackten URL
+zu zeigen. Bei einer Domain mit drei Ebenen (`/schools/workshops/<name>/`)
+lohnt sich das. Ein Knoten im `@graph`, aus `Astro.url.pathname` und `AREAS`
+ableitbar.
+
+### 8. Zehn Bilder ohne `width`/`height`
+
+Drei Buchvorschauen auf der Startseite, sieben Projektbilder auf
+`/schools/insights/`. Ohne die Attribute kennt der Browser das Seitenverhältnis
+vor dem Laden nicht und der Text springt beim Nachladen — das ist Cumulative
+Layout Shift, einer der drei Core Web Vitals. Es sind rohe `<img>`-Tags; sie
+durch Astros `<Image />` zu ersetzen, setzt die Maße automatisch und liefert
+nebenbei AVIF/WebP aus.
+
+### Nicht anfassen
+
+- **Der Markensuffix `· Felix Paul`** in den Titeln. Richtig so bei einer
+  Personenmarke.
+- **Die noindex-Seiten.** `/thank-you/` und die drei Drohnen-Demoseiten sind
+  bewusst ausgeschlossen; die Demos sind Prompt-Injection-Attrappen und
+  gehören nicht in den Index.
+- **`IT Security` auf der Startseite vs. `IT-Sicherheit` in der
+  Description.** Fällt beim Vergleich auf, ist aber kein Problem: beide
+  Schreibweisen werden gesucht, und die Seite deckt so beide ab. Zudem ist
+  der sichtbare Text kuratiert.
+- **Die Referenzprojekte unter `/projects/`.** Mehrere `h1` pro Seite, fehlende
+  Descriptions, geteilte Metadaten — das sind mdBook- und Bootstrap-Ausgaben,
+  die als Beleg dienen, nicht als Landingpages. Sie stehen mit je einer URL in
+  der Sitemap. Sie zu überarbeiten wäre Aufwand ohne Gegenwert.
+
+### Was nicht in dieser Liste stehen kann
+
+Alles, was echte Daten braucht: welche Suchbegriffe tatsächlich Klicks
+bringen, welche Seiten indexiert sind, wie die Core Web Vitals im Feld
+aussehen. Das kommt aus der Google Search Console, und die braucht eine
+Domain, die schon eine Weile live ist. Der sinnvollste nächste Schritt nach
+dieser Liste ist deshalb nicht Punkt 1, sondern: Search Console einrichten und
+sechs Wochen warten.
