@@ -34,6 +34,12 @@
 /education/danke/        /thank-you/                 301
 /education/danke         /thank-you/                 301
 
+# ── Umbenannte Downloads ─────────────────────────────────────────────────
+# Das Rednerprofil heißt jetzt schlicht rednerprofil.pdf, weil es deutsch und
+# englisch in einer Datei enthält. Die alte Adresse steht in verschickten
+# Mails und Angeboten, deshalb bleibt sie erreichbar.
+/pdf/rednerprofil-felix-paul.pdf   /pdf/rednerprofil.pdf   301
+
 # ── Section landing pages without a trailing slash ───────────────────────
 /blog                    /blog/                      301
 /schools                 /schools/                   301
