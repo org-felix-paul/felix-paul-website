@@ -654,3 +654,111 @@ Effect: `#bildung` 219 → 183 words (−16%), from 31% to 26% of the
 `/education/` page. All five offers are still named and linked. The page total
 moved 1094 → 1058 words, so **this is a role split, not a length fix** — the
 largest section is `#speaking` at 24%, and it was left alone.
+
+---
+
+## 13. Seventh pass — shortening
+
+`#speaking` was the longest section on the page (24%). Three changes, no
+content removed that mattered:
+
+- **Topic texts cut to one sentence each.** They were two to three sentences
+  averaging 30 words; the section is a menu, not the talk.
+- **"Weitere Themen" moved into the grid as a sixth tile**, styled back (dashed
+  grey border, muted ground) so it reads as an appendix next to five real
+  offers. It used to be a full-width panel of its own below the grid.
+  Trimmed from seven entries to five, and each shortened to a keyword
+  ("KI und der Arbeitsmarkt" instead of "KI und ihre Auswirkungen auf den
+  Arbeitsmarkt"). Medienkompetenz and Architekturarbeit were dropped.
+- **Grid is `lg:grid-cols-3`**, so six tiles fill two clean rows instead of
+  leaving an orphan. Consulting stays as its own box below.
+
+The **hero** intro went from 32 words to 19 and the Atruvia line from 12 to 7 —
+the qualification detail was already repeated in `#ueber-mich`.
+
+```
+section          was    now
+speaking         252    163    -35%
+top               66     47    -29%
+TOTAL           1058    950
+reading time     5.3    4.8 min
+```
+
+---
+
+## 14. Eighth pass — navigation, wording, SEO audit
+
+### Education: "Referenzen" was a promise the page could not keep
+
+The nav said Referenzen, and the page ended with a "Referenzen & Stimmen aus
+Schulen" box whose own text admitted the testimonials did not exist yet
+("Hier sammeln sich künftig …"). Renamed to **Einblicke** in the nav, the page
+title, the eyebrow and the cross-links from the home page and the offer pages;
+the empty testimonials box is gone.
+
+### Why the scroll indicator only marked some sections
+
+It marks **nav entries**, and it can only mark an entry that points at a
+section of the page you are on. Before this pass:
+
+| section | why it never lit up |
+|---|---|
+| `#aktuelles`, `#presse`, `#kontakt`, `#saeulen` | no nav entry existed |
+| `#blog` | the nav entry is `/blog/` — a link to another page, not an anchor |
+
+So it was not a bug, it was the nav being shorter than the page.
+
+### Two-level navigation
+
+The bar keeps the three things someone might book or read; everything else on
+the home page sits behind a **"Mehr" dropdown** (Über mich, Publikationen,
+Aktuelles, Material für Veranstalter). A `<details>`/`<summary>` element, so
+it works without JavaScript; the small script only closes it on outside click,
+Escape, and selection.
+
+`NAV` entries can now be a link or a group, and carry an optional **`spy`**
+field naming the home-page section they represent — separate from `href`,
+because "Blog" links to `/blog/` but marks the blog teaser while you scroll
+past it. The group's summary lights up when any of its children is current.
+
+Result: every content section is now represented in the bar. `#top`/`#saeulen`
+are the page intro, `#kontakt` is the CTA button.
+
+### SEO audit
+
+Checked across all 20 pages: title, description, canonical, `<html lang>`,
+one h1, the five OG/Twitter tags, structured-data shape, and whether the
+wording still matches the content after the renames.
+
+**Fixed:**
+
+- **`/thank-you/` and `/404` were indexable.** Both are dead ends; a
+  confirmation page in the index is a junk result. `Layout` gained a
+  `noindex` prop and both pages set it. Neither was in the sitemap already.
+- **Long titles were losing their tail to the brand suffix.** A blog post ran
+  to 106 characters, of which 21 were "· blogging@Felix Paul". The suffix is
+  now dropped once the title alone reaches 45 characters — the page title is
+  worth more than the brand in a 60-character SERP line.
+- **Home page over the limits**: title 63 → 57, description 180 → 162. The
+  site tagline is shorter ("Keynotes, Bildungsangebote & IT-Beratung").
+- **`/education/` description** 238 → under 165.
+- **`/education/` h1 still said "verständlich für die Schule"**, contradicting
+  the Bildungsangebote repositioning. Now "verständlich erklärt".
+- **Stale label on the home page**: the `#bildung` CTA still read "Projekte &
+  Referenzen"; the offer pages linked "Referenzen & durchgeführte Workshops".
+
+**Verified clean:** og:title matches `<title>` on every page (0 mismatches);
+every schema.org `Offer` URL resolves; the graph is
+Person/Organization/WebSite plus the right page node everywhere; no noindex
+page appears in the sitemap; no occurrence of "Schulworkshop", "Referenzen"
+or an old subdomain remains anywhere in the built site.
+
+**Left alone — your content, not markup:**
+
+Five blog post titles still exceed 62 characters and eleven descriptions
+exceed 165. They come from `description:` in the post frontmatter and
+`teaser:` in the offer frontmatter. Over-long descriptions are not a ranking
+penalty — Google simply truncates the snippet, and often writes its own
+anyway — so this is a display question, not a defect. The worst are
+`how-to-mislead-ai` (247), `how-easy-is-it-to-fall-for-phishing` (240) and
+`social-media-ai-smartphone-elternabend` (240).

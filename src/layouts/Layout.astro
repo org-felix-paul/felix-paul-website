@@ -17,6 +17,8 @@ interface Props {
   schema?: Record<string, unknown>[];
   /** Browser-tab icon. Each section has its own mark. */
   favicon?: string;
+  /** Keep the page out of search results (confirmation pages, 404). */
+  noindex?: boolean;
 }
 
 const {
@@ -27,9 +29,16 @@ const {
   ogType = "website",
   schema = [],
   favicon = FAVICONS.main,
+  noindex = false,
 } = Astro.props;
 
-const fullTitle = title ? `${title} · ${siteName}` : `${SITE.name} · ${SITE.tagline}`;
+// Google shows roughly 60 characters. A long page title is worth more than the
+// brand suffix, so the suffix is dropped once the title alone fills the line.
+const fullTitle = !title
+  ? `${SITE.name} · ${SITE.tagline}`
+  : title.length >= 45
+    ? title
+    : `${title} · ${siteName}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).toString();
 const ogImageUrl = new URL(ogImage, Astro.site ?? SITE.url).toString();
 const ogImageType = ogImage.endsWith(".jpg") || ogImage.endsWith(".jpeg")
@@ -153,6 +162,7 @@ const structuredData = {
     <link rel="icon" type="image/svg+xml" href={favicon} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
 
     <title>{fullTitle}</title>
     <meta name="description" content={description} />

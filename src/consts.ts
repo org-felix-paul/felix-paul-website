@@ -6,9 +6,9 @@
 // consts file (src/blog/consts.ts, src/education/consts.ts).
 export const SITE = {
   name: "Felix Paul",
-  tagline: "Keynotes · Bildungsangebote · IT Security & KI",
+  tagline: "Keynotes, Bildungsangebote & IT-Beratung",
   description:
-    "Keynotes, Fachvorträge und Bildungsangebote zu KI, IT Security, Kryptographie und Medienkompetenz. Software über d-solve.de. Hauptberuflich Enterprise Architect bei der Atruvia AG.",
+    "Keynotes, Fachvorträge und Bildungsangebote zu KI, IT-Sicherheit und Kryptographie – für Unternehmen, Universitäten und Schulen. Enterprise Architect bei Atruvia.",
   url: "https://felix-paul.de",
   author: "Felix Peter Paul",
   email: "contact@felix-paul.de",
@@ -114,12 +114,39 @@ export const AREAS: readonly Area[] = [
   },
 ];
 
-// Header navigation: the four areas plus the two home-page anchors that carry
-// the credibility story.
-export const NAV = [
-  { href: "#ueber-mich", label: "Über mich" },
-  { href: "#speaking", label: "Keynotes & Fachvorträge" },
-  { href: "#bildung", label: "Bildungsangebote" },
-  { href: "#publikationen", label: "Publikationen" },
-  { href: PATHS.blog, label: "Blog" },
-] as const;
+// Header navigation.
+//
+// Two levels on purpose: the three things someone might want to book or read
+// stay in the bar, everything else that lives on the home page sits behind
+// "Mehr". Without that, either the bar gets long or those sections are
+// invisible unless you happen to scroll past them.
+//
+// `spy` names the home-page section an entry represents. It is separate from
+// `href` because "Blog" links to the blog *page* but marks the blog *teaser*
+// while you scroll past it — the scroll indicator tracks where you are, the
+// link decides where you go.
+export interface NavItem {
+  href: string;
+  label: string;
+  spy?: string;
+}
+
+export interface NavGroup {
+  label: string;
+  items: readonly NavItem[];
+}
+
+export const NAV: readonly (NavItem | NavGroup)[] = [
+  { href: "#speaking", label: "Keynotes & Fachvorträge", spy: "speaking" },
+  { href: "#bildung", label: "Bildungsangebote", spy: "bildung" },
+  { href: PATHS.blog, label: "Blog", spy: "blog" },
+  {
+    label: "Mehr",
+    items: [
+      { href: "#ueber-mich", label: "Über mich", spy: "ueber-mich" },
+      { href: "#publikationen", label: "Publikationen", spy: "publikationen" },
+      { href: "#aktuelles", label: "Aktuelles", spy: "aktuelles" },
+      { href: "#presse", label: "Material für Veranstalter", spy: "presse" },
+    ],
+  },
+];

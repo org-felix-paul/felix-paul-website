@@ -40,61 +40,56 @@ const orientation = [
   },
   {
     label: "Bildungsangebote",
-    line: "Workshops und Fortbildungen für Schulen, Lehrkräfte und Erwachsene.",
+    line: "Workshops und Fortbildungen für Unternehmen, Schulen und Privatpersonen.",
     href: "#bildung",
     bar: "bg-emerald-500",
   },
   {
     label: "Software",
-    line: "Produkte und Projekte über dSolve.",
+    line: "Lauffähige Software und Projekte über dSolve.",
     href: SITE.dSolveSite,
     bar: "bg-amber-500",
   },
   {
     // Kein Angebot, deshalb optisch zurückgenommen (graue Marke statt Akzentfarbe).
     label: "Blog",
-    line: "Notizen zu KI, IT-Sicherheit und IT in der Bildung.",
+    line: "Beiträge zu Themen die mich beschäftigen wie KI, IT-Sicherheit und schulische Bildung.",
     href: PATHS.blog,
     bar: "bg-ink-300",
   },
 ] as const;
 
-// Speaking topics. Each of these gets its own card because each is a talk I
-// can actually give end-to-end; everything narrower lives in `weitereThemen`
-// below as a plain list, so the section stays scannable as it grows.
+// Speaking topics — one card per talk that stands on its own. Deliberately
+// one sentence each: this section is a menu, not the talk itself.
 const topics = [
   {
     title: "Künstliche Intelligenz",
-    text: "Wie funktioniert KI, wo hilft sie, wo scheitert sie, wann sind Alternativen besser – und wie setzt man sie verantwortungsvoll, sicher und kosteneffizient ein, privat wie im Enterprise?",
+    text: "Funktionsweise, (un)sinnvolle Einsatzgebiete, KI-Integrationsarchitekturen (A2A, MCP, REST) und kosteneffiziente Einsatzskalierung (Von AI Gateway über Sandboxes, Filtermechanismen, ...)",
   },
   {
     title: "Identity & Access Management",
-    text: "Wer darf was, warum, und wie weist man das nach? Von Rollen- und Berechtigungsmodellen über moderne Authentifizierung bis zu Zero Trust und der Frage, warum IAM in der Praxis so oft scheitert.",
+    text: "Moderne Authentifizierung, Autorisierung und Zero Trust in hybriden Cloudumgebungen richtig einsetzen.",
   },
   {
     title: "IT Security",
-    text: "Was sind Best Practices, was ist die gelebte Praxis – aus Sicht eines Enterprise Architects in der Finanzbranche. Inklusive Angriffswegen, die man einmal gesehen haben sollte.",
+    text: "Lehrbuch gegen gelebte Praxis. Wie findet man den richtigen Trade-Off zwischen Security, Kosten, Usability und Wartbarkeit – Einblicke aus der Finanzbranche",
   },
   {
     title: "Cloud",
-    text: "Architektur, Betrieb und Kosten in der Cloud: Was skaliert wirklich, was kostet nur, wie sieht eine tragfähige Hybrid-Cloud aus – und welche Entscheidungen lassen sich später kaum noch korrigieren?",
+    text: "Was wirklich skaliert, was nur kostet, hybride Szenarien und welche Architekturentscheidungen sich später kaum noch korrigieren lassen.",
   },
   {
     title: "Kryptographie",
-    text: "Von den Grundlagen bis zur Anwendung. Fully Homomorphic Encryption – Rechnen auf verschlüsselten Daten, ohne sie je zu entschlüsseln – mit lauffähigen Demos, und Post-Quanten-Kryptographie als Deep Dive in code-basierte Verfahren (Goppa-Codes, McEliece) oder als pragmatische Migration.",
+    text: "Fully Homomorphic Encryption – Rechnen auf verschlüsselten Daten – und Post-Quanten-Kryptographie, mathematischer Deep Dive oder  pragmatische Migrationsroadmap.",
   },
 ];
 
-// Kürzere Formate und Themen, die ich ebenfalls abdecke. Bewusst als schlichte
-// Liste – sie darf wachsen, ohne den Abschnitt zu überladen.
+// Sechste Kachel im Raster: kurze Stichworte statt ausformulierter Themen,
+// damit die Liste wachsen kann, ohne den Abschnitt zu verlängern.
 const weitereThemen = [
-  "KI und ihre Auswirkungen auf den Arbeitsmarkt",
   "Gesellschaftliche Folgen von KI",
-  "Skalierung von Enterprise-IT",
-  "Hybrid Cloud in der Praxis",
-  "Post-Quanten-Migration: was jetzt zu tun ist",
-  "Medienkompetenz und digitale Selbstverteidigung",
-  "Architekturarbeit in regulierten Branchen",
+  "Skalierungsprobleme bei Enterprise-IT",
+  "..."
 ];
 ---
 
@@ -219,13 +214,13 @@ const weitereThemen = [
                       </span>
                     </div>
                     <p class="mt-2 text-center text-[0.65rem] font-medium uppercase tracking-wider text-ink-500 sm:text-xs">
-                      Enterprise Architect
+                      Konkrete Umsetzung
                     </p>
                   </div>
                 </div>
 
                 <p class="text-xs leading-relaxed text-ink-500">
-                  Zwei vollständige Studiengänge nebeneinander: Informatik und Mathematik fachlich,
+                  Drei vollständige Studiengänge nebeneinander: Informatik und Mathematik fachlich,
                   Lehramt didaktisch. Dazu die tägliche Praxis als Enterprise Architect in der
                   Finanzbranche – deshalb bleiben Vorträge und Workshops nah an dem, was wirklich
                   passiert.
@@ -244,7 +239,7 @@ const weitereThemen = [
     title="Keynotes & Fachvorträge"
     lead="Ich spreche und berate auf Konferenzen, an Universitäten und in Unternehmen über KI, IT Security und andere spannende IT Themen."
   >
-    <div class="grid gap-6 sm:grid-cols-2">
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {
         topics.map((t) => (
           <div class="rounded-2xl border border-ink-200 bg-white p-6 shadow-sm">
@@ -253,22 +248,22 @@ const weitereThemen = [
           </div>
         ))
       }
-    </div>
 
-    <!-- Weitere Themen: bewusst als schlichte Liste, damit der Abschnitt beim
-         Wachsen übersichtlich bleibt und die fünf Hauptthemen oben dominieren. -->
-    <div class="mt-6 rounded-2xl border border-ink-200 bg-white p-6 shadow-sm">
-      <h3 class="text-sm font-semibold uppercase tracking-wider text-ink-500">Weitere Themen</h3>
-      <ul class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink-700">
-        {
-          weitereThemen.map((t) => (
-            <li class="flex items-start gap-2">
-              <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-brand-500" aria-hidden="true" />
-              <span>{t}</span>
-            </li>
-          ))
-        }
-      </ul>
+      <!-- Sechste Kachel: weitere Themen als Stichwortliste. Gleiche Größe wie
+           die anderen, aber zurückgenommen (grauer Rahmen, kleinere Schrift). -->
+      <div class="rounded-2xl border border-dashed border-ink-300 bg-ink-50 p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-ink-500">Weitere Themen</h3>
+        <ul class="mt-3 space-y-1.5 text-sm text-ink-600">
+          {
+            weitereThemen.map((t) => (
+              <li class="flex items-start gap-2">
+                <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-400" aria-hidden="true" />
+                <span>{t}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </div>
 
     <div class="mt-6 rounded-2xl border border-brand-200 bg-brand-50 p-6 text-center shadow-sm">
@@ -357,7 +352,7 @@ const weitereThemen = [
         href={EDU_PATHS.projekte}
         class="rounded-lg border border-ink-200 bg-white px-5 py-3 text-sm font-medium text-ink-800 shadow-sm transition hover:border-emerald-300 hover:text-emerald-700"
       >
-        Projekte &amp; Referenzen
+        Einblicke aus Workshops
       </a>
     </div>
   </Section>
@@ -491,7 +486,7 @@ const weitereThemen = [
           <p class="text-sm font-semibold uppercase tracking-widest text-brand-200">Blog</p>
           <h2 class="mt-2 font-display text-3xl font-bold leading-tight md:text-4xl">Mein persönlicher Blog</h2>
           <p class="mt-4 max-w-xl text-brand-100">
-            Notizen zu Themen, die mich umtreiben – IT Security, KI, IT in der Bildung und eigene spannende Tech-Projekte. Für Professionals, Lehrer, Eltern, Schüler und allgemeine Tech-Enthusiast:innen.
+            Gedanken zu Themen, die mich umtreiben – IT Security, KI, IT in der Bildung und eigene spannende Tech-Projekte. Für Professionals, Lehrer, Eltern, Schüler und allgemeine Tech-Enthusiast:innen.
           </p>
           <a
             href={PATHS.blog}
@@ -528,7 +523,7 @@ const weitereThemen = [
     background="muted"
     eyebrow="Kontakt"
     title="Lassen Sie uns sprechen"
-    lead="Ein Vortrag, eine Zusammenarbeit oder einfach eine Frage – eine kurze Nachricht genügt. Ich melde mich werktags innerhalb von 48 Stunden."
+    lead="Ein Vortrag, ein Workshop,  eine Zusammenarbeit oder einfach eine Frage – eine kurze Nachricht genügt. Ich melde mich werktags innerhalb von 48 Stunden."
   >
     <div class="grid gap-10 md:grid-cols-[1.2fr_1fr]">
       <ContactForm />

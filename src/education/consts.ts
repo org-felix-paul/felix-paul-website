@@ -7,7 +7,7 @@ export const EDU = {
   name: "Felix Paul",
   tagline: "Bildungsangebote zu KI, Cybersicherheit & Medienkompetenz",
   description:
-    "Felix Paul – Doppelqualifikation aus Lehramt und Informatik (B.Sc. + M.Sc.). Bildungsangebote zu KI, Cybersicherheit und Medienkompetenz: Workshops, Vorträge und Fortbildungen für Schulen, Lehrkräfte, Eltern, Schüler:innen und Erwachsene.",
+    "Workshops und Fortbildungen zu KI, Cybersicherheit und Medienkompetenz – für Schulen, Lehrkräfte, Eltern und Erwachsene. Von einem Informatiker mit Lehramt.",
   /** Section root; every education URL is built from this. */
   base: PATHS.education,
   ogImage: "/education/og-default.jpg",
@@ -35,5 +35,5 @@ export const angebotPath = (slug: string) => `${EDU_PATHS.angebote}${slug}/`;
 
 export const NAV = [
   { href: EDU_PATHS.home, label: "Start" },
-  { href: EDU_PATHS.projekte, label: "Referenzen" },
+  { href: EDU_PATHS.projekte, label: "Einblicke" },
 ] as const;

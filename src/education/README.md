@@ -35,7 +35,7 @@ cross-linking. Concretely:
   § 4 Nr. 21 UStG exemption (brutto = netto for schools).
 - **"Workshops auf Anfrage" note** added to the offers section on `/`, with a link to
   `/kontakt/`.
-- **Nav label "Projekte" renamed to "Referenzen"** in `src/education/consts.ts` and in the footer.
+- **Nav label is "Einblicke"** (was "Projekte", briefly "Referenzen") in `src/education/consts.ts`.
   The route stays `/projekte/` (no broken links); the page content is unchanged.
 - **Header/Footer branding** now reads **"Teaching@Felix Paul"** and the old "FP" text badge
   was replaced by the actual `/favicon.svg` image (`<img>`) in both `Header.astro` and
@@ -65,7 +65,7 @@ The per-offer prices used in the start-page table (read from the Markdown frontm
   straight from `src/education/content/angebote/*.md`. Confirm these spans are still current; editing
   the Markdown frontmatter updates both the cards and the table automatically.
 - [ ] **Supply real references / testimonials.** `/projekte/` still shows the placeholder
-  "Referenzen & Stimmen aus Schulen" block ("Hier sammeln sich künftig Rückmeldungen…").
+  The "Referenzen & Stimmen aus Schulen" block was removed — it promised testimonials the page did not have.
   Replace with real quotes/logos once available.
 - [ ] **Supply real workshop/project photos** if the current screenshots in
   `public/img/neck/` and `public/img/codenight/` should be refreshed.
@@ -653,7 +653,7 @@ If any step fails, fix before announcing the deploy.
 
 Astro + Tailwind v4. Tokens `brand-*` / `ink-*` live in `src/styles/global.css`. Run
 `npm run build` after any change. The navbar renders from `NAV` in `src/education/consts.ts`
-(currently Start / Über mich / Referenzen — Kontakt was removed from the navbar; the
+(currently Start / Einblicke — Kontakt is the domain-wide form at /#kontakt; the
 "Anfrage"/Kontakt button in the header still leads to `/kontakt/`).
 
 ### Add a new reusable component
@@ -690,9 +690,9 @@ Blick" overview) and the detail pages are generated automatically — you only a
 3. If you need a new icon, add an entry to the `icons` map in
    `src/education/components/AngebotCard.astro` and reference its key via `icon:`.
 
-### Add a new project / reference (Referenzen page)
+### Add a new project (Einblicke page)
 
-The Referenzen page (`src/pages/education/projekte.astro`) is hand-written (not a collection).
+The Einblicke page (`src/pages/education/projekte.astro`) is hand-written (not a collection).
 Copy an existing `<article class="… rounded-3xl …">` block and adjust text, the image
 (`/img/<project>/…` under `public/`) and the link. Keep project images **clickable** —
 wrap the `<img>` in `<a href="https://…" target="_blank" rel="noopener noreferrer">` so a
