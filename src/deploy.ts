@@ -10,6 +10,10 @@
  * Die Variable wird beim Build statisch eingesetzt (Astro/Vite), die Seite
  * bleibt also vollständig statisch.
  */
+/** Der Produktions-Branch. Wird er umbenannt, muss er hier mit umbenannt
+ *  werden — sonst zeigt die Live-Seite plötzlich das Vorschau-Banner. */
+const PRODUCTION_BRANCH = "main";
+
 const branch = import.meta.env.CF_PAGES_BRANCH as string | undefined;
 
 /** Branch, aus dem deployt wurde — lokal `null`. */

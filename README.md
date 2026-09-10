@@ -143,9 +143,15 @@ the public site. Production shows nothing.
 | build | `CF_PAGES_BRANCH` | banner |
 |---|---|---|
 | production | `main` | none |
-| preview branch | e.g. `int` | `Vorschau · Branch int` |
+| any other branch | `int`, `dev`, `feat/x`, … | `Vorschau · Branch <name>` |
 | `astro dev` | unset | `Lokale Entwicklung` |
 | local `npm run build` | unset | none |
+
+**Every branch except `main` gets one**, named after the branch — there is no
+list of known environments to maintain, so a feature-branch preview is covered
+too. The check is against the literal string `main`: if the production branch
+is ever renamed, `src/deploy.ts` has to be renamed with it, or production would
+start showing a banner.
 
 The last row is deliberate: a banner that leaks into production is worse than
 one missing from a preview, so anything uncertain is treated as production.
