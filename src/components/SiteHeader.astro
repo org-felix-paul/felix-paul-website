@@ -110,7 +110,7 @@ import LanguageLink from "./LanguageLink.astro";
 
     {
       nav.length > 0 && (
-        <nav aria-label="Hauptnavigation" class="hidden md:block">
+        <nav aria-label="Hauptnavigation" class="hidden lg:block">
           <ul class="flex items-center gap-7 text-sm font-medium text-ink-700">
             {nav.map((entry) =>
               isGroup(entry) ? (
@@ -166,7 +166,7 @@ import LanguageLink from "./LanguageLink.astro";
       )
     }
 
-    <div class="hidden items-center gap-2 md:flex">
+    <div class="hidden items-center gap-2 lg:flex">
       <LanguageLink />
       <ThemeToggle />
       {
@@ -181,7 +181,7 @@ import LanguageLink from "./LanguageLink.astro";
       }
     </div>
 
-    <div class="flex items-center gap-1 md:hidden">
+    <div class="flex items-center gap-1 lg:hidden">
       <LanguageLink />
       <ThemeToggle />
     <button
@@ -199,7 +199,7 @@ import LanguageLink from "./LanguageLink.astro";
     </div>
   </div>
 
-  <nav id="mobile-nav" aria-label="Mobile Navigation" class="hidden border-t border-ink-100 md:hidden" data-mobile-menu>
+  <nav id="mobile-nav" aria-label="Mobile Navigation" class="hidden border-t border-ink-100 lg:hidden" data-mobile-menu>
     <ul class="space-y-1 px-6 py-4 text-base font-medium text-ink-800">
       {
         nav.map((entry) =>

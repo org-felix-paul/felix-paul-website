@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import { unified } from "@astrojs/markdown-remark";
 import rehypeSlug from "rehype-slug";
+import rehypeTableScroll from "./src/blog/plugins/rehype-table-scroll.mjs";
 import remarkMermaid from "./src/blog/plugins/remark-mermaid.mjs";
 import { echteEnglischeRouten } from "./src/i18n/pages.mjs";
 
@@ -64,7 +65,7 @@ export default defineConfig({
       remarkPlugins: [remarkMermaid],
       // rehype-slug gives every heading a GitHub-style anchor id so the tables
       // of contents can jump to a section.
-      rehypePlugins: [rehypeSlug],
+      rehypePlugins: [rehypeSlug, rehypeTableScroll],
     }),
   },
   build: {

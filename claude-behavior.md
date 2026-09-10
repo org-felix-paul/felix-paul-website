@@ -1,11 +1,84 @@
-# Merge log — four sites into one Astro project
+# Umbauprotokoll felix-paul.de
 
-What was changed, why, and how to undo or extend it. Written for the person who
-has to maintain this repo, not as a summary of a conversation.
+Was geändert wurde, warum, und wie man es rückgängig macht oder fortführt.
+Geschrieben für die Person, die dieses Repo pflegt — nicht als
+Gesprächszusammenfassung.
 
-Date: 2026-09-09 · Astro 6.3.8 · one origin: `https://felix-paul.de`
+Begonnen 2026-09-09 · Astro 6.4.8 · ein Origin: `https://felix-paul.de`
+
+## Wie diese Datei zu lesen ist
+
+Sie hat drei Teile, und man liest sie fast nie von vorne:
+
+- **Teil A — Grundlagen** (§1–§7) beschreibt den Zusammenbau der vier alten
+  Repos und die Regeln, die seitdem gelten. Der Teil, den man einmal liest,
+  bevor man etwas ändert.
+- **Teil B — Durchgänge** (§8–§24) ist ein chronologisches Protokoll. Hier
+  sucht man nach dem *Warum* einer bestehenden Entscheidung — meist über die
+  Volltextsuche, nicht über das Inhaltsverzeichnis.
+- **Teil C — Nach Thema** (§25–§31) sind die jüngeren Arbeiten, ein Thema je
+  Abschnitt. Hier sucht man nach dem *Wie* für die nächste Änderung.
+
+Abschnitte mit dem Status **Bericht** enthalten bewusst keine Umsetzung — nur
+Befund und Empfehlung.
+
+Teil A und B sind auf Englisch geschrieben, Teil C auf Deutsch. Das ist keine
+Absicht, sondern gewachsen; beim nächsten größeren Umbau lohnt es sich,
+Teil A auf Deutsch zu ziehen.
 
 ---
+
+## Inhalt
+
+### Teil A — Grundlagen
+
+| § | Abschnitt | Worum es geht |
+|---|---|---|
+| 1 | [What happened](#1-what-happened) | Vier Repos, vier Subdomains → eine Domain mit Pfaden |
+| 2 | [Repository layout](#2-repository-layout) | Die Kernregel: geteilter Code importiert nie aus einem Bereich |
+| 3 | [Metadata — the decision, and why](#3-metadata--the-decision-and-why) | Wer den `<head>` besitzt, und warum nur das Layout |
+| 4 | [Every change made to content and code](#4-every-change-made-to-content-and-code) | Vollständige Liste des ersten Umbaus |
+| 5 | [What was deliberately not touched](#5-what-was-deliberately-not-touched) | Die Referenzprojekte und warum sie roh bleiben |
+| 6 | [Open items](#6-open-items) | Was beim ersten Durchgang offen blieb |
+| 7 | [Verification performed](#7-verification-performed) | Welche Prüfungen laufen und was sie abdecken |
+
+### Teil B — Durchgänge (chronologisch)
+
+| § | Abschnitt | Worum es geht |
+|---|---|---|
+| 8 | [Second pass](#8-second-pass--de-duplication-and-harmonisation) | Doppelte Rechtsseiten, doppeltes Portrait, doppelte Konstanten |
+| 9 | [Third pass](#9-third-pass--neck-cleanup-and-payload) | NECK entrümpelt, Payload 116 MB → 44 MB |
+| 10 | [Fourth pass](#10-fourth-pass--structure-wording-and-overview) | `AREAS` als einzige Quelle für Navigation und Fußzeile |
+| 11 | [Fifth pass](#11-fifth-pass--orientation-order-and-the-background-graphic) | Reihenfolge der Bereiche, Hintergrundgrafik beschriftet |
+| 12 | [Sixth pass](#12-sixth-pass--the-home-pages-education-block-trimmed) | Wie viel Bildungsangebot auf die Startseite gehört |
+| 13 | [Seventh pass](#13-seventh-pass--shortening) | Gekürzt — und was dabei bewusst blieb |
+| 14 | [Eighth pass](#14-eighth-pass--navigation-wording-seo-audit) | „Referenzen" abgeschafft, erste SEO-Prüfung |
+| 15 | [Ninth pass](#15-ninth-pass--audience-band-and-two-new-formats) | Zielgruppenband, zwei neue Formate |
+| 16 | [Tenth pass](#16-tenth-pass--school-first-ordering-contrast-blog-prominence) | Schulen nach vorn, Blog sichtbarer |
+| 17 | [Eleventh pass](#17-eleventh-pass--audience-pages) | Bildungsangebote werden drei Seiten: Schulen, Unternehmen, Privat |
+| 18 | [Twelfth pass](#18-twelfth-pass--blog-anchor-and-the-company-fundamentals) | Blog-Anker, „Grundlagen" vs. Vertiefung für Hochschulen |
+| 19 | [Thirteenth pass](#19-thirteenth-pass--naming-the-excerpt-folding-the-footer) | Fußzeile auf allen Seiten byteidentisch |
+| 20 | [Fourteenth pass](#20-fourteenth-pass--english-routes-shared-navigation) | Englische Route-Segmente, geteilte Navigation, `anchorBase` |
+| 21 | [Fifteenth pass](#21-fifteenth-pass--schools-navigation-mermaid-rendering) | Schul-Navigation entlastet, Mermaid zum Laufen gebracht |
+| 22 | [Sixteenth pass](#22-sixteenth-pass--the-practice-page-reachable-and-named) | „Vergangene Workshops" benannt und erreichbar gemacht |
+| 23 | [Seventeenth pass](#23-seventeenth-pass--the-practice-page-scoped-back-software-given-a-section) | Wieder zurückgenommen, Software bekommt einen Bereich |
+| 24 | [Eighteenth pass](#24-eighteenth-pass--link-checking-and-the-mobile-menu) | Host-genauer Linkchecker, Mobilmenü |
+
+### Teil C — Nach Thema
+
+| § | Abschnitt | Status | Worum es geht |
+|---|---|---|---|
+| 25 | [Metadaten angeglichen](#25-metadaten-an-die-kuratierten-inhalte-angeglichen) | umgesetzt | Titel und Descriptions an die kuratierten Inhalte |
+| 26 | [Mermaid skalieren](#26-mermaid-diagramme-skalieren-statt-zu-scrollen) | umgesetzt | Diagramme scrollen nicht mehr — Vorstufe zu §31 |
+| 27 | [Dark Mode](#27-dark-mode) | umgesetzt | Farbtokens umschalten statt 590 `dark:`-Varianten |
+| 28 | [Englisches Routing](#28-englisches-routing-mit-deutschem-rückfall) | umgesetzt | `/en/` mit deutschem Rückfall — **enthält die Anleitung, wie man eine Seite übersetzt** |
+| 29 | [Inhalte für KI](#29-inhalte-für-ki-verfügbar-machen--ist-zustand-und-automatisierung) | **Bericht** | `llms.txt`: Ist-Zustand und drei Automatisierungsstufen |
+| 30 | [SEO-Überblick](#30-seo-überblick--was-änderungswürdig-wäre) | **Bericht** | Acht Befunde, sortiert nach Wirkung durch Aufwand |
+| 31 | [Diagramme & Seitwärts-Scroll](#31-diagramme-zentriert-seiten-ohne-seitwärts-scroll) | umgesetzt | Warum die Diagramme verrutscht waren — gemessen, nicht vermutet |
+
+---
+
+# Teil A — Grundlagen
 
 ## 1. What happened
 
@@ -235,6 +308,8 @@ npx astro check    # 0 errors, 0 warnings
 - Sitemap: 23 URLs, one origin, confirmation pages excluded
 
 ---
+
+# Teil B — Durchgänge (chronologisch)
 
 ## 8. Second pass — de-duplication and harmonisation
 
@@ -1288,6 +1363,8 @@ section about the company look like a project list.
 
 ---
 
+# Teil C — Nach Thema
+
 ## 25. Metadaten an die kuratierten Inhalte angeglichen
 
 Vorgabe: sichtbare Inhalte nicht anfassen, Metadaten daran ausrichten. Geprüft
@@ -1402,6 +1479,8 @@ zwischengespeichert, weil mermaid den Inhalt des Elements ersetzt.
 **Nicht verifiziert:** das visuelle Ergebnis. Die Chrome-Anbindung war in
 dieser Sitzung nicht verfügbar; geprüft wurden Build, Typen und dass keine
 nicht umschaltbaren Farbwerte übrig sind.
+
+---
 
 ## 28. Englisches Routing mit deutschem Rückfall
 
@@ -1547,6 +1626,8 @@ Theoretisch übersetzt würden sie so:
 Der ehrliche Rat: eine Übersetzung lohnt sich pro Beitrag, nicht pauschal.
 Zwei oder drei Beiträge, die englischsprachige Veranstalter überzeugen, sind
 mehr wert als dreißig maschinell übersetzte.
+
+---
 
 ## 29. Inhalte für KI verfügbar machen — Ist-Zustand und Automatisierung
 
@@ -1704,6 +1785,8 @@ Prioritäten sind entsprechend:
 6. **`llms.txt`.** ✅ Vorhanden, ⚠️ ungeprüft. Siehe oben.
 
 Die Punkte 1–3 sind erledigt. Der einzige echte Rückstand ist Punkt 4.
+
+---
 
 ## 30. SEO-Überblick — was änderungswürdig wäre
 
@@ -1871,3 +1954,103 @@ aussehen. Das kommt aus der Google Search Console, und die braucht eine
 Domain, die schon eine Weile live ist. Der sinnvollste nächste Schritt nach
 dieser Liste ist deshalb nicht Punkt 1, sondern: Search Console einrichten und
 sechs Wochen warten.
+
+---
+
+## 31. Diagramme zentriert, Seiten ohne Seitwärts-Scroll
+
+Gemeldet war: die Diagramme in den Blogposts stehen verrutscht. Die Ursache
+ließ sich messen statt vermuten — mit Chrome Headless (`--dump-dom`) und einer
+Messseite, die nach dem Mermaid-Rendering die Positionen ins `<title>`
+schreibt. Dabei kamen zwei weitere Defekte derselben Art ans Licht.
+
+### Warum die Diagramme verrutscht waren
+
+Drei Dinge greifen ineinander:
+
+1. Mermaid rendert mit `useMaxWidth: true` und setzt dabei `width="100%"` als
+   Attribut plus ein **Inline**-`style="max-width: <natürliche Breite>px"`.
+   Ein Diagramm wird dadurch nie breiter als seine natürliche Größe.
+2. Der Container `.prose-content .mermaid` ist immer 64rem (1024px) breit und
+   wird per `margin-left: 50%; transform: translateX(-50%)` mittig über die
+   Textspalte gelegt.
+3. Tailwinds Preflight setzt `img,svg,video,canvas,… { display: block }`.
+
+Ein 560px breites Diagramm sitzt damit als Block-Element linksbündig in einer
+1024px-Box, die selbst um 512px nach links gezogen ist. Das `text-align:
+center` auf dem Container war wirkungslos — Blockelemente folgen ihm nicht.
+
+Gemessen bei 1440px Viewport, vorher:
+
+| Diagramm | Breite | Versatz zur Textspaltenmitte |
+|---|---:|---:|
+| 1 | 700px | −162px |
+| 2 | 560px | −232px |
+| 3 | 1024px | 0px |
+| 4 | 875px | −74px |
+| 5, 6 | 1024px | 0px |
+
+Der Versatz ist exakt `(1024 − Breite) / 2`. Deshalb sahen nur die schmalen
+Diagramme falsch aus, die containerfüllenden dagegen richtig — was die Suche
+zunächst in die Irre führt.
+
+**Behebung:** `display: block; margin-inline: auto` auf dem SVG. Das
+`max-width: 100%` aus dem Stylesheet ist entfallen: es verliert ohnehin gegen
+Mermaids Inline-Style und täuschte nur vor, etwas zu tun.
+
+Nachgemessen über 500 / 768 / 1440px auf drei Blogposts: 18 Diagramme, alle
+zentriert, keines scrollt.
+
+### Zwei Defekte, die dabei auffielen
+
+Beide erzeugten horizontales Scrollen der **ganzen Seite** — dasselbe
+Symptom, nur eine Ebene höher, und deshalb mitbehoben.
+
+**Nackte Quell-URLs brachen nicht um.** In den Literaturlisten stehen URLs als
+Linktext. Eine URL ist für den Browser ein einziges langes Wort; mit
+`overflow-wrap: normal` ragte sie aus dem Dokument. Gemessen: 185px Überlauf
+bei 500px Breite, verursacht von zwei Links — nicht von den Diagrammen.
+Behoben mit `overflow-wrap: break-word` auf `.prose-content` und `anywhere`
+auf Links darin.
+
+**Vierspaltige Tabellen liefen aus dem Dokument.** Sechs Blogposts haben
+Tabellen. `src/blog/plugins/rehype-table-scroll.mjs` legt jetzt einen
+`div.table-scroll` darum, der den Überlauf auffängt.
+
+Warum ein Wrapper und nicht `table { display: block; overflow-x: auto }`:
+`display: block` nimmt dem Element seine Tabellenrolle, Screenreader kündigen
+es dann nicht mehr als Tabelle an. Der Wrapper bekommt `tabindex="0"` und
+`role="region"` — ein scrollbarer Bereich, den nur die Maus erreicht, ist für
+Tastaturnutzer eine Sackgasse.
+
+Der Rahmen bricht wie die Diagramme bis 64rem aus der Textspalte aus, damit
+auf dem Desktop gar nicht erst gescrollt werden muss. Ein Zwischenstand mit
+`min-width: max-content` auf der Tabelle war ein Rückschritt: er zwang sie auf
+ihre natürliche Breite (1155px) und ließ sie dadurch auf **jeder** Breite
+scrollen. Jetzt steht dort `min-width: 28rem` — schmaler wird nicht gequetscht,
+gescrollt wird erst unterhalb von rund 450px Platz.
+
+### Ein dritter Defekt: der Header zwischen 768 und 880px
+
+Der Umschaltpunkt zwischen Desktop-Navigation und Hamburger-Menü stand auf
+`md:` (768px). Genau ab dort erschien die volle Navigation — passte aber erst
+ab rund 880px hinein. Gemessen: 67px Überlauf bei 768px, 35px bei 800px.
+Der Sprachumschalter hat das um zwei Zeichen verschärft, verursacht hat er es
+nicht.
+
+Umgestellt auf `lg:` (1024px). Das Hamburger-Menü bleibt jetzt bis 1024px
+aktiv — sichtbare Änderung auf Tablets, aber die Alternative war eine
+Navigation, die aus dem Bildschirm läuft.
+
+### Schlussmessung
+
+Vier Seiten × drei Breiten (485 / 753 / 1425px nutzbare Breite):
+
+```
+Handy-Post         Überlauf +0px   6 Diagramme zentriert   Tabelle scrollt nur bei 485px
+Prompt-Injection   Überlauf +0px   3 Diagramme zentriert   1 von 3 Tabellen scrollt
+KI-Schule          Überlauf +0px   9 Diagramme zentriert   1 von 2 Tabellen scrollt bei 485px
+Startseite         Überlauf +0px   —                       —
+```
+
+Kein horizontales Scrollen des Dokuments mehr, auf keiner der geprüften Breiten.

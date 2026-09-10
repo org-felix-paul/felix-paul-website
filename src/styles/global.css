@@ -244,10 +244,49 @@ body {
   color: var(--color-brand-900);
 }
 
+/* Der Rahmen, den rehype-table-scroll um jede Tabelle legt. Er nimmt den
+   Überlauf auf, damit nicht das ganze Dokument seitlich scrollt, wenn eine
+   vierspaltige Tabelle auf ein Handy trifft.
+
+   Wie bei den Diagrammen darf er dafür seitlich aus der Textspalte
+   ausbrechen: bis 64rem breit und mittig. Auf dem Desktop passen die
+   Tabellen damit vollständig hinein und scrollen gar nicht erst – gescrollt
+   wird nur dort, wo es keine Alternative gibt. */
+/* Nackte Quell-URLs in den Literaturlisten sind ein einziges langes „Wort".
+   Ohne diese Regel brechen sie nicht um, ragen aus dem Dokument heraus und
+   lassen die ganze Seite seitlich scrollen – gemessen 185px Überlauf auf
+   500px Breite, verursacht von zwei Links, nicht von den Diagrammen. */
+.prose-content {
+  overflow-wrap: break-word;
+}
+.prose-content a {
+  overflow-wrap: anywhere;
+}
+
+.prose-content .table-scroll {
+  width: min(64rem, calc(100% + 8rem), calc(100vw - 2rem));
+  margin-left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  /* Ein per Tastatur fokussierbarer Bereich braucht einen sichtbaren Fokus. */
+  border-radius: 0.5rem;
+}
+.prose-content .table-scroll:focus-visible {
+  outline: 2px solid var(--color-brand-700);
+  outline-offset: 2px;
+}
+
 .prose-content table {
   width: 100%;
+  /* Untergrenze, damit Spalten auf dem Handy nicht zu senkrechten
+     Buchstabenketten zusammenfallen. Bewusst NICHT `max-content`: das würde
+     die Tabelle auf ihre natürliche Breite (hier 1155px) zwingen und damit
+     auch auf dem Desktop scrollen lassen – der Rahmen ist 1024px breit. So
+     scrollt sie nur unterhalb von rund 450px Platz. */
+  min-width: 28rem;
   border-collapse: collapse;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
   font-size: 0.95rem;
 }
 
@@ -289,14 +328,27 @@ body {
   padding: 0;
   border: 0;
   background: transparent;
-  text-align: center;
 }
 
 .prose-content .mermaid svg {
-  /* mermaid setzt selbst eine Breite; hier wird nur sichergestellt, dass das
-     SVG den Container ausfüllt und die Höhe proportional folgt. */
-  width: 100%;
-  max-width: 100%;
+  /* mermaid rendert mit useMaxWidth: true und schreibt dabei width="100%" als
+     Attribut plus ein INLINE style="max-width: <natürliche Breite>px". Das
+     Inline-Style schlägt jede Regel aus diesem Stylesheet – ein Diagramm wird
+     also nie breiter als seine natürliche Größe, aber sehr wohl schmaler als
+     die 64rem des Containers.
+
+     Genau daraus entstand das Verrutschen: Tailwinds Preflight setzt
+     `svg { display: block }`, und ein Block-Element folgt keinem
+     text-align: center. Ein 500px breites Diagramm klebte damit an der linken
+     Kante einer Box, die selbst um ihre halbe Breite nach links gezogen ist –
+     und stand dadurch weit links neben der Textspalte.
+
+     margin-inline: auto zentriert das SVG im Container, unabhängig davon, wie
+     breit mermaid es gemacht hat. Ein max-width steht hier bewusst nicht mehr:
+     es wäre wirkungslos gegen das Inline-Style und würde nur vortäuschen,
+     etwas zu tun. */
+  display: block;
+  margin-inline: auto;
   height: auto;
 }
 
