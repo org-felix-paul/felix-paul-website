@@ -27,10 +27,6 @@ vielen Themen ist der Erfolg messbar.
 ## Format
 
 Am besten als **AG über ein Halbjahr** mit kurzen, regelmäßigen Einheiten – Tippen lernt man durch
-Wiederholung, nicht am Stück. Alternativ als **Kompaktkurs** mit begleitendem Übungsplan. Ein Rechner mit
-richtiger Tastatur pro Person.
+Wiederholung, nicht am Stück. Alternativ als **Kompaktkurs** mit begleitendem Übungsplan.
 
-## Hinweis
 
-Das Format eignet sich auch für Kollegien und für Erwachsene außerhalb der Schule – die Methode ist dieselbe,
-nur das Tempo unterscheidet sich.
