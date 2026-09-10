@@ -1,0 +1,98 @@
+---
+// Echte englische Seite (kein Rückfall). Sie erklärt das Angebot auf Englisch
+// und verweist auf die deutschen Detailseiten – statt 21.000 Wörter Fachtext
+// maschinell zu übersetzen und als eigene Texte auszugeben.
+import Layout from "../../layouts/Layout.astro";
+import Section from "../../components/Section.astro";
+import { SITE, PATHS } from "../../consts";
+
+const areas = [
+  {
+    label: "Keynotes & conference talks",
+    text: "AI, IT security, cloud, identity & access management and cryptography – for conferences, companies and universities.",
+    href: PATHS.speaking,
+  },
+  {
+    label: "Education & workshops",
+    text: "Workshops and training for schools, companies and individuals – from a single session to a term-long course.",
+    href: PATHS.schools,
+  },
+  {
+    label: "Software",
+    text: "Products built through dSolve, plus smaller projects that came out of the teaching work.",
+    href: SITE.dSolveSite,
+    external: true,
+  },
+  {
+    label: "Blog",
+    text: "Notes on AI, IT security and technology in education. Written in German.",
+    href: PATHS.blog,
+  },
+];
+---
+
+<Layout
+  lang="en"
+  title="Felix Paul – Keynote speaker, workshops and software"
+  description="Felix Peter Paul – computer scientist and mathematician (M.Sc.), Solution Architect at Atruvia. Keynotes, workshops and consulting on AI, IT security and cryptography. Site mainly in German."
+>
+  <Section
+    as="h1"
+    eyebrow="English"
+    title="Felix Paul"
+    lead="Computer scientist and mathematician with a teaching degree. I speak at conferences, run workshops, and build software."
+  >
+    <div class="mx-auto max-w-3xl">
+      <p class="leading-relaxed text-ink-700">
+        Most of this site is written in German, because most of my work happens in
+        German-speaking countries. This page gives you the overview in English; the
+        pages behind the links below are in German unless noted otherwise. If you
+        would like to talk in English – a talk, a workshop, or a question – just
+        write to me.
+      </p>
+
+      <ul class="mt-8 divide-y divide-ink-100 overflow-hidden rounded-2xl border border-ink-200 bg-surface shadow-sm">
+        {
+          areas.map((a) => (
+            <li>
+              <a
+                href={a.href}
+                target={a.external ? "_blank" : undefined}
+                rel={a.external ? "noopener noreferrer" : undefined}
+                class="group flex items-center gap-4 px-5 py-4 transition hover:bg-ink-50 sm:px-6"
+              >
+                <span class="flex-1">
+                  <span class="block font-semibold text-ink-900">{a.label}</span>
+                  <span class="block text-sm leading-relaxed text-ink-600">{a.text}</span>
+                </span>
+                <svg class="h-4 w-4 shrink-0 text-ink-400 transition group-hover:translate-x-0.5 group-hover:text-brand-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="mt-10 grid items-center gap-8 rounded-3xl bg-gradient-to-br from-brand-700 to-brand-900 p-8 text-white md:grid-cols-[2fr_1fr] md:p-12">
+        <div>
+          <h2 class="font-display text-2xl font-bold leading-tight md:text-3xl">
+            Talks and workshops in English
+          </h2>
+          <p class="mt-3 max-w-xl text-brand-100">
+            Everything I offer in German I can also deliver in English. Tell me what
+            you have in mind – I usually reply within two working days.
+          </p>
+        </div>
+        <div class="flex md:justify-end">
+          <a
+            href={PATHS.kontakt}
+            class="inline-flex items-center justify-center rounded-lg bg-surface px-6 py-3 text-base font-semibold text-brand-800 shadow-sm transition hover:bg-brand-50"
+          >
+            Get in touch
+          </a>
+        </div>
+      </div>
+    </div>
+  </Section>
+</Layout>

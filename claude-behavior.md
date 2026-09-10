@@ -1402,3 +1402,148 @@ zwischengespeichert, weil mermaid den Inhalt des Elements ersetzt.
 **Nicht verifiziert:** das visuelle Ergebnis. Die Chrome-Anbindung war in
 dieser Sitzung nicht verfügbar; geprüft wurden Build, Typen und dass keine
 nicht umschaltbaren Farbwerte übrig sind.
+
+## 28. Englisches Routing mit deutschem Rückfall
+
+Die Vorgabe war: Blogposts bleiben deutsch, das englische Routing wird
+unterstützt und fällt auf Deutsch zurück.
+
+### Konfiguration
+
+`astro.config.mjs`:
+
+```js
+i18n: {
+  locales: ["de", "en"],
+  defaultLocale: "de",
+  routing: { prefixDefaultLocale: false, fallbackType: "rewrite" },
+  fallback: { en: "de" },
+}
+```
+
+`prefixDefaultLocale: false` lässt die deutschen URLs unverändert — kein
+`/de/`-Präfix, keine Umleitungen, keine kaputten Links aus dem Bestand.
+`fallbackType: "rewrite"` liefert unter einer nicht übersetzten `/en/`-URL den
+deutschen Inhalt direkt aus, statt auf die deutsche URL umzuleiten. Dadurch
+existiert die englische Seitenstruktur ab dem ersten Tag vollständig: 24
+Rückfallseiten plus eine echte englische Seite.
+
+### Die Grenze, die der Rückfall hat
+
+`diff dist/en/schools/index.html dist/schools/index.html` ist leer. Die
+Rückfallseite ist **byteidentisch** mit der deutschen. Das ist kein Fehler,
+sondern die Bauart: beim statischen Build rendert Astro die deutsche Seite
+und legt das Ergebnis zusätzlich unter `/en/` ab. Die Seite bekommt nie zu
+sehen, dass sie unter `/en/` ausgeliefert wird — `Astro.url.pathname` ist dort
+`/schools/`.
+
+Konsequenzen, die daraus folgen und nicht umgangen werden können:
+
+- Eine Rückfallseite kann **keine** englischen UI-Strings zeigen.
+- Sie kann **keinen** Hinweis „diese Seite ist noch nicht übersetzt" anzeigen.
+- Ihr `<html lang>` bleibt `de` — was korrekt ist, denn der Text *ist* deutsch.
+- Ihr `<link rel="canonical">` zeigt auf die deutsche URL — ebenfalls korrekt,
+  denn sie ist eine Zweitadresse desselben Inhalts, kein eigenes Dokument.
+
+Der Wert der `/en/`-URLs liegt damit nicht darin, dass sie heute etwas
+Englisches zeigen, sondern darin, dass die Struktur steht: eine Übersetzung
+später ersetzt einfach den Rückfall, ohne dass URLs umziehen.
+
+### Echt übersetzt vs. Rückfall
+
+Beides unterscheidet sich nur an der Quelle: echt übersetzt ist, wofür eine
+Datei unter `src/pages/en/` liegt. `src/i18n/pages.mjs` liest dieses
+Verzeichnis zur Bauzeit und gibt die Menge der echten `/en/`-Routen zurück.
+Drei Stellen fragen sie ab:
+
+| Stelle | Verhalten bei Rückfall | Verhalten bei echter Übersetzung |
+|---|---|---|
+| Sitemap-Filter (`astro.config.mjs`) | URL fliegt raus | URL steht drin |
+| `Layout.astro` | kein `hreflang` | `hreflang` de/en/x-default, wechselseitig |
+| `LanguageLink.astro` | kein Sprachlink | „EN" bzw. „DE" im Header |
+
+Dadurch ist nichts von Hand zu pflegen: eine neue Datei in `src/pages/en/`
+taucht automatisch in Sitemap, `hreflang` und Sprachumschalter auf.
+
+Warum kein `hreflang` auf Rückfallseiten: `hreflang="en"` auf eine Seite mit
+deutschem Text zu setzen, hieße Suchmaschinen zu sagen, englischsprachige
+Nutzer sollten dorthin geschickt werden. Google prüft das, wertet den
+Widerspruch als falsches Signal und ignoriert die Auszeichnung — im
+schlechteren Fall für die ganze Domain.
+
+### Was tatsächlich auf Englisch existiert
+
+`src/pages/en/index.astro` — eine Übersichtsseite, die das Angebot auf
+Englisch beschreibt und auf die deutschen Detailseiten verweist, mit dem
+ausdrücklichen Hinweis, dass diese deutsch sind. `<html lang="en">`,
+eigenes Canonical, in der Sitemap, wechselseitiges `hreflang` mit `/`.
+
+Kopf- und Fußzeile dieser Seite sind deutsch. Das ist bewusst so: die
+Navigation zeigt auf deutsche Seiten, und ein englisches Label auf einen
+deutschen Inhalt zu kleben wäre irreführender als das deutsche Label.
+
+Bewusst **nicht** angelegt: eine `src/i18n/ui.ts` mit Übersetzungstabelle.
+Bei einer einzigen englischen Seite wäre das Kulisse ohne Nutzer — der
+Aufbau steht stattdessen in der Anleitung unten und wird gebaut, wenn die
+zweite englische Seite dazukommt.
+
+### Wie eine Seite übersetzt würde
+
+1. **Datei anlegen** unter dem gespiegelten Pfad, z. B.
+   `src/pages/en/companies.astro` für `/companies/`. Sie überschreibt den
+   Rückfall automatisch; an der Konfiguration ändert sich nichts.
+2. **`lang="en"` an `Layout` übergeben.** Ohne das bleibt `<html lang="de">`
+   auf einer englischen Seite stehen — der häufigste Fehler bei i18n.
+3. **Fertig.** Sitemap, `hreflang` und der Sprachumschalter im Header ziehen
+   beim nächsten Build von selbst nach.
+
+Ab der zweiten oder dritten Seite lohnt sich eine Stringtabelle, damit
+Kopfzeile, Fußzeile und wiederkehrende Beschriftungen nicht je Seite
+abgeschrieben werden:
+
+```ts
+// src/i18n/ui.ts
+export const UI = {
+  de: { kontakt: "Kontakt", mehr: "Mehr erfahren" },
+  en: { kontakt: "Contact", mehr: "Learn more" },
+} as const;
+
+/** Gibt einen Übersetzer zurück, der auf Deutsch zurückfällt. */
+export function uebersetzer(sprache: "de" | "en") {
+  return (schluessel: keyof (typeof UI)["de"]) =>
+    UI[sprache][schluessel] ?? UI.de[schluessel];
+}
+```
+
+`SiteHeader` und `SiteFooter` bekämen dann ein `lang`-Prop und riefen
+`uebersetzer(lang)` auf. Wichtig: der Rückfall auf Deutsch muss im Übersetzer
+selbst sitzen, sonst erscheint bei einem fehlenden Schlüssel `undefined` in der
+Seite statt des deutschen Worts.
+
+### Die Blogposts
+
+Sie bleiben deutsch — so vorgegeben, und richtig so: 21.000 Wörter Fachtext
+maschinell zu übersetzen und unter eigenem Namen zu veröffentlichen, wäre
+schlechter als gar kein englischer Blog.
+
+Theoretisch übersetzt würden sie so:
+
+1. **Sprache in den Dateinamen, nicht in ein Frontmatter-Feld.** Aus
+   `beitrag.md` wird `beitrag.de.md` und `beitrag.en.md`. Astros `glob`-Loader
+   liefert die Sprache dann als Teil der `id`, und ein Beitrag ohne
+   englische Datei fällt automatisch weg statt halb zu erscheinen.
+2. **Eine gemeinsame Kennung** über ein Frontmatter-Feld (`uebersetzungVon:`
+   oder ein geteilter Slug), damit die beiden Fassungen einander kennen — das
+   braucht der `hreflang`-Verweis zwischen ihnen.
+3. **Die Übersichtsseiten filtern nach Sprache**, sonst stehen deutsche und
+   englische Beiträge gemischt in derselben Liste.
+4. **Kein Rückfall auf Beitragsebene.** Für Seiten ist ein deutscher Rückfall
+   sinnvoll — die Struktur bleibt vollständig. Für Blogposts ist er es nicht:
+   ein englischsprachiger Leser, der über `/en/blog/` auf einen deutschen Text
+   stößt, hat nichts gewonnen. Besser eine kürzere englische Liste.
+5. **Datumsformate und Lesezeit** hängen an der Sprache, nicht am Beitrag.
+   `toLocaleDateString("en-GB")` statt `"de-DE"`.
+
+Der ehrliche Rat: eine Übersetzung lohnt sich pro Beitrag, nicht pauschal.
+Zwei oder drei Beiträge, die englischsprachige Veranstalter überzeugen, sind
+mehr wert als dreißig maschinell übersetzte.

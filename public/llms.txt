@@ -1,12 +1,12 @@
 # Felix Paul
 
-> Felix Peter Paul – Informatiker & Mathematiker (M.Sc.), hauptberuflich Solution Architect bei der Atruvia AG und daneben selbstständig als Keynote-Speaker und Berater zu Künstlicher Intelligenz, Fully Homomorphic Encryption (FHE), Post-Quanten-Kryptographie und IT Security. felix-paul.de bündelt seit der Zusammenlegung alles auf einer Domain: Hauptseite (/), Blog (/blog/), Bildungsangebote (/schools/, /companies/, /individuals/) und Referenzprojekte (/projects/). Deutsch.
+> Felix Peter Paul – Informatiker & Mathematiker (M.Sc.), hauptberuflich Solution Architekt bei der Atruvia AG und daneben selbstständig als Keynote-Speaker und Berater zu Künstlicher Intelligenz, Fully Homomorphic Encryption (FHE), Post-Quanten-Kryptographie und IT Security. felix-paul.de bündelt seit der Zusammenlegung alles auf einer Domain: Hauptseite (/), Blog (/blog/), Bildungsangebote (/schools/, /companies/, /individuals/) und Referenzprojekte (/projects/). Deutsch.
 
 ## Themen / Speaking & Consulting
 - Künstliche Intelligenz – wie sie funktioniert, sicher und kosteneffizient einsetzen, sowohl privat als auch in großen Enterprises
 - Fully Homomorphic Encryption (FHE) – Rechnen auf verschlüsselten Daten, ohne sie je zu entschlüsseln
 - Post-Quanten-Kryptographie – code-basiert (Goppa-Codes, McEliece) und pragmatische Migration
-- IT Security & Cloud – was sagt die Forschung, was ist die gelebte Praxis aus Sicht eines Solution Architects in der Finanzbranche
+- IT Security & Cloud – was sagt die Forschung, was ist die gelebte Praxis aus Sicht eines Solution Architekten in der Finanzbranche
 
 ## Publikationen
 - Buch: Goppa Codes and the McEliece Cryptosystem (Springer): https://link.springer.com/book/10.1007/978-3-658-46743-2

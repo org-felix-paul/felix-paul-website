@@ -8,7 +8,7 @@ export const SITE = {
   name: "Felix Paul",
   tagline: "Keynotes, Bildungsangebote & IT-Beratung",
   description:
-    "Keynotes, Fachvorträge und Bildungsangebote zu KI, IAM, IT-Sicherheit und Kryptographie – für Unternehmen, Universitäten und Schulen. Solution Architect bei Atruvia.",
+    "Keynotes, Fachvorträge und Bildungsangebote zu KI, IAM, IT-Sicherheit und Kryptographie – für Unternehmen, Universitäten und Schulen. Solution Architekt bei Atruvia.",
   url: "https://felix-paul.de",
   author: "Felix Peter Paul",
   email: "contact@felix-paul.de",

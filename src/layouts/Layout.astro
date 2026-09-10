@@ -5,6 +5,7 @@ import Header from "../components/Header.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import EnvBanner from "../components/EnvBanner.astro";
 import { SITE, PATHS, PORTRAIT, FAVICONS } from "../consts";
+import { echteEnglischeRouten } from "../i18n/pages.mjs";
 
 interface Props {
   title?: string;
@@ -20,6 +21,8 @@ interface Props {
   favicon?: string;
   /** Keep the page out of search results (confirmation pages, 404). */
   noindex?: boolean;
+  /** Document language. Only real /en/ pages set this; fallback pages stay German. */
+  lang?: string;
 }
 
 const {
@@ -31,6 +34,7 @@ const {
   schema = [],
   favicon = FAVICONS.main,
   noindex = false,
+  lang = "de",
 } = Astro.props;
 
 // Google shows roughly 60 characters. A long page title is worth more than the
@@ -41,6 +45,22 @@ const fullTitle = !title
     ? title
     : `${title} · ${siteName}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).toString();
+
+// hreflang nur für Paare, die es wirklich gibt. Astros Rückfall erzeugt zu
+// jeder deutschen Seite auch eine /en/-URL, hinter der aber deutscher Text
+// steht — die als englische Alternative auszuzeichnen wäre schlicht gelogen
+// und würde Suchmaschinen englischen Nutzern deutsche Seiten anbieten.
+// Deshalb zählt nur, wofür eine Datei unter src/pages/en/ existiert.
+const uebersetzteRouten = echteEnglischeRouten();
+const pfad = Astro.url.pathname;
+const istEnglisch = uebersetzteRouten.has(pfad);
+const deutscherPfad = istEnglisch ? pfad.replace(/^\/en\//, "/") : pfad;
+const englischerPfad = istEnglisch
+  ? pfad
+  : uebersetzteRouten.has(`/en${pfad}`)
+    ? `/en${pfad}`
+    : null;
+const absolut = (p: string) => new URL(p, Astro.site ?? SITE.url).toString();
 const ogImageUrl = new URL(ogImage, Astro.site ?? SITE.url).toString();
 const ogImageType = ogImage.endsWith(".jpg") || ogImage.endsWith(".jpeg")
   ? "image/jpeg"
@@ -65,7 +85,7 @@ const structuredData = {
       image: new URL(PORTRAIT.press, SITE.url).toString(),
       description:
         "Informatiker & Mathematiker (M.Sc.), Keynote-Speaker zu KI, IT Security und Kryptographie, Anbieter von Bildungsangeboten und Gründer von dSolve. Hauptberuflic  Atruvia AG.",
-      jobTitle: ["Solution Architect", "Keynote-Speaker"],
+      jobTitle: ["Solution Architekt", "Keynote-Speaker"],
       worksFor: { "@type": "Organization", name: "Atruvia AG" },
       founder: { "@id": `${SITE.url}/#dsolve` },
       email: `mailto:${SITE.email}`,
@@ -155,7 +175,7 @@ const structuredData = {
 ---
 
 <!doctype html>
-<html lang="de">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -163,6 +183,15 @@ const structuredData = {
     <link rel="icon" type="image/svg+xml" href={favicon} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="canonical" href={canonical} />
+    {
+      englischerPfad && (
+        <>
+          <link rel="alternate" hreflang="de" href={absolut(deutscherPfad)} />
+          <link rel="alternate" hreflang="en" href={absolut(englischerPfad)} />
+          <link rel="alternate" hreflang="x-default" href={absolut(deutscherPfad)} />
+        </>
+      )
+    }
     {noindex && <meta name="robots" content="noindex, follow" />}
 
     <title>{fullTitle}</title>
