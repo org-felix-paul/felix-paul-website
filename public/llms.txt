@@ -1,6 +1,6 @@
 # Felix Paul
 
-> Felix Peter Paul – Informatiker & Mathematiker (M.Sc.), hauptberuflich Solution Architekt bei der Atruvia AG und daneben selbstständig als Keynote-Speaker und Berater zu Künstlicher Intelligenz, IAM, Fully Homomorphic Encryption (FHE), Post-Quanten-Kryptographie und IT Security. felix-paul.de bündelt seit der Zusammenlegung alles auf einer Domain: Hauptseite (/), Blog (/blog/), Bildungsangebote (/schools/, /companies/, /individuals/) und Referenzprojekte (/projects/). Deutsch.
+> Felix Peter Paul – Informatiker & Mathematiker (M.Sc.), hauptberuflich Solution Architekt bei der Atruvia AG und daneben selbstständig als Keynote-Speaker und Berater zu Künstlicher Intelligenz, IAM, Fully Homomorphic Encryption (FHE), Post-Quanten-Kryptographie und IT Security. felix-paul.de bündelt seit der Zusammenlegung alles auf einer Domain: Hauptseite (/), Blog (/blog/), Bildungsangebote (/schools/, /companies/, /individuals/). Referenzprojekte liegen als GitHub Pages unter github.felix-paul.de. Hauptsprache Deutsch, zentrale Seiten auch auf Englisch unter /en/.
 
 ## Themen / Speaking & Consulting
 - Künstliche Intelligenz – wie sie funktioniert, sicher und kosteneffizient einsetzen, sowohl privat als auch in großen Enterprises (von Integrationsarchitekturen bis Agentic Protokollen, ...) 
@@ -19,7 +19,7 @@
 - Bildungsangebote für Unternehmen & Universitäten: https://felix-paul.de/companies/
 - Bildungsangebote für Privatpersonen: https://felix-paul.de/individuals/
 - Software / dSolve: https://d-solve.de
-- Referenzprojekte (Lernsoftware, Workshop-Material): https://felix-paul.de/projects/
+- Referenzprojekte (Lernsoftware, Workshop-Material): https://github.felix-paul.de/
 - Blog: https://felix-paul.de/blog/
 
 ## Kontakt

@@ -6,9 +6,10 @@ import rehypeTableScroll from "./src/blog/plugins/rehype-table-scroll.mjs";
 import remarkMermaid from "./src/blog/plugins/remark-mermaid.mjs";
 import { echteEnglischeRouten } from "./src/i18n/pages.mjs";
 
-// One origin for everything: the main site at "/", the blog at "/blog/",
-// the education section at "/education/" and the untouched reference
-// projects as static files under "/projects/".
+// One origin for everything: the main site at "/", the blog at "/blog/"
+// and the education section at "/education/". Die Referenzprojekte liegen
+// seit September 2026 nicht mehr hier, sondern als GitHub Pages unter
+// github.felix-paul.de — siehe PROJECTS in src/consts.ts.
 // Ein Satz aus /en/-Routen, hinter denen wirklich Englisch steht.
 const uebersetzt = echteEnglischeRouten();
 
@@ -45,15 +46,6 @@ export default defineConfig({
         // Echt übersetzte /en/-Seiten stehen dagegen drin — und zwar
         // automatisch, sobald die Datei unter src/pages/en/ liegt.
         (!page.includes("/en/") || uebersetzt.has(new URL(page).pathname)),
-      // The reference projects are plain static files in public/, so Astro does
-      // not know about them. Their entry pages are added by hand — one URL per
-      // project, not every sub-page, to keep the sitemap meaningful.
-      customPages: [
-        "https://felix-paul.de/projects/neck/",
-        "https://felix-paul.de/projects/codenight/",
-        "https://felix-paul.de/projects/tierpark/UnsereTierwelt.html",
-        "https://felix-paul.de/projects/readmybook/",
-      ],
     }),
   ],
   markdown: {

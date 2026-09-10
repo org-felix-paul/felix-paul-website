@@ -34,6 +34,21 @@
 /education/danke/        /thank-you/                 301
 /education/danke         /thank-you/                 301
 
+# ── Referenzprojekte sind ausgezogen (2026-09) ───────────────────────────
+# Sie liegen jetzt als GitHub Pages in ihren eigenen Repositories. Die alten
+# Adressen standen in der Sitemap und sind damit indexiert — sie müssen
+# weiterleiten statt 404 zu liefern.
+#
+# Reihenfolge zählt: in _redirects gewinnt die erste passende Regel, die
+# spezifischen Pfade stehen deshalb vor dem allgemeinen /projects/*.
+# NECK ist dort großgeschrieben, GitHub Pages unterscheidet das.
+/projects/neck/*         https://github.felix-paul.de/NECK/:splat                301
+/projects/codenight/*    https://github.felix-paul.de/codenight/:splat           301
+/projects/tierpark/*     https://github.felix-paul.de/tierpark-websites/:splat   301
+/projects/readmybook/*   https://github.felix-paul.de/readmybook/:splat          301
+/projects/*              https://github.felix-paul.de/                           301
+/projects                https://github.felix-paul.de/                           301
+
 # ── Umbenannte Downloads ─────────────────────────────────────────────────
 # Das Rednerprofil heißt jetzt schlicht rednerprofil.pdf, weil es deutsch und
 # englisch in einer Datei enthält. Die alte Adresse steht in verschickten
@@ -45,4 +60,3 @@
 /schools                 /schools/                   301
 /companies               /companies/                 301
 /individuals             /individuals/               301
-/projects                /projects/                  301

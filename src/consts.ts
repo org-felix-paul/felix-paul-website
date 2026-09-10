@@ -51,7 +51,6 @@ export const PATHS = {
   pastWorkshops: "/schools/insights/",
   companies: "/companies/",
   individuals: "/individuals/",
-  projects: "/projects/",
   impressum: "/impressum/",
   datenschutz: "/datenschutz/",
   /** The one contact form on the domain: the #kontakt block on the home page.
@@ -75,18 +74,25 @@ export const FAVICONS = {
   schools: "/schools/logo.svg",
 } as const;
 
-// Reference projects: plain static sites copied verbatim into public/projects/.
-// They are linked, never imported — see claude-behavior.md.
+/** GitHub Pages der Referenzprojekte. Sie liegen in eigenen Repositories und
+ *  werden dort auch veröffentlicht — diese Seite verlinkt sie nur noch. */
+export const GITHUB_PAGES = "https://github.felix-paul.de";
+
+// Referenzprojekte. Bis September 2026 lagen sie als Kopien in
+// public/projects/ (36 MB, drei Viertel der Auslieferung) und wurden bei
+// jedem Deploy erneut hochgeladen, obwohl sie sich nie ändern. Jetzt zeigen
+// die Links auf die GitHub Pages der jeweiligen Repositories.
+//
+// Achtung bei NECK: der Pfad ist GROSSGESCHRIEBEN. GitHub Pages unterscheidet
+// Groß- und Kleinschreibung, /neck/ liefert dort einen 404.
 export const PROJECTS = {
-  neck: `${PATHS.projects}neck/`,
-  neckUserHandbook: `${PATHS.projects}neck/docs/user-handbook/book/index.html`,
-  neckDevHandbook: `${PATHS.projects}neck/docs/developer-handbook/book/index.html`,
-  codenight: `${PATHS.projects}codenight/`,
-  tierpark: `${PATHS.projects}tierpark/UnsereTierwelt.html`,
-  // Discontinued dSolve product (Android app that reads children's books
-  // aloud). Archived here so the page stays reachable — see claude-behavior.md
-  // for the note that its branding still points at d-solve.de.
-  readmybook: `${PATHS.projects}readmybook/`,
+  neck: `${GITHUB_PAGES}/NECK/`,
+  neckUserHandbook: `${GITHUB_PAGES}/NECK/docs/user-handbook/book/index.html`,
+  neckDevHandbook: `${GITHUB_PAGES}/NECK/docs/developer-handbook/book/index.html`,
+  codenight: `${GITHUB_PAGES}/codenight/`,
+  tierpark: `${GITHUB_PAGES}/tierpark-websites/UnsereTierwelt.html`,
+  /** Eingestelltes dSolve-Produkt (Android-App, die Kinderbücher vorliest). */
+  readmybook: `${GITHUB_PAGES}/readmybook/`,
 } as const;
 
 // The four areas of the business, named once. Every header, footer and

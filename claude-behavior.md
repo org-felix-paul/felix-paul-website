@@ -79,6 +79,7 @@ Teil A auf Deutsch zu ziehen.
 | 33 | [Englische Seiten außer Schule und Blog](#33-englische-seiten-außer-schule-und-blog) | umgesetzt | Sechs englische Seiten, sprachfähige Navigation, Fußzeile und Formular |
 | 34 | [Vollständige englische Startseite](#34-vollständige-englische-startseite) | umgesetzt | `/en/` ist jetzt eine echte Übersetzung — `NAV_EN`/`AREAS_EN` wieder entfernt |
 | 35 | [Software und Blog direkt verlinkt](#35-software-und-blog-direkt-verlinkt) | umgesetzt | Kein Umweg mehr über die Teaser-Abschnitte der Startseite |
+| 36 | [Referenzprojekte ausgezogen](#36-referenzprojekte-ausgezogen) | umgesetzt | 36 MB Kopien raus, GitHub Pages verlinkt — ersetzt §5 und §9 |
 
 ---
 
@@ -2419,3 +2420,99 @@ Auf den englischen Seiten trägt der Blog-Eintrag weiterhin den Hinweis
 vorher den Anker. Der Software-Eintrag bekommt keinen, weil ein externes
 Ziel nicht mit `/` beginnt. Beides ohne Zutun, weil die Kennzeichnung
 berechnet und nicht gepflegt wird (§34).
+
+
+---
+
+## 36. Referenzprojekte ausgezogen
+
+NECK, Tierpark, ReadMyBook und CodeNight lagen als vollständige Kopien in
+`public/projects/`. Sie liegen jetzt in eigenen Repositories und werden von
+dort als GitHub Pages veröffentlicht; diese Seite verlinkt sie nur noch.
+
+Das ersetzt §5 („What was deliberately not touched") und den Teil von §9, der
+das Entrümpeln der NECK-Kopie beschreibt. Beide Abschnitte beschreiben einen
+Zustand, den es nicht mehr gibt.
+
+### Wirkung
+
+| | vorher | nachher |
+|---|---:|---:|
+| `public/` | 42 MB | 7,5 MB |
+| `dist/` | 44 MB | 17 MB |
+| Seiten im Linkcheck | 205 | 51 |
+| Geprüfte interne Links | 3944 | 2004 |
+| Hinweise im Typecheck | 124 | 41 |
+
+Die Kopien wurden bei jedem Deploy erneut hochgeladen, obwohl sie sich nie
+ändern. Die Typecheck-Hinweise stammten fast alle aus mitkopierten
+`highlight.js`- und Bootstrap-Dateien.
+
+### Die Ziele
+
+```
+NECK          https://github.felix-paul.de/NECK/
+CodeNight     https://github.felix-paul.de/codenight/
+Tierpark      https://github.felix-paul.de/tierpark-websites/UnsereTierwelt.html
+ReadMyBook    https://github.felix-paul.de/readmybook/
+```
+
+**`NECK` ist großgeschrieben.** GitHub Pages unterscheidet Groß- und
+Kleinschreibung im Pfad; `/neck/` liefert dort einen 404. Beim ersten Versuch
+war genau das der Fehler — die Namen stammen jetzt aus der Übersichtsseite
+`github.felix-paul.de`, nicht aus den alten Ordnernamen.
+
+Alle sechs Adressen (inklusive der beiden NECK-Handbücher) wurden vor dem
+Löschen mit `curl` geprüft und nach dem Bauen noch einmal.
+
+### Was vorher gerettet werden musste
+
+`insights.astro` band ein Bild **aus dem zu löschenden Ordner** ein:
+
+```
+src={`${PROJECTS.readmybook}img/readmybook-cover.jpg`}
+```
+
+Ein Verweis auf `github.felix-paul.de` hätte funktioniert, wäre aber ein
+Hotlink auf eine fremde Domain für ein Vorschaubild der eigenen Seite. Die
+Datei liegt jetzt unter `public/schools/img/readmybook/` wie die übrigen
+Projektbilder auch.
+
+Das ist die Falle bei solchen Aufräumaktionen: der Linkchecker hätte es erst
+nach dem Löschen gemeldet, und nur weil er auch `<img src>` prüft.
+
+### Weiterleitungen, weil die alten Adressen indexiert sind
+
+Die vier Projekt-Einstiegsseiten standen als `customPages` in der Sitemap —
+Google kennt sie also. Ohne Weiterleitung wären das vier 404er:
+
+```
+/projects/neck/*         →  https://github.felix-paul.de/NECK/:splat
+/projects/codenight/*    →  https://github.felix-paul.de/codenight/:splat
+/projects/tierpark/*     →  https://github.felix-paul.de/tierpark-websites/:splat
+/projects/readmybook/*   →  https://github.felix-paul.de/readmybook/:splat
+/projects/*              →  https://github.felix-paul.de/
+```
+
+In `_redirects` gewinnt die **erste** passende Regel, deshalb stehen die
+spezifischen Pfade vor dem allgemeinen `/projects/*`. Umgekehrt fingen sie nie.
+
+### Mitgezogen
+
+- `PATHS.projects` entfernt — nach dem Umbau nirgends mehr verwendet.
+- `customPages` aus `astro.config.mjs` entfernt: eine Sitemap führt nur URLs
+  der eigenen Domain.
+- Die `KNOWN`-Liste in `scripts/check-links.mjs` ist leer. Alle sechs
+  Ausnahmen (Schülerarbeiten mit kaputten Bildpfaden, ein nie
+  veröffentlichtes Kapitel) lagen in den gelöschten Ordnern.
+- `llms.txt` verweist auf `github.felix-paul.de` statt auf `/projects/`.
+- Ungenutzter `PROJECTS`-Import in `index.astro` entfernt.
+
+### Was das Repository nicht kleiner macht
+
+`.git` bleibt bei rund 60 MB. Die Dateien sind aus dem Arbeitsstand
+verschwunden, stecken aber weiter in der Historie — ein `clone` lädt sie
+weiterhin mit. Das zu ändern hieße, die Historie mit `git filter-repo`
+umzuschreiben und alles neu zu pushen. Solange nur die Auslieferung stört,
+lohnt sich das nicht; wer es doch tun will, sollte es einmalig und mit
+abgestimmtem Force-Push machen.

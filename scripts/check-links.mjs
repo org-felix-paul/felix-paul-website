@@ -57,38 +57,14 @@ const IGNORED = /^(https?:|mailto:|tel:|data:|javascript:|#|\/\/)/i;
  * Begründung, damit die Prüfung grün sein kann und trotzdem niemand vergisst,
  * warum. Neue Einträge nur, wenn der Link wirklich nicht zu reparieren ist.
  */
-const KNOWN = [
-  {
-    from: "/projects/codenight/html/coole-features/bilder.html",
-    link: "img/alternative.png",
-    reason: "Absicht: die Seite erklärt Alt-Texte und zeigt dafür ein bewusst fehlendes Bild.",
-  },
-  {
-    from: "/projects/codenight/print.html",
-    link: "html/coole-features/img/alternative.png",
-    reason: "Dieselbe Stelle in der Druckansicht des Codenight-Buchs.",
-  },
-  {
-    from: "/projects/codenight/feedback.html",
-    link: "Lehrermaterial.html",
-    reason: "Seite existierte nur im internen Buch, war nie Teil der Veröffentlichung.",
-  },
-  {
-    from: "/projects/codenight/print.html",
-    link: "Lehrermaterial.html",
-    reason: "Wie oben, in der Druckansicht.",
-  },
-  {
-    from: "/projects/tierpark/UnsereTierwelt.html",
-    link: "Tiere2/hausschaf.html",
-    reason: "Schülerarbeit: diese eine Tierseite wurde nie angelegt.",
-  },
-  {
-    from: "/projects/tierpark/Tiere2/rotfuchs.html",
-    link: "ng_in_Namibia.jpg",
-    reason: "Schülerarbeit: fehlerhaftes <img>-Tag, in das eine Wikipedia-URL geraten ist.",
-  },
-];
+// Bewusst offene Links, die der Checker nicht melden soll.
+//
+// Bis September 2026 standen hier sechs Einträge aus den Referenzprojekten
+// (Schülerarbeiten mit kaputten Bildpfaden, ein Kapitel, das nie
+// veröffentlicht wurde). Die Projekte liegen jetzt als GitHub Pages in
+// eigenen Repositories, also prüft dieser Checker sie nicht mehr — und die
+// Ausnahmen sind mit ihnen weggefallen.
+const KNOWN = [];
 const isKnown = (from, link) => KNOWN.some((k) => k.from === from && k.link === link);
 
 const files = (await walk(DIST)).sort();
