@@ -163,6 +163,8 @@ export interface NavItem {
   label: string;
   labelEn?: string;
   spy?: string;
+  /** Leaves this domain — gets target="_blank" and an external-link marker. */
+  external?: boolean;
   /** Ziel ist nicht in der Sprache der Seite. Der Header hängt dann einen
    *  dezenten Sprachhinweis an, statt den Leser hineinlaufen zu lassen. */
   fremdsprachig?: boolean;
@@ -186,10 +188,15 @@ export const NAV: readonly (NavItem | NavGroup)[] = [
       { href: PATHS.individuals, label: "Privatpersonen", labelEn: "Individuals" },
     ],
   },
-  { href: "#software", label: "Software", labelEn: "Software", spy: "software" },
-  // Anchor, not the path: clicking Blog lands on the teaser section like
-  // every other bar entry, and the section itself links on to /blog/.
-  { href: "#blog", label: "Blog", labelEn: "Blog", spy: "blog" },
+  // Software und Blog führen direkt ans Ziel, nicht auf den Teaser-Abschnitt
+  // der Startseite. Der Umweg über den Anker kostete einen zusätzlichen Klick
+  // für etwas, das der Eintrag im Menü bereits verspricht.
+  //
+  // `spy` bleibt trotzdem gesetzt: beim Scrollen über den jeweiligen Abschnitt
+  // leuchtet der Menüpunkt weiterhin auf. Das ist Orientierung, unabhängig
+  // davon, wohin der Klick geht.
+  { href: SITE.dSolveSite, label: "Software", labelEn: "Software", spy: "software", external: true },
+  { href: PATHS.blog, label: "Blog", labelEn: "Blog", spy: "blog" },
   {
     label: "Mehr",
     labelEn: "More",

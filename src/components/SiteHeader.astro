@@ -18,6 +18,8 @@ interface NavItem {
   spy?: string;
   /** Ziel gibt es nur in der anderen Sprache. */
   fremdsprachig?: boolean;
+  /** Verlässt diese Domain. */
+  external?: boolean;
 }
 
 interface NavGroup {
@@ -96,6 +98,11 @@ const fremd = (e: { fremdsprachig?: boolean }) => lang === "en" && e.fremdsprach
 const fremdKlasse =
   "ml-2 rounded-sm bg-ink-100 px-1.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-ink-500";
 
+// Externe Ziele öffnen in einem neuen Tab. rel="noopener" ist dabei Pflicht:
+// ohne das bekommt die Zielseite über window.opener Zugriff auf diese hier.
+const zielAttribute = (e: { external?: boolean }) =>
+  e.external ? { target: "_blank", rel: "noopener noreferrer" } : {};
+
 const linkClass =
   "border-b-2 border-transparent pb-0.5 transition-colors hover:text-brand-700 aria-[current]:border-brand-600 aria-[current]:text-brand-700";
 import ThemeToggle from "./ThemeToggle.astro";
@@ -157,6 +164,7 @@ const t = uebersetzer(lang);
                         <li>
                           <a
                             href={toHref(item.href)}
+                            {...zielAttribute(item)}
                             data-spy={item.spy}
                             data-nav-close
                             class="block rounded-lg px-3 py-2 text-ink-700 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
@@ -173,6 +181,7 @@ const t = uebersetzer(lang);
                 <li>
                   <a
                     href={toHref(entry.href)}
+                    {...zielAttribute(entry)}
                     data-spy={entry.spy}
                     aria-current={isActive(entry.href) ? "page" : undefined}
                     class={linkClass}
@@ -252,6 +261,7 @@ const t = uebersetzer(lang);
                     <li>
                       <a
                         href={toHref(item.href)}
+                        {...zielAttribute(item)}
                         data-mobile-link
                         data-spy={item.spy}
                         class="block rounded-md px-3 py-1.5 text-ink-600 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
@@ -268,6 +278,7 @@ const t = uebersetzer(lang);
             <li>
               <a
                 href={toHref(entry.href)}
+                {...zielAttribute(entry)}
                 data-mobile-link
                 data-spy={entry.spy}
                 aria-current={isActive(entry.href) ? "page" : undefined}

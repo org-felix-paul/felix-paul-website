@@ -78,6 +78,7 @@ Teil A auf Deutsch zu ziehen.
 | 32 | [Erste echte Übersetzung](#32-erste-echte-übersetzung-encompanies) | umgesetzt | `/en/companies/` — und warum es bei zwei englischen Seiten bleibt |
 | 33 | [Englische Seiten außer Schule und Blog](#33-englische-seiten-außer-schule-und-blog) | umgesetzt | Sechs englische Seiten, sprachfähige Navigation, Fußzeile und Formular |
 | 34 | [Vollständige englische Startseite](#34-vollständige-englische-startseite) | umgesetzt | `/en/` ist jetzt eine echte Übersetzung — `NAV_EN`/`AREAS_EN` wieder entfernt |
+| 35 | [Software und Blog direkt verlinkt](#35-software-und-blog-direkt-verlinkt) | umgesetzt | Kein Umweg mehr über die Teaser-Abschnitte der Startseite |
 
 ---
 
@@ -2384,3 +2385,37 @@ durchgelassen — er ist kein Ersatz für den Typecheck.
 - Wortumfang je Paar zwischen 115 % und 119 % der deutschen Fassung — die
   normale Ausdehnung Deutsch → Englisch. Ein Ausreißer nach unten hätte
   fehlenden Inhalt bedeutet.
+
+
+---
+
+## 35. Software und Blog direkt verlinkt
+
+Beide Menüpunkte zeigten auf Anker der Startseite (`#software`, `#blog`) und
+damit auf einen Teaser-Abschnitt, der erst weiterverlinkte. Das kostete einen
+zusätzlichen Klick für etwas, das der Menüeintrag bereits verspricht.
+
+| Menüpunkt | vorher | jetzt |
+|---|---|---|
+| Software | `#software` | `https://d-solve.de` (neuer Tab) |
+| Blog | `/#blog` | `/blog/` |
+
+`spy` bleibt bei beiden gesetzt. Beim Scrollen über den jeweiligen Abschnitt
+leuchtet der Menüpunkt weiterhin auf — das ist Orientierung und hängt nicht
+daran, wohin der Klick führt.
+
+### Was dafür nötig war
+
+`NavItem` kannte kein `external`. Ein Link nach außen braucht
+`target="_blank"` **und** `rel="noopener noreferrer"`: ohne `noopener`
+bekommt die Zielseite über `window.opener` Zugriff auf die Seite, von der
+sie geöffnet wurde. `SiteHeader` setzt beides jetzt über einen Helfer an
+allen vier Renderstellen (Desktop und Mobil, jeweils Leiste und Aufklappmenü).
+
+### Was von selbst mitkam
+
+Auf den englischen Seiten trägt der Blog-Eintrag weiterhin den Hinweis
+**in German** — `nurDeutsch()` prüft den neuen Pfad `/blog/` genauso wie
+vorher den Anker. Der Software-Eintrag bekommt keinen, weil ein externes
+Ziel nicht mit `/` beginnt. Beides ohne Zutun, weil die Kennzeichnung
+berechnet und nicht gepflegt wird (§34).
