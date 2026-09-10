@@ -7,9 +7,9 @@ import { PATHS } from "../consts";
 export const BLOG = {
   /** Brand used in <title> and og:site_name for this section only. */
   name: "blogging@Felix Paul",
-  tagline: "Felix Pauls persönlicher Blog",
+  tagline: "Felix Pauls persönlicher Tech Blog",
   description:
-    "Der persönliche Blog von Felix Paul – Gedanken zu KI, IT-Sicherheit, Teaching und spannenden IT-Projekten. Für Schülerinnen und Schüler, Eltern und Lehrkräfte.",
+    "Felix Pauls persönlicher Tech Blog – Beiträge zu KI, IT-Sicherheit und IT in der Bildung. Für Professionals, Lehrkräfte, Eltern und Schüler:innen.",
   /** Section root; every blog URL is built from this. */
   base: PATHS.blog,
   ogImage: "/blog/og-default.png",

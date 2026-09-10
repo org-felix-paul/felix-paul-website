@@ -1285,3 +1285,44 @@ The desktop bar is unchanged.
 dSolve is the block; NECK is one sentence underneath as something to try
 without installing; ReadMyBook removed. Two equal cards beside dSolve made a
 section about the company look like a project list.
+
+---
+
+## 25. Metadaten an die kuratierten Inhalte angeglichen
+
+Vorgabe: sichtbare Inhalte nicht anfassen, Metadaten daran ausrichten. Geprüft
+wurde jede Description gegen den tatsächlichen Text der gebauten Seite.
+
+### Was nicht mehr zusammenpasste
+
+| Seite | Description versprach | Seite zeigt |
+|---|---|---|
+| `/individuals/` | „verstehen, wie KI funktioniert … sicher unterwegs sein" – Grundlagenkurs | Individualberatung: Wettbewerbsfähigkeit, Wertschöpfungsketten, Monetarisierung, Skalierung |
+| `/schools/` | Cybersicherheit, Medienkompetenz, Eltern und Erwachsene | Lehrerfortbildungen, Schülerworkshops, Kursserien, Elternabende zu KI und IT-Security |
+| `/blog/` | „Teaching und spannende IT-Projekte" | „Felix Pauls persönlicher Tech Blog" |
+| `/companies/` | „vom Einzelgespräch bis zum Konzernthema", „Fachvorträge" | eigene Rolle / ganzes Unternehmen / konkreter Engpass, Workshops |
+| `/schools/insights/` | NECK „zum Anfassen" | NECK ist eine „Lernwebsite … spielerisch erkunden" |
+
+Angepasst wurden ausschließlich `description`, `tagline` und die daraus
+abgeleiteten OG- und schema.org-Felder — kein sichtbarer Text.
+
+### Eine Ausnahme: der Jobtitel
+
+`education/components/Hero.astro` zeigte „Enterprise-Architekt
+(Finanzindustrie)", während `/schools/index.astro`, `llms.txt` und das
+schema.org-`jobTitle` bereits „Solution Architect" sagten. Das war ein
+Widerspruch **im sichtbaren Inhalt**; auf Nachfrage freigegeben und auf
+Solution-Architekt vereinheitlicht. Auch die Schreibweise „IT-Security" in
+`SITE.description` wurde auf „IT-Sicherheit" gezogen, wie es auf der Seite steht.
+
+### Zur Prüfmethode
+
+Der erste Durchlauf verglich Wortformen exakt und meldete 7 Seiten. Nach den
+Korrekturen meldete er weiterhin 7 — die Treffer waren aber Flexionen
+(„skalieren" vs. „Skalierung") und Bindestrich-Komposita, die die
+Tokenisierung zerlegt („IT-Security" → „IT" + „Security"). Stichprobe: alle
+vier verbleibenden Begriffe stehen wörtlich auf ihren Seiten.
+
+Festgehalten, weil die naheliegende Reaktion — weiter umformulieren, bis der
+Prüfer schweigt — die Descriptions verschlechtert hätte. Eine Description soll
+den Inhalt zusammenfassen, nicht ihn zitieren.

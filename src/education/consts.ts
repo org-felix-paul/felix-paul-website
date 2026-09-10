@@ -5,9 +5,9 @@ import { PATHS, PORTRAIT } from "../consts";
 export const EDU = {
   /** Brand used in <title> and og:site_name for this section only. */
   name: "Felix Paul",
-  tagline: "Bildungsangebote zu KI, Cybersicherheit & Medienkompetenz",
+  tagline: "Bildungsangebote für Schulen zu KI & IT-Security",
   description:
-    "Workshops und Fortbildungen zu KI, Cybersicherheit und Medienkompetenz – für Schulen, Lehrkräfte, Eltern und Erwachsene. Von einem Informatiker mit Lehramt.",
+    "Lehrerfortbildungen, Schülerworkshops, Kursserien und Elternabende zu KI und IT-Security – vom Pädagogischen Tag bis zur AG. Von einem Informatiker mit Lehramtsabschluss.",
   /** Section root; every education URL is built from this. */
   base: PATHS.schools,
   ogImage: "/schools/og-default.jpg",
