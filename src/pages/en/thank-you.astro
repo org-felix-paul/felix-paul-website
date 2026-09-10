@@ -1,0 +1,35 @@
+---
+// Ziel des englischen Kontaktformulars (`_next`). Ohne diese Seite landete
+// eine englische Anfrage auf der deutschen Bestätigung.
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout
+  lang="en"
+  noindex
+  title="Message sent"
+  description="Your enquiry via felix-paul.de has been sent."
+>
+  <section class="mx-auto max-w-3xl px-6 py-32 text-center">
+    <p class="text-sm font-semibold uppercase tracking-widest text-brand-700">Thank you</p>
+    <h1 class="mt-3 font-display text-4xl font-bold tracking-tight text-ink-900">
+      Message sent.
+    </h1>
+    <p class="mt-4 text-lg text-ink-600">
+      Your enquiry has reached me. I will get back to you within 48 hours on
+      working days — sooner if I can.
+    </p>
+    <p class="mt-2 text-sm text-ink-500">
+      A confirmation has been sent to your email address. If it does not turn up,
+      please check your spam folder.
+    </p>
+    <div class="mt-8 flex justify-center">
+      <a
+        href="/en/"
+        class="rounded-lg bg-brand-700 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-brand-800"
+      >
+        Back to the overview
+      </a>
+    </div>
+  </section>
+</Layout>

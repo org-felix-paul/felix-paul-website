@@ -1,0 +1,97 @@
+---
+// Englische Fassung des Impressums.
+//
+// Der Pfad bleibt /en/impressum/ und wird NICHT zu /en/legal-notice/: die
+// hreflang-Paare und der Sprachumschalter leiten den deutschen Pfad
+// mechanisch aus dem englischen ab (/en/X/ <-> /X/). Ein abweichender Slug
+// würde auf /legal-notice/ zeigen, und das gibt es nicht.
+//
+// Der Hinweis oben ist bewusst da: eine Übersetzung juristischer Pflicht-
+// angaben ist eine Lesehilfe, keine zweite verbindliche Fassung.
+import Layout from "../../layouts/Layout.astro";
+import Section from "../../components/Section.astro";
+import { SITE } from "../../consts";
+---
+
+<Layout
+  lang="en"
+  title="Legal notice"
+  description="Legal notice under § 5 DDG / § 18 MStV (German law)."
+>
+  <Section as="h1" title="Legal notice" eyebrow="Legal">
+    <div class="mx-auto max-w-3xl">
+      <p class="mb-8 rounded-xl border border-ink-200 bg-ink-50 px-5 py-4 text-sm leading-relaxed text-ink-700">
+        This is a courtesy translation. The legally binding version is the German
+        one at <a href="/impressum/" class="text-brand-700 underline">felix-paul.de/impressum/</a>,
+        and the statutory references below are to German law.
+      </p>
+
+      <div class="prose-content">
+        <h2>Information under § 5 DDG</h2>
+        <p>
+          {SITE.author}<br />
+          {SITE.street} {SITE.houseNumber}<br />
+          {SITE.plz} {SITE.city}<br />
+          Germany
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          Email: <a href={`mailto:${SITE.email}`}>{SITE.email}</a><br />
+          Phone: {SITE.phone}
+        </p>
+
+        <h2>VAT</h2>
+        <p>
+          As a small business within the meaning of § 19 (1) UStG, no VAT is charged
+          and therefore none is shown.
+        </p>
+
+        <h2>Responsible for the content under § 18 (2) MStV</h2>
+        <p>
+          {SITE.author}<br />
+          Address as above.
+        </p>
+
+        <h2>EU online dispute resolution</h2>
+        <p>
+          The European Commission provides a platform for online dispute resolution:
+          <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer">
+            https://ec.europa.eu/consumers/odr/
+          </a>. My email address is given above.
+        </p>
+
+        <h2>Consumer dispute resolution</h2>
+        <p>
+          I am neither willing nor obliged to take part in dispute resolution
+          proceedings before a consumer arbitration board.
+        </p>
+
+        <h2>Liability for content</h2>
+        <p>
+          As a service provider I am responsible for my own content on these pages
+          under the general laws, in accordance with § 7 (1) DDG. Under §§ 8 to 10 DDG,
+          however, I am not obliged as a service provider to monitor third-party
+          information that is transmitted or stored, or to investigate circumstances
+          that indicate unlawful activity.
+        </p>
+
+        <h2>Liability for links</h2>
+        <p>
+          This site contains links to external third-party websites over whose content
+          I have no influence. I therefore cannot accept any responsibility for that
+          third-party content. The respective provider or operator of the linked pages
+          is always responsible for their content.
+        </p>
+
+        <h2>Copyright</h2>
+        <p>
+          The content and works created by the site operator on these pages are subject
+          to German copyright law. Reproduction, adaptation, distribution and any form
+          of exploitation beyond the limits of copyright require the written consent of
+          the respective author or creator.
+        </p>
+      </div>
+    </div>
+  </Section>
+</Layout>

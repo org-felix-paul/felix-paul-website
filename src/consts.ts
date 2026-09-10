@@ -96,40 +96,54 @@ export const PROJECTS = {
 export interface Area {
   href: string;
   label: string;
+  /** Englische Beschriftung. Steht bewusst direkt neben der deutschen: eine
+   *  getrennte Übersetzungstabelle läuft irgendwann auseinander, zwei Felder
+   *  in derselben Zeile fallen beim Ändern ins Auge. Fehlt sie, wird die
+   *  deutsche verwendet — sichtbar falsch ist besser als `undefined`. */
+  labelEn?: string;
   note: string;
+  noteEn?: string;
   /** Leaves this domain — gets target="_blank". */
   external?: boolean;
   /** Audience pages under this area. Rendered indented in the footer, so one
    *  area stays one row rather than three. */
-  items?: readonly { href: string; label: string }[];
+  items?: readonly { href: string; label: string; labelEn?: string }[];
 }
 
 export const AREAS: readonly Area[] = [
   {
     href: PATHS.speaking,
     label: "Keynotes & Fachvorträge",
+    labelEn: "Keynotes & talks",
     note: "Vorträge und Beratung",
+    noteEn: "Talks and consulting",
   },
   {
     href: PATHS.bildung,
     label: "Bildungsangebote",
+    labelEn: "Training & workshops",
     note: "Workshops, Vorträge und Fortbildungen",
+    noteEn: "Workshops, talks and professional training",
     items: [
-      { href: PATHS.schools, label: "Schulen & Lehrkräfte" },
-      { href: PATHS.companies, label: "Unternehmen & Universitäten" },
-      { href: PATHS.individuals, label: "Privatpersonen" },
+      { href: PATHS.schools, label: "Schulen & Lehrkräfte", labelEn: "Schools & teachers" },
+      { href: PATHS.companies, label: "Unternehmen & Universitäten", labelEn: "Companies & universities" },
+      { href: PATHS.individuals, label: "Privatpersonen", labelEn: "Individuals" },
     ],
   },
   {
     href: SITE.dSolveSite,
     label: "Software",
+    labelEn: "Software",
     note: "Softwareprodukte und Projekte über dSolve",
+    noteEn: "Software products and projects, built through dSolve",
     external: true,
   },
   {
     href: PATHS.blog,
     label: "Blog",
+    labelEn: "Blog",
     note: "Mein persönlicher Blog",
+    noteEn: "My personal blog — written in German",
   },
 ];
 
@@ -147,38 +161,45 @@ export const AREAS: readonly Area[] = [
 export interface NavItem {
   href: string;
   label: string;
+  labelEn?: string;
   spy?: string;
+  /** Ziel ist nicht in der Sprache der Seite. Der Header hängt dann einen
+   *  dezenten Sprachhinweis an, statt den Leser hineinlaufen zu lassen. */
+  fremdsprachig?: boolean;
 }
 
 export interface NavGroup {
   label: string;
+  labelEn?: string;
   items: readonly NavItem[];
 }
 
 export const NAV: readonly (NavItem | NavGroup)[] = [
-  { href: "#speaking", label: "Keynotes & Fachvorträge", spy: "speaking" },
+  { href: "#speaking", label: "Keynotes & Fachvorträge", labelEn: "Keynotes & talks", spy: "speaking" },
   {
     label: "Bildungsangebote",
+    labelEn: "Training",
     items: [
-      { href: "#bildung", label: "Überblick", spy: "bildung" },
-      { href: PATHS.schools, label: "Schulen & Lehrkräfte" },
-      { href: PATHS.companies, label: "Unternehmen & Universitäten" },
-      { href: PATHS.individuals, label: "Privatpersonen" },
+      { href: "#bildung", label: "Überblick", labelEn: "Overview", spy: "bildung" },
+      { href: PATHS.schools, label: "Schulen & Lehrkräfte", labelEn: "Schools & teachers" },
+      { href: PATHS.companies, label: "Unternehmen & Universitäten", labelEn: "Companies & universities" },
+      { href: PATHS.individuals, label: "Privatpersonen", labelEn: "Individuals" },
     ],
   },
-  { href: "#software", label: "Software", spy: "software" },
+  { href: "#software", label: "Software", labelEn: "Software", spy: "software" },
   // Anchor, not the path: clicking Blog lands on the teaser section like
   // every other bar entry, and the section itself links on to /blog/.
-  { href: "#blog", label: "Blog", spy: "blog" },
+  { href: "#blog", label: "Blog", labelEn: "Blog", spy: "blog" },
   {
     label: "Mehr",
+    labelEn: "More",
     items: [
-      { href: "#ueber-mich", label: "Über mich", spy: "ueber-mich" },
-      { href: "#publikationen", label: "Publikationen", spy: "publikationen" },
+      { href: "#ueber-mich", label: "Über mich", labelEn: "About me", spy: "ueber-mich" },
+      { href: "#publikationen", label: "Publikationen", labelEn: "Publications", spy: "publikationen" },
       // "Aktuelles" ist auf der Startseite auskommentiert (siehe index.astro).
       // Der Menüpunkt muss mitgehen, sonst zeigt er auf einen Abschnitt, den
       // es nicht gibt — wieder einbauen, sobald der Abschnitt zurückkommt.   { href: "#aktuelles", label: "Aktuelles", spy: "aktuelles" },
-      { href: "#presse", label: "Material für Veranstalter", spy: "presse" },
+      { href: "#presse", label: "Material für Veranstalter", labelEn: "Material for organisers", spy: "presse" },
     ],
   },
 ];

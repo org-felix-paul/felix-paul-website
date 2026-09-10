@@ -14,11 +14,15 @@
 interface NavItem {
   href: string;
   label: string;
+  labelEn?: string;
   spy?: string;
+  /** Ziel gibt es nur in der anderen Sprache. */
+  fremdsprachig?: boolean;
 }
 
 interface NavGroup {
   label: string;
+  labelEn?: string;
   items: readonly NavItem[];
 }
 
@@ -26,6 +30,8 @@ type NavEntry = NavItem | NavGroup;
 const isGroup = (e: NavEntry): e is NavGroup => "items" in e;
 
 interface Props {
+  /** Sprache der Seite. Steuert Beschriftungen, nicht die Struktur. */
+  lang?: "de" | "en";
   /** Where the brand mark links — the section root. */
   home: string;
   /**
@@ -47,6 +53,7 @@ interface Props {
 }
 
 const {
+  lang = "de",
   home,
   anchorBase,
   logo,
@@ -78,10 +85,23 @@ const isActive = (href: string) => {
   return current === n || current.startsWith(n + "/");
 };
 
+// Beschriftung in der Sprache der Seite, mit Rückfall auf Deutsch.
+const beschriftung = (e: { label: string; labelEn?: string }) =>
+  lang === "en" ? (e.labelEn ?? e.label) : e.label;
+
+// Führt ein Eintrag in die andere Sprache, wird das im Menü gesagt statt
+// den Leser hineinlaufen zu lassen. `hidden` für Screenreader ist hier falsch:
+// gerade wer die Seite vorgelesen bekommt, will das vorher wissen.
+const fremd = (e: { fremdsprachig?: boolean }) => lang === "en" && e.fremdsprachig;
+const fremdKlasse =
+  "ml-2 rounded-sm bg-ink-100 px-1.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-ink-500";
+
 const linkClass =
   "border-b-2 border-transparent pb-0.5 transition-colors hover:text-brand-700 aria-[current]:border-brand-600 aria-[current]:text-brand-700";
 import ThemeToggle from "./ThemeToggle.astro";
+import { uebersetzer } from "../i18n/ui";
 import LanguageLink from "./LanguageLink.astro";
+const t = uebersetzer(lang);
 ---
 
 <header
@@ -120,7 +140,7 @@ import LanguageLink from "./LanguageLink.astro";
                       data-spy-group={entry.items.map((i) => i.spy).filter(Boolean).join(" ")}
                       class={`flex cursor-pointer list-none items-center gap-1 ${linkClass}`}
                     >
-                      {entry.label}
+                      {beschriftung(entry)}
                       <svg
                         class="h-3.5 w-3.5 transition group-open:rotate-180"
                         fill="none"
@@ -141,7 +161,8 @@ import LanguageLink from "./LanguageLink.astro";
                             data-nav-close
                             class="block rounded-lg px-3 py-2 text-ink-700 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
                           >
-                            {item.label}
+                            {beschriftung(item)}
+                            {fremd(item) && <span class={fremdKlasse}>in German</span>}
                           </a>
                         </li>
                       ))}
@@ -156,7 +177,8 @@ import LanguageLink from "./LanguageLink.astro";
                     aria-current={isActive(entry.href) ? "page" : undefined}
                     class={linkClass}
                   >
-                    {entry.label}
+                    {beschriftung(entry)}
+                    {fremd(entry) && <span class={fremdKlasse}>in German</span>}
                   </a>
                 </li>
               ),
@@ -191,7 +213,7 @@ import LanguageLink from "./LanguageLink.astro";
       aria-expanded="false"
       data-mobile-menu-button
     >
-      <span class="sr-only">Menü öffnen</span>
+      <span class="sr-only">{t("menueOeffnen")}</span>
       <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5"></path>
       </svg>
@@ -213,7 +235,7 @@ import LanguageLink from "./LanguageLink.astro";
             <li>
               <details class="group/mobile">
                 <summary class="flex cursor-pointer list-none items-center justify-between rounded-md px-3 py-2 transition hover:bg-ink-50 hover:text-brand-700">
-                  {entry.label}
+                  {beschriftung(entry)}
                   <svg
                     class="h-4 w-4 text-ink-400 transition group-open/mobile:rotate-180"
                     fill="none"
@@ -234,7 +256,8 @@ import LanguageLink from "./LanguageLink.astro";
                         data-spy={item.spy}
                         class="block rounded-md px-3 py-1.5 text-ink-600 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
                       >
-                        {item.label}
+                        {beschriftung(item)}
+                        {fremd(item) && <span class={fremdKlasse}>in German</span>}
                       </a>
                     </li>
                   ))}
@@ -250,7 +273,8 @@ import LanguageLink from "./LanguageLink.astro";
                 aria-current={isActive(entry.href) ? "page" : undefined}
                 class="block rounded-md px-3 py-2 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
               >
-                {entry.label}
+                {beschriftung(entry)}
+                {fremd(entry) && <span class={fremdKlasse}>in German</span>}
               </a>
             </li>
           ),

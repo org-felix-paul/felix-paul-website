@@ -1,0 +1,82 @@
+---
+// Englische Fassung von src/pages/individuals.astro. Inhaltlich deckungs-
+// gleich, neu formuliert statt übersetzt. Ändert sich die deutsche Seite,
+// muss diese mitgezogen werden.
+import Layout from "../../layouts/Layout.astro";
+import Section from "../../components/Section.astro";
+
+const bausteine = [
+  {
+    title: "Getting started with AI tools",
+    text: "How do I actually get something useful out of ChatGPT, Claude and the rest? For people who use AI tools rather than build them.",
+  },
+  {
+    title: "Bringing AI into how you work",
+    text: "How do I fit AI into my existing tools and data so that it creates real value instead of another tab I never open?",
+  },
+  {
+    title: "Building something new with AI",
+    text: "How do I go beyond speeding up what I already do, and create products with AI that I can actually sell?",
+  },
+  {
+    title: "Scaling your own AI products",
+    text: "How do I move from building products with AI to building products that contain AI themselves?",
+  },
+];
+---
+
+<Layout
+  lang="en"
+  title="Coaching for individuals"
+  description="One-to-one AI coaching for individuals and small groups: using AI well, fitting it into your own workflows, creating new value, and scaling what you build. On request."
+>
+  <Section
+    as="h1"
+    eyebrow="Training & workshops"
+    title="For individuals"
+    lead="Adult education for individuals and small groups — shaped around where you actually are."
+  >
+    <div class="mx-auto max-w-3xl">
+      <p class="text-base leading-relaxed text-ink-700">
+        AI is changing how we work. Focused one-to-one coaching is how you stay
+        competitive through that. The goal is not just to speed up single tasks or
+        manual workflows, but to rethink how value gets created in the first place —
+        and that is what I am here to help with.
+      </p>
+    </div>
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-2">
+      {
+        bausteine.map((b) => (
+          <article class="relative flex flex-col overflow-hidden rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
+            <span class="absolute inset-x-0 top-0 h-1 bg-amber-500" aria-hidden="true" />
+            <h2 class="text-lg font-semibold text-ink-900">{b.title}</h2>
+            <p class="mt-2 text-sm leading-relaxed text-ink-600">{b.text}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <!-- The actual action of the page, same treatment as the German version. -->
+    <div class="mt-10 grid items-center gap-10 rounded-3xl bg-gradient-to-br from-brand-700 to-brand-900 p-8 text-white md:grid-cols-[2fr_1fr] md:p-12">
+      <div>
+        <h2 class="font-display text-3xl font-bold leading-tight md:text-4xl">
+          Ask about one-to-one coaching
+        </h2>
+        <p class="mt-3 max-w-xl text-brand-100">
+          Just drop me a line — I reply within 48 hours on working days. Scope,
+          format and price depend on what you want to cover and how many of you
+          there are.
+        </p>
+      </div>
+      <div class="flex md:justify-end">
+        <a
+          href="/en/#kontakt"
+          class="inline-flex items-center justify-center rounded-lg bg-surface px-6 py-3 text-base font-semibold text-brand-800 shadow-sm transition hover:bg-brand-50"
+        >
+          Get in touch
+        </a>
+      </div>
+    </div>
+  </Section>
+</Layout>

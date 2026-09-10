@@ -1,9 +1,31 @@
 ---
-// The footer, identical on every page of the domain — main site, blog,
-// education. It takes no props on purpose: a visitor should meet the same
-// four areas, the same contact link and the same legal links wherever they
-// are, and there should be exactly one place to change them.
+// Die Fußzeile, auf jeder Seite derselben Sprache identisch — Hauptseite,
+// Blog, Bildung. Sie kennt nur EINE Variable: die Sprache.
+//
+// Bis §32 nahm sie gar keine Props und war auf der ganzen Domain
+// byteidentisch. Das ist mit den englischen Seiten nicht mehr zu halten:
+// eine englische Seite mit deutscher Fußzeile verweist auf deutsche
+// Rechtsseiten, obwohl es die englischen gibt. Die Zusicherung lautet also
+// jetzt „identisch innerhalb einer Sprache" statt „identisch überall" — und
+// es gibt weiterhin genau eine Stelle, an der man sie ändert.
 import { SITE, PATHS, AREAS } from "../consts";
+import { lokalisiere, nurDeutsch } from "../i18n/pages.mjs";
+import { uebersetzer, type Sprache } from "../i18n/ui";
+
+interface Props {
+  lang?: Sprache;
+}
+const { lang = "de" } = Astro.props;
+const t = uebersetzer(lang);
+const beschriftung = (e: { label: string; labelEn?: string }) =>
+  lang === "en" ? (e.labelEn ?? e.label) : e.label;
+const notiz = (e: { note: string; noteEn?: string }) =>
+  lang === "en" ? (e.noteEn ?? e.note) : e.note;
+/** Interne Ziele auf die englische Fassung ziehen, wo es sie gibt. */
+const ziel = (href: string) => lokalisiere(href, lang);
+
+/** Ein Hinweis an Zielen, die es nur auf Deutsch gibt. */
+const deutschesZiel = (href: string) => lang === "en" && nurDeutsch(href);
 
 const year = new Date().getFullYear();
 ---
@@ -12,7 +34,7 @@ const year = new Date().getFullYear();
   <div class="mx-auto max-w-6xl px-6 py-12">
     <div class="grid gap-10 md:grid-cols-[1fr_1.4fr]">
       <div>
-        <a href={PATHS.home} class="flex w-fit items-center gap-2">
+        <a href={ziel(PATHS.home)} class="flex w-fit items-center gap-2">
           <span
             class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-brand-700 font-bold text-white"
             aria-hidden="true"
@@ -22,35 +44,37 @@ const year = new Date().getFullYear();
           <span class="text-lg font-semibold text-ink-900">{SITE.name}</span>
         </a>
         <p class="mt-3 max-w-xs text-sm leading-relaxed text-ink-600">
-          Keynotes &amp; Fachvorträge, Bildungsangebote und Software
+          {t("tagline")}
         </p>
       </div>
 
       <div>
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-ink-500">Alle Bereiche</h2>
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-ink-500">{t("alleBereiche")}</h2>
         <ul class="mt-3 grid gap-3 text-sm text-ink-700 sm:grid-cols-2">
           <li>
-            <a href={PATHS.home} class="font-medium text-ink-800 hover:text-brand-700">Startseite</a>
-            <span class="block text-xs text-ink-500">Überblick, Hintergrund und Kontakt</span>
+            <a href={ziel(PATHS.home)} class="font-medium text-ink-800 hover:text-brand-700">{t("startseite")}</a>
+            <span class="block text-xs text-ink-500">{t("startseiteNote")}</span>
           </li>
           {
             AREAS.map((a) => (
               <li>
                 <a
-                  href={a.href}
+                  href={a.external ? a.href : ziel(a.href)}
                   target={a.external ? "_blank" : undefined}
                   rel={a.external ? "noopener noreferrer" : undefined}
                   class="font-medium text-ink-800 hover:text-brand-700"
                 >
-                  {a.label}
+                  {beschriftung(a)}
+                  {deutschesZiel(a.href) && <span class="ml-1.5 text-[0.65rem] uppercase tracking-wider text-ink-400">in German</span>}
                 </a>
-                <span class="block text-xs text-ink-500">{a.note}</span>
+                <span class="block text-xs text-ink-500">{notiz(a)}</span>
                 {a.items && (
                   <ul class="mt-1.5 space-y-1 border-l border-ink-200 pl-3 text-xs">
                     {a.items.map((i) => (
                       <li>
-                        <a href={i.href} class="text-ink-600 hover:text-brand-700">
-                          {i.label}
+                        <a href={ziel(i.href)} class="text-ink-600 hover:text-brand-700">
+                          {beschriftung(i)}
+                          {deutschesZiel(i.href) && <span class="ml-1.5 uppercase tracking-wider text-ink-400">in German</span>}
                         </a>
                       </li>
                     ))}
@@ -66,11 +90,11 @@ const year = new Date().getFullYear();
     <div
       class="mt-10 flex flex-col gap-3 border-t border-ink-200 pt-6 text-xs text-ink-500 sm:flex-row sm:items-center sm:justify-between"
     >
-      <p>© {year} {SITE.author}. Alle Rechte vorbehalten.</p>
+      <p>© {year} {SITE.author}. {t("rechteVorbehalten")}</p>
       <ul class="flex flex-wrap gap-x-5 gap-y-2">
-        <li><a href={PATHS.kontakt} class="font-medium hover:text-brand-700">Kontakt</a></li>
-        <li><a href={PATHS.impressum} class="hover:text-brand-700">Impressum</a></li>
-        <li><a href={PATHS.datenschutz} class="hover:text-brand-700">Datenschutz</a></li>
+        <li><a href={ziel(PATHS.kontakt)} class="font-medium hover:text-brand-700">{t("kontakt")}</a></li>
+        <li><a href={ziel(PATHS.impressum)} class="hover:text-brand-700">{t("impressum")}</a></li>
+        <li><a href={ziel(PATHS.datenschutz)} class="hover:text-brand-700">{t("datenschutz")}</a></li>
       </ul>
     </div>
   </div>

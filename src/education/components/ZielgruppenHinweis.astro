@@ -8,40 +8,56 @@
 // Software / the third pillar. Colour on white rather than coloured text on a
 // coloured ground — the previous emerald-on-emerald version was hard to read.
 import { PATHS } from "../../consts";
+import { lokalisiere, nurDeutsch } from "../../i18n/pages.mjs";
+import type { Sprache } from "../../i18n/ui";
 
 interface Props {
   /** Home page uses the tighter version; /education/ the full one. */
   compact?: boolean;
+  lang?: Sprache;
 }
-const { compact = false } = Astro.props;
+const { compact = false, lang = "de" } = Astro.props;
+const en = lang === "en";
 
 const gruppen = [
   {
-    label: "Schulen & Lehrkräfte",
-    short: "Workshops für Lehrer, Eltern und Schüler:innen",
-    text: "Pädagogische Tage, Workshops für Klassen und Jahrgänge, Elternabende und AGs über ein Halbjahr.",
+    label: en ? "Schools & teachers" : "Schulen & Lehrkräfte",
+    short: en
+      ? "Workshops for teachers, parents and students"
+      : "Workshops für Lehrer, Eltern und Schüler:innen",
+    text: en
+      ? "In-service training days, workshops for classes and year groups, parents' evenings, and clubs running over a full term."
+      : "Pädagogische Tage, Workshops für Klassen und Jahrgänge, Elternabende und AGs über ein Halbjahr.",
     bar: "bg-emerald-500",
     chip: "bg-emerald-50 text-emerald-800",
     href: PATHS.schools,
-    hrefLabel: "Zu den Schulangeboten",
+    hrefLabel: en ? "See the school programme" : "Zu den Schulangeboten",
   },
   {
-    label: "Unternehmen & Universitäten",
-    short: "Rollen- und organisationsspezifische Fortbildungen oder Consulting auf Anfrage",
-    text: "Zugeschnitten auf die Rolle und die Organisation – vom Einzelgespräch bis zum Format für den ganzen Bereich.",
+    label: en ? "Companies & universities" : "Unternehmen & Universitäten",
+    short: en
+      ? "Training shaped around a role or an organisation, and consulting on request"
+      : "Rollen- und organisationsspezifische Fortbildungen oder Consulting auf Anfrage",
+    text: en
+      ? "Shaped around the role and the organisation — from a one-to-one conversation to a format for an entire division."
+      : "Zugeschnitten auf die Rolle und die Organisation – vom Einzelgespräch bis zum Format für den ganzen Bereich.",
     bar: "bg-brand-500",
     chip: "bg-brand-50 text-brand-800",
     href: PATHS.companies,
-    hrefLabel: "Für Unternehmen & Universitäten",
+    hrefLabel: en ? "For companies & universities" : "Für Unternehmen & Universitäten",
   },
   {
-    label: "Privatpersonen",
-    short: "Erwachsenenbildung, einzeln oder in kleinen Gruppen.",
-    text: "Erwachsenenbildung für Einzelne und kleine Gruppen, individuell zugeschnitten – auf Anfrage.",
+    label: en ? "Individuals" : "Privatpersonen",
+    short: en
+      ? "Adult education, one to one or in small groups."
+      : "Erwachsenenbildung, einzeln oder in kleinen Gruppen.",
+    text: en
+      ? "Adult education for individuals and small groups, shaped around you — on request."
+      : "Erwachsenenbildung für Einzelne und kleine Gruppen, individuell zugeschnitten – auf Anfrage.",
     bar: "bg-amber-500",
     chip: "bg-amber-50 text-amber-800",
     href: PATHS.individuals,
-    hrefLabel: "Für Privatpersonen",
+    hrefLabel: en ? "For individuals" : "Für Privatpersonen",
   },
 ];
 ---
@@ -63,10 +79,15 @@ const gruppen = [
           <p class="mt-3 flex-1 text-sm leading-relaxed text-ink-600">{compact ? g.short : g.text}</p>
           {g.href && (
             <a
-              href={g.href}
+              href={lokalisiere(g.href, lang)}
               class="mt-3 inline-flex w-fit items-center gap-1 text-sm font-medium text-brand-700 hover:text-brand-900"
             >
               {g.hrefLabel}
+              {en && nurDeutsch(g.href) && (
+                <span class="rounded-sm bg-ink-100 px-1.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-ink-500">
+                  in German
+                </span>
+              )}
               <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>

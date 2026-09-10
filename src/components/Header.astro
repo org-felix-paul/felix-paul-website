@@ -1,14 +1,47 @@
 ---
 // Main-site branding on the shared header.
+//
+// Hier sitzt auch die Sprachauswahl für die Navigation: SiteHeader bleibt eine
+// reine Darstellungskomponente, die Beschriftungen und Ziele als Daten bekommt.
 import SiteHeader from "./SiteHeader.astro";
 import { SITE, NAV, PATHS } from "../consts";
+import { lokalisiere, nurDeutsch } from "../i18n/pages.mjs";
+import { uebersetzer, type Sprache } from "../i18n/ui";
+
+interface Props {
+  lang?: Sprache;
+}
+const { lang = "de" } = Astro.props;
+const t = uebersetzer(lang);
+const englisch = lang === "en";
+
+// Dieselbe Navigationsstruktur für beide Sprachen — /en/ ist eine
+// vollständige Übersetzung der Startseite und trägt dieselben Abschnitte,
+// die Anker greifen also.
+//
+// Die Ziele wandern auf ihre englische Fassung, wo es sie gibt. Ob ein Ziel
+// deutsch bleibt, wird berechnet und nicht gepflegt: entsteht später eine
+// englische Seite, verschwindet der Hinweis von selbst.
+const zieleAnpassen = (e: any) =>
+  "items" in e
+    ? { ...e, items: e.items.map(zieleAnpassen) }
+    : { ...e, href: lokalisiere(e.href, lang), fremdsprachig: nurDeutsch(e.href) };
+
+const navigation = englisch ? NAV.map(zieleAnpassen) : NAV;
+
+// Der CTA bleibt ein reiner Anker: SiteHeader macht daraus über `anchorBase`
+// die volle Adresse, sobald man nicht auf der Ankerseite steht. Ein fest
+// verdrahtetes "/en/#kontakt" würde auf /en/ selbst die Seite neu laden,
+// statt zu scrollen.
 ---
 
 <SiteHeader
-  home={PATHS.home}
+  lang={lang}
+  home={englisch ? "/en/" : PATHS.home}
+  anchorBase={englisch ? "/en/" : undefined}
   initials="FP"
   wordmark={SITE.name}
-  wordmarkAccent="persönlich"
-  nav={NAV}
-  cta={{ href: "#kontakt", label: "Kontakt" }}
+  wordmarkAccent={englisch ? undefined : "persönlich"}
+  nav={navigation}
+  cta={{ href: "#kontakt", label: t("kontakt") }}
 />

@@ -1,0 +1,132 @@
+---
+// Englische Fassung der Datenschutzerklärung.
+//
+// Pfad bleibt /en/datenschutz/ statt /en/privacy/ — siehe Begründung in
+// en/impressum.astro: hreflang und Sprachumschalter leiten den deutschen
+// Pfad mechanisch ab, ein abweichender Slug zeigte auf eine Seite, die es
+// nicht gibt.
+//
+// Art. 12 DSGVO verlangt eine für die betroffene Person verständliche Form;
+// eine englische Fassung ist dafür sinnvoll. Verbindlich bleibt die deutsche.
+import Layout from "../../layouts/Layout.astro";
+import Section from "../../components/Section.astro";
+import { SITE } from "../../consts";
+---
+
+<Layout
+  lang="en"
+  title="Privacy policy"
+  description="Privacy policy under the GDPR."
+>
+  <Section as="h1" title="Privacy policy" eyebrow="Legal">
+    <div class="mx-auto max-w-3xl">
+      <p class="mb-8 rounded-xl border border-ink-200 bg-ink-50 px-5 py-4 text-sm leading-relaxed text-ink-700">
+        This is a courtesy translation. The legally binding version is the German
+        one at <a href="/datenschutz/" class="text-brand-700 underline">felix-paul.de/datenschutz/</a>.
+      </p>
+
+      <div class="prose-content">
+        <h2>1. Controller</h2>
+        <p>
+          The controller for data processing on this website (felix-paul.de) within
+          the meaning of the GDPR is:
+        </p>
+        <p>
+          {SITE.author}<br />
+          {SITE.street} {SITE.houseNumber}<br />
+          {SITE.plz} {SITE.city}, Germany<br />
+          Email: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+        </p>
+
+        <h2>2. Visiting the site (server logs)</h2>
+        <p>
+          This website is served as static files through Cloudflare Pages. When you
+          visit it, technically necessary data (IP address, user agent, referrer,
+          timestamp) is processed by Cloudflare in order to deliver the site and keep
+          it secure. The legal basis is Art. 6 (1) (f) GDPR (legitimate interest in
+          secure operation). No further analysis takes place.
+        </p>
+
+        <h2>3. Contact form and email</h2>
+        <p>
+          If you use the contact form or write to me by email, the data you send
+          (name, email address, the content of your message and any further details)
+          is stored in order to handle your enquiry and to prepare possible
+          collaboration. The legal basis is Art. 6 (1) (b) GDPR (steps prior to a
+          contract) or Art. 6 (1) (a) GDPR (consent).
+        </p>
+        <p>
+          The contact form currently runs through the service provider
+          <strong>FormSubmit</strong>. The data you enter is transmitted to FormSubmit
+          for this purpose and forwarded to me by email. Once a backend service of my
+          own is in place, FormSubmit will be replaced and this policy updated
+          accordingly.
+        </p>
+        <p>
+          The data is deleted once your enquiry has been dealt with, unless statutory
+          retention obligations require otherwise.
+        </p>
+
+        <h2>4. Retention period</h2>
+        <p>
+          Personal data is stored only for as long as it is needed for the respective
+          purpose, or for as long as statutory retention obligations apply (for
+          example under commercial or tax law).
+        </p>
+
+        <h2>5. Hosting</h2>
+        <p>
+          This website is hosted by <strong>Cloudflare Pages</strong> (Cloudflare, Inc.,
+          101 Townsend St, San Francisco, CA 94107, USA). Cloudflare processes the
+          server log data described under point 2. Further information:
+          <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">cloudflare.com/privacypolicy/</a>.
+        </p>
+
+        <h2>6. Embedded content and external links</h2>
+        <p>
+          This website embeds videos from <strong>YouTube</strong> (Google Ireland Ltd.)
+          and contains links to external platforms such as <strong>LinkedIn</strong> and
+          <strong>GitHub</strong>, as well as to <strong>felix-paul.de</strong> and
+          <strong>d-solve.de</strong>. As soon as you play an embedded video or follow
+          such a link, the privacy policy of the respective provider applies. YouTube
+          videos are loaded in privacy-enhanced mode where technically available.
+        </p>
+
+        <h2>7. Your rights</h2>
+        <p>
+          You have the following rights towards the controller regarding your personal
+          data:
+        </p>
+        <ul>
+          <li>Right of access (Art. 15 GDPR)</li>
+          <li>Right to rectification (Art. 16 GDPR)</li>
+          <li>Right to erasure (Art. 17 GDPR)</li>
+          <li>Right to restriction of processing (Art. 18 GDPR)</li>
+          <li>Right to object (Art. 21 GDPR)</li>
+          <li>Right to data portability (Art. 20 GDPR)</li>
+          <li>Right to withdraw consent already given (Art. 7 (3) GDPR)</li>
+        </ul>
+
+        <h2>8. Right to lodge a complaint</h2>
+        <p>
+          You have the right to lodge a complaint with a data protection supervisory
+          authority about the processing of your personal data. The competent authority
+          for my place of business is:
+        </p>
+        <p>
+          {/* Amtlicher Name der Behörde — wird nicht übersetzt, aber als
+              deutsch ausgezeichnet, damit Screenreader ihn richtig sprechen. */}
+          <span lang="de">Der Landesbeauftragte für den Datenschutz und die Informationsfreiheit Rheinland-Pfalz</span><br />
+          Hintere Bleiche 34, 55116 Mainz, Germany<br />
+          <a href="https://www.datenschutz.rlp.de" target="_blank" rel="noopener noreferrer">datenschutz.rlp.de</a>
+        </p>
+
+        <h2>9. No tracking cookies, no analytics</h2>
+        <p>
+          This website sets no tracking cookies and uses no third-party analytics
+          (no Google Analytics, no Facebook pixel, and nothing comparable).
+        </p>
+      </div>
+    </div>
+  </Section>
+</Layout>

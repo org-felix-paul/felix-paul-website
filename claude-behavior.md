@@ -75,6 +75,9 @@ Teil A auf Deutsch zu ziehen.
 | 29 | [Inhalte für KI](#29-inhalte-für-ki-verfügbar-machen--ist-zustand-und-automatisierung) | **Bericht** | `llms.txt`: Ist-Zustand und drei Automatisierungsstufen |
 | 30 | [SEO-Überblick](#30-seo-überblick--was-änderungswürdig-wäre) | **Bericht** | Acht Befunde, sortiert nach Wirkung durch Aufwand |
 | 31 | [Diagramme & Seitwärts-Scroll](#31-diagramme-zentriert-seiten-ohne-seitwärts-scroll) | umgesetzt | Warum die Diagramme verrutscht waren — gemessen, nicht vermutet |
+| 32 | [Erste echte Übersetzung](#32-erste-echte-übersetzung-encompanies) | umgesetzt | `/en/companies/` — und warum es bei zwei englischen Seiten bleibt |
+| 33 | [Englische Seiten außer Schule und Blog](#33-englische-seiten-außer-schule-und-blog) | umgesetzt | Sechs englische Seiten, sprachfähige Navigation, Fußzeile und Formular |
+| 34 | [Vollständige englische Startseite](#34-vollständige-englische-startseite) | umgesetzt | `/en/` ist jetzt eine echte Übersetzung — `NAV_EN`/`AREAS_EN` wieder entfernt |
 
 ---
 
@@ -2054,3 +2057,330 @@ Startseite         Überlauf +0px   —                       —
 ```
 
 Kein horizontales Scrollen des Dokuments mehr, auf keiner der geprüften Breiten.
+
+
+---
+
+## 32. Erste echte Übersetzung: /en/companies/
+
+`src/pages/en/companies.astro` ist die zweite Seite mit echtem englischem
+Inhalt. Sie ersetzt den Rückfall unter derselben URL — geprüft mit
+`diff dist/en/companies/index.html dist/companies/index.html`, das jetzt
+Unterschiede meldet statt Byte-Gleichheit.
+
+### Was der Bau bestätigt hat
+
+Die Automatik aus §28 hat alles Weitere von selbst erledigt, ohne dass eine
+zweite Datei angefasst werden musste:
+
+| Was | Ergebnis |
+|---|---|
+| `echteEnglischeRouten()` | erkennt `/en/`, `/en/companies/` |
+| Sitemap | beide URLs aufgenommen |
+| `hreflang` | wechselseitig zwischen `/companies/` und `/en/companies/` |
+| Sprachumschalter | „EN" auf der deutschen Seite, „DE" auf der englischen |
+
+Das war der Zweck der Konstruktion: eine neue Datei unter `src/pages/en/`
+genügt, der Rest zieht beim nächsten Build nach.
+
+### Übersetzt, nicht transkribiert
+
+Vorgabe war inhaltliche Deckungsgleichheit ohne Wort-für-Wort-Übertragung.
+Geprüft per Strukturvergleich der gebauten Seiten: 3 Karten, 7 Grundlagen-
+punkte, 3 Vertiefungsthemen, 1 h1, 6 h2 — auf beiden Seiten identisch.
+
+Was dabei bewusst anders formuliert ist:
+
+- **Die Siezform fällt weg.** „Schreiben Sie mir formlos" wird zu „Just drop
+  me a line". Ein englisches „you" ist weder Du noch Sie; der Versuch, die
+  Distanz nachzubauen, klingt steif.
+- **Komposita werden aufgelöst.** „Der Blick aufs Ganze" wird zu „The whole
+  picture", „Ein Engpass, konkret" zu „One bottleneck, in depth". Wörtlich
+  übersetzt wären beide unverständlich.
+- **Fachbegriffe bleiben unangetastet.** MCP, A2A, AP2/x402, UCP, PKCE,
+  RFC 8693, OWASP Top 10 for Agentic Applications, „lethal trifecta" — das
+  sind Eigennamen, keine Wörter.
+- **Schreibweise durchgehend amerikanisch** (`authorization`, `organization`),
+  weil die Terminologie aus den RFCs kommt und ein Mischmasch aus
+  „authorisation" im Fließtext und „Authorization Code" als Begriff schlampig
+  aussieht.
+
+### Was das kostet
+
+Ab jetzt ist jede Änderung an `src/pages/companies.astro` eine Änderung an
+zwei Dateien. Es gibt keinen Mechanismus, der das erzwingt — die englische
+Fassung ist eine eigenständige Seite, kein generiertes Abbild. Genau deshalb
+bleibt es bei zwei englischen Seiten und nicht bei 26:
+
+| Bereich | Seiten | Wörter | übersetzt? |
+|---|---:|---:|---|
+| Blog | 11 | 35.655 | nein — 87 % des Textes, geringster Gewinn |
+| Schulen | 9 | 3.030 | nein — Lehrerfortbildung, Elternabend, Pädagogischer Tag gibt es außerhalb des deutschsprachigen Raums nicht |
+| Startseite | 1 | 699 | ersetzt durch eine eigene englische Übersicht |
+| Impressum/Datenschutz | 2 | 675 | nein — muss deutsch sein |
+| Unternehmen & Universitäten | 1 | 507 | **ja** |
+| Privatpersonen | 1 | 173 | nein |
+
+Die Auswahl folgt einer Frage: wer liest Englisch **und** kann etwas buchen?
+Internationale Konferenzveranstalter und Unternehmen mit englischer
+Arbeitssprache — also genau dieser Bereich.
+
+Das Signal, das eine Erweiterung rechtfertigen würde, ist nicht Bauchgefühl,
+sondern die Search Console: englischsprachige Anfragen auf deutschen Seiten.
+
+
+---
+
+## 33. Englische Seiten außer Schule und Blog
+
+Vorgabe: alles außer der Schul-Bildungsseite und dem Blog auf Englisch, und
+entsprechend verlinken. §32 hatte noch geschlossen, es bleibe bei zwei
+englischen Seiten — diese Entscheidung ist damit überholt und hier ersetzt.
+
+### Was es jetzt auf Englisch gibt
+
+| Seite | Deutsche Vorlage |
+|---|---|
+| `/en/` | eigene Übersicht (keine Übersetzung von `/`) |
+| `/en/companies/` | `/companies/` |
+| `/en/individuals/` | `/individuals/` |
+| `/en/impressum/` | `/impressum/` |
+| `/en/datenschutz/` | `/datenschutz/` |
+| `/en/thank-you/` | `/thank-you/` |
+
+Deutsch bleiben wie vorgegeben: `/schools/` samt neun Unterseiten und der
+Blog samt elf Beiträgen. Unter `/en/` liegen sie weiterhin als Rückfall — mit
+`lang="de"` und Canonical auf die deutsche URL, also ohne Anspruch, englisch
+zu sein.
+
+`/en/404/` wurde bewusst nicht angelegt: Cloudflare Pages liefert bei einem
+404 immer `/404.html` aus der Wurzel aus. Eine zweite Fehlerseite unter
+`/en/` würde nie erreicht.
+
+### „Dementsprechend verlinken" war der größere Teil
+
+Die Seiten zu übersetzen war die kleinere Hälfte. Vorher zeigten Navigation
+und Fußzeile auf **jeder** Seite auf die deutschen Ziele — eine englische
+Seite mit deutscher Fußzeile schickt den Leser auf `/impressum/`, obwohl es
+`/en/impressum/` gibt.
+
+Vier Komponenten haben deshalb ein `lang`-Prop bekommen, das `Layout`
+durchreicht:
+
+| Komponente | Was sich mit der Sprache ändert |
+|---|---|
+| `Header` / `SiteHeader` | Beschriftungen, Ziele, `NAV_EN` statt `NAV` |
+| `SiteFooter` | Beschriftungen, Ziele, `AREAS_EN` statt `AREAS` |
+| `ContactForm` | Beschriftungen **und** die versteckten Felder |
+| `Layout` | `<html lang>`, plus Weiterreichung |
+
+Beim Formular sind die versteckten Felder der Punkt, den man leicht übersieht:
+`_subject`, `_next` und `_autoresponse`. Ohne sie hätte eine englische Anfrage
+eine deutsche Autoantwort ausgelöst und wäre auf der deutschen Dankeseite
+gelandet. `_next` zeigt jetzt auf `/en/thank-you/` — und deshalb gibt es
+diese Seite überhaupt.
+
+### Zwei Strukturen statt einer übersetzten
+
+> **Überholt durch §34.** `NAV_EN` und `AREAS_EN` gibt es nicht mehr. Der
+> Abschnitt bleibt stehen, weil die Begründung erklärt, warum §34 die
+> Startseite vollständig übersetzen musste, bevor die Anker wieder tragen
+> konnten.
+
+`NAV_EN` und `AREAS_EN` sind eigene Konstanten, keine Übersetzungen von `NAV`
+und `AREAS`. Das ist kein Duplikat aus Bequemlichkeit, sondern notwendig:
+
+Die deutsche Startseite ist **eine lange Seite mit Abschnitten**, ihre
+Navigation besteht aus Ankern (`#speaking`, `#bildung`, `#software`). `/en/`
+ist dagegen eine **Wegweiserseite** ohne diese Abschnitte.
+
+Beim ersten Versuch wurde die Fußzeile automatisch übersetzt. Das Ergebnis
+sah richtig aus und war es nicht:
+
+```
+/en/#speaking     ← Anker existiert auf /en/ nicht
+/en/#bildung      ← Anker existiert auf /en/ nicht
+```
+
+Der Link führt auf die richtige Seite, aber an eine Stelle, die es dort nicht
+gibt — der Browser bleibt oben, und niemand merkt, dass etwas kaputt ist.
+Deshalb die eigenen Strukturen.
+
+`scripts/check-links.mjs` **hätte** das gefunden: er prüft Anker, nicht nur
+Pfade. Gegengetestet, indem der kaputte Link wieder eingeschleust wurde:
+
+```
+/en/companies/
+  → /en/#speaking
+    Anker #speaking existiert dort nicht
+```
+
+Gefunden wurde er trotzdem beim Lesen der gebauten Fußzeile, nicht vom
+Skript — weil der Fehler entstand und behoben wurde, bevor der Hook lief.
+Der Hook ist das Netz, nicht der erste Blick.
+
+### Beschriftungen liegen neben den deutschen, nicht in einer eigenen Tabelle
+
+`AREAS` und `NAV` tragen die englische Beschriftung als `labelEn`/`noteEn`
+direkt neben der deutschen:
+
+```ts
+{ href: PATHS.companies, label: "Unternehmen & Universitäten", labelEn: "Companies & universities" }
+```
+
+Eine getrennte Übersetzungstabelle läuft mit der Zeit auseinander, zwei
+Felder in derselben Zeile fallen beim Ändern ins Auge. Beide Felder sind
+optional; fehlt `labelEn`, erscheint das deutsche Wort — sichtbar falsch ist
+besser als `undefined` in der Seite.
+
+`src/i18n/ui.ts` bleibt für das, was in keiner Struktur steht: Fußzeilen-
+überschriften, Formularbeschriftungen, „Menü öffnen". Der Rückfall auf
+Deutsch sitzt im Übersetzer selbst, nicht beim Aufrufer.
+
+### Ehrlichkeit statt Vollständigkeit
+
+Zwei Stellen sagen jetzt ausdrücklich, wo Englisch endet:
+
+- In der Navigation tragen Schule und Blog ein kleines **in German**. Der
+  Hinweis ist nicht `aria-hidden` — gerade wer sich die Seite vorlesen lässt,
+  will das vor dem Klick wissen.
+- Auf `/en/` trägt jeder Eintrag der Bereichsliste eine Markierung, **in
+  English** oder **in German**. Vorher war nur das Englische markiert, was
+  den Rest im Unklaren ließ.
+
+### Die Rechtsseiten — mit Vorbehalt
+
+`/en/impressum/` und `/en/datenschutz/` sind übersetzt, tragen aber oben
+einen Kasten: verbindlich ist die deutsche Fassung, die Paragraphenverweise
+sind deutsches Recht. Das ist bei Pflichtangaben die übliche und die ehrliche
+Form — eine Übersetzung ist eine Lesehilfe, keine zweite verbindliche
+Fassung. **Eine juristische Prüfung ersetzt das nicht.**
+
+Beide behalten ihren deutschen Slug: `/en/impressum/`, nicht
+`/en/legal-notice/`. Grund ist mechanisch — `Layout` und `LanguageLink`
+leiten den deutschen Pfad aus dem englischen ab (`/en/X/` ↔ `/X/`). Ein
+abweichender Slug ergäbe ein `hreflang` auf `/legal-notice/`, und das gibt es
+nicht. Wer englische Slugs will, muss vorher die Paarbildung umbauen.
+
+### Die Zusicherung zur Fußzeile hat sich geändert
+
+§19 hielt fest, dass die Fußzeile auf der ganzen Domain byteidentisch ist und
+bewusst keine Props nimmt. Das gilt so nicht mehr. Neue Zusicherung:
+**identisch innerhalb einer Sprache**, und sie nimmt genau eine Prop. Es gibt
+weiterhin genau eine Stelle, an der man sie ändert.
+
+### Geprüft
+
+- 30 Seiten gebaut, 0 Fehler, 0 Warnungen im Typecheck
+- 3854 interne Links inkl. Anker aufgelöst, keiner gebrochen
+- `lang`-Attribut auf allen sechs englischen Seiten `en`, auf allen
+  Rückfallseiten `de`
+- `hreflang` wechselseitig auf allen fünf indexierten Paaren
+- Sitemap: fünf `/en/`-URLs (`/en/thank-you/` fehlt korrekterweise, es ist
+  `noindex`)
+- Deutsche Kopf- und Fußzeile unverändert gegengeprüft
+
+
+---
+
+## 34. Vollständige englische Startseite
+
+Vorgabe: `/en/` soll mit allem Text genauso aussehen wie die deutsche
+Startseite. Nur die Schulworkshops und der Blog bleiben deutsch und werden
+als solche verlinkt.
+
+Das ersetzt die Entscheidung aus §32 („es bleibt bei zwei englischen Seiten")
+und hebt die Sonderstrukturen aus §33 wieder auf.
+
+### Was sich geändert hat
+
+`/en/` war eine Wegweiserseite: eine Liste der Bereiche, jeder mit einem Satz
+Erklärung. Jetzt ist es eine vollständige Übersetzung von
+`src/pages/index.astro` — dieselben Abschnitte, dieselbe Reihenfolge,
+**dieselben `id`-Attribute**:
+
+```
+DE: top saeulen ueber-mich speaking bildung software publikationen blog kontakt presse
+EN: top saeulen ueber-mich speaking bildung software publikationen blog kontakt presse
+```
+
+Die ids sind der Punkt. Solange sie übereinstimmen, greifen `#speaking`,
+`#bildung`, `#kontakt` auf der englischen Seite genauso wie auf der deutschen
+— und genau deshalb konnten `NAV_EN` und `AREAS_EN` ersatzlos verschwinden.
+
+### Der Kreis hat sich geschlossen
+
+§33 brauchte eigene Strukturen, weil `/en/` die Abschnitte nicht hatte und
+`/en/#speaking` deshalb ins Leere zeigte. Mit der vollständigen Übersetzung
+ist die Ursache weg. Statt zwei Navigationsstrukturen gibt es wieder eine,
+die pro Sprache anders beschriftet und verlinkt wird:
+
+```ts
+// src/components/Header.astro
+const zieleAnpassen = (e) =>
+  "items" in e
+    ? { ...e, items: e.items.map(zieleAnpassen) }
+    : { ...e, href: lokalisiere(e.href, lang), fremdsprachig: nurDeutsch(e.href) };
+```
+
+`nurDeutsch()` wird **berechnet, nicht gepflegt**: ein Ziel gilt als deutsch,
+wenn `lokalisiere()` es unverändert zurückgibt, also keine englische Fassung
+existiert. Entsteht später `src/pages/en/schools.astro`, verschwindet der
+Hinweis „in German" von selbst. Ein von Hand gesetztes Flag hätte man dabei
+vergessen.
+
+### Sprachfähig gemacht
+
+Zusätzlich zu den vier Komponenten aus §33:
+
+| Komponente | Was sich ändert |
+|---|---|
+| `Hero` | Alle Texte, `alt` des Porträts |
+| `ZielgruppenHinweis` | Drei Zielgruppenkarten, Ziele, „in German"-Hinweis |
+
+Der `ZielgruppenHinweis` liegt unter `src/education/` und wird von der
+Startseite importiert. Das verstößt nicht gegen die Regel aus §2 — geteilter
+Code importiert nicht aus einem Bereich, aber eine *Seite* darf das.
+
+### Was deutsch bleibt und wie es dasteht
+
+| Ziel | Kennzeichnung |
+|---|---|
+| Navigation → Schulen | Badge **in German** |
+| Fußzeile → Schulen, Blog | Badge **in German** |
+| Startseite, Workshop-Kacheln | „pages in German" über dem Block |
+| Startseite, Blog-Abschnitt | „The blog is written in German." |
+| Zielgruppenkarte Schulen | Badge **in German** am Link |
+| Rednerprofil-PDF | „(PDF, in German)" |
+
+Die Workshop-Kacheln und Blog-Karten tragen zusätzlich `lang="de"` am Link.
+Der Titel darin *ist* deutsch — ohne die Auszeichnung liest ein Screenreader
+mit englischer Stimme „Zehnfingersystem-Kurs" vor, und das versteht niemand.
+
+Ebenso ausgezeichnet: der amtliche Name der Aufsichtsbehörde auf
+`/en/datenschutz/`. Er wird nicht übersetzt, weil er ein Eigenname ist.
+
+### Ein Fehler, den nur der Typecheck fand
+
+Der Kontakt-Button stand zuerst fest auf `/en/#kontakt`. Auf `/en/` selbst
+lädt das die Seite neu, statt zu scrollen. Richtig ist der reine Anker
+`#kontakt` — `SiteHeader` macht daraus über `anchorBase` selbst die volle
+Adresse, sobald man woanders steht.
+
+Die Begründung hatte ich als `{/* … */}` **zwischen die Attribute** der
+Komponente geschrieben. Astro baut das anstandslos; `astro check` meldete
+`ts(1002): Unterminated string literal`. Der Build allein hätte den Fehler
+durchgelassen — er ist kein Ersatz für den Typecheck.
+
+### Geprüft
+
+- 30 Seiten, 0 Fehler, 0 Warnungen
+- 3944 interne Links inkl. Anker aufgelöst, keiner gebrochen
+- Abschnitts-ids deutsch/englisch Zeichen für Zeichen gleich
+- Deutsche Seiten gegengeprüft: null „in German"-Marker, Fußzeilenziele
+  unverändert deutsch
+- Suche nach deutschem Resttext auf allen sechs englischen Seiten: nur der
+  Behördenname, absichtlich
+- Wortumfang je Paar zwischen 115 % und 119 % der deutschen Fassung — die
+  normale Ausdehnung Deutsch → Englisch. Ein Ausreißer nach unten hätte
+  fehlenden Inhalt bedeutet.

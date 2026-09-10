@@ -245,10 +245,10 @@ const structuredData = {
     >
       Zum Inhalt springen
     </a>
-    <slot name="header"><Header /></slot>
+    <slot name="header"><Header lang={lang === "en" ? "en" : "de"} /></slot>
     <main id="main" class="flex-1">
       <slot />
     </main>
-    <SiteFooter />
+    <SiteFooter lang={lang === "en" ? "en" : "de"} />
   </body>
 </html>
