@@ -416,7 +416,7 @@ Das ist Nische und nichts für die breite Masse. Wenn du IT-affin bist, ist es e
 
 ## Einen Workshop buchen
 
-Du möchtest mehr zu dem Thema erfahren? Ich biete Workshops für eine einzelne Klasse, einen ganzen Jahrgang oder das Kollegium an, auf Deutsch oder Englisch. Wenn du unterrichtest und das für deine Schüler:innen möchtest, [melde dich](/#kontakt) oder sieh dir das vollständige Programm auf [felix-paul.de/education](/education/) an.
+Du möchtest mehr zu dem Thema erfahren? Ich biete Workshops für eine einzelne Klasse, einen ganzen Jahrgang oder das Kollegium an, auf Deutsch oder Englisch. Wenn du unterrichtest und das für deine Schüler:innen möchtest, [melde dich](/#kontakt) oder sieh dir das vollständige Programm auf [felix-paul.de/schools](/schools/) an.
 
 ---
 

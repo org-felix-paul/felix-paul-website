@@ -7,6 +7,6 @@ summary: >-
   Website-Programmierung über Spieleentwicklung bis zu einer KI, die
   Tic-Tac-Toe mit dem Minimax-Algorithmus löst.
 location: Gymnasium Nieder-Olm
-url: /education/projekte/
+url: /schools/insights/
 urlLabel: Zum Projekt
 ---

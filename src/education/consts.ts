@@ -9,9 +9,9 @@ export const EDU = {
   description:
     "Workshops und Fortbildungen zu KI, Cybersicherheit und Medienkompetenz – für Schulen, Lehrkräfte, Eltern und Erwachsene. Von einem Informatiker mit Lehramt.",
   /** Section root; every education URL is built from this. */
-  base: PATHS.education,
-  ogImage: "/education/og-default.jpg",
-  logo: "/education/logo.svg",
+  base: PATHS.schools,
+  ogImage: "/schools/og-default.jpg",
+  logo: "/schools/logo.svg",
   // Shared with the main site — it was always the same photo, just copied.
   // If this section is ever extracted, copy that one file along with it.
   portrait: PORTRAIT.image,
@@ -20,8 +20,8 @@ export const EDU = {
 /** Absolute paths inside the education section. */
 export const EDU_PATHS = {
   home: EDU.base,
-  projekte: `${EDU.base}projekte/`,
-  angebote: `${EDU.base}angebote/`,
+  insights: `${EDU.base}insights/`,
+  workshops: `${EDU.base}workshops/`,
   angebotAnchor: `${EDU.base}#angebote`,
   // Contact and the post-submit page are domain-wide, not section-owned:
   // this section used to duplicate both. Kept as aliases so callers here read
@@ -31,9 +31,9 @@ export const EDU_PATHS = {
 } as const;
 
 /** Absolute path of an offer detail page, derived from its slug. */
-export const angebotPath = (slug: string) => `${EDU_PATHS.angebote}${slug}/`;
+export const angebotPath = (slug: string) => `${EDU_PATHS.workshops}${slug}/`;
 
 export const NAV = [
   { href: EDU_PATHS.home, label: "Start" },
-  { href: EDU_PATHS.projekte, label: "Einblicke" },
+  { href: EDU_PATHS.insights, label: "Workshops & Materialien" },
 ] as const;

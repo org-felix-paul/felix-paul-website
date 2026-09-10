@@ -8,7 +8,7 @@ export const SITE = {
   name: "Felix Paul",
   tagline: "Keynotes, Bildungsangebote & IT-Beratung",
   description:
-    "Keynotes, Fachvorträge und Bildungsangebote zu KI, IT-Sicherheit und Kryptographie – für Unternehmen, Universitäten und Schulen. Enterprise Architect bei Atruvia.",
+    "Keynotes, Fachvorträge und Bildungsangebote zu KI, IAM, IT-Security und Kryptographie – für Unternehmen, Universitäten und Schulen. Solution Architect bei Atruvia.",
   url: "https://felix-paul.de",
   author: "Felix Peter Paul",
   email: "contact@felix-paul.de",
@@ -40,15 +40,26 @@ export const PORTRAIT = {
 export const PATHS = {
   home: "/",
   blog: "/blog/",
-  education: "/education/",
+  // Route segments are English throughout — they are structure, not copy.
+  // Exceptions kept in German on purpose: /impressum/ and /datenschutz/ are
+  // the terms German visitors and authorities look for, and the content slugs
+  // under /schools/workshops/ are the offers' own names.
+  schools: "/schools/",
+  /** Vergangene Schul-Workshops und was daraus entstanden ist. Gehört zur
+   *  Schul-Seite und wird bewusst nur von dort verlinkt — die Seite zeigt
+   *  Schul-Workshops, nicht die Bildungsangebote insgesamt. */
+  pastWorkshops: "/schools/insights/",
+  companies: "/companies/",
+  individuals: "/individuals/",
   projects: "/projects/",
   impressum: "/impressum/",
   datenschutz: "/datenschutz/",
   /** The one contact form on the domain: the #kontakt block on the home page.
-   *  The education section used to carry a second copy at /education/kontakt/. */
+   *  The education section used to carry a second copy at /schools/kontakt/. */
   kontakt: "/#kontakt",
   /** Home-page anchors that the rest of the site links back to. */
   speaking: "/#speaking",
+  software: "/#software",
   bildung: "/#bildung",
   ueberMich: "/#ueber-mich",
   publikationen: "/#publikationen",
@@ -61,7 +72,7 @@ export const PATHS = {
 export const FAVICONS = {
   main: "/favicon.svg",
   blog: "/blog/logo.svg",
-  education: "/education/logo.svg",
+  schools: "/schools/logo.svg",
 } as const;
 
 // Reference projects: plain static sites copied verbatim into public/projects/.
@@ -88,29 +99,37 @@ export interface Area {
   note: string;
   /** Leaves this domain — gets target="_blank". */
   external?: boolean;
+  /** Audience pages under this area. Rendered indented in the footer, so one
+   *  area stays one row rather than three. */
+  items?: readonly { href: string; label: string }[];
 }
 
 export const AREAS: readonly Area[] = [
   {
     href: PATHS.speaking,
     label: "Keynotes & Fachvorträge",
-    note: "Vorträge und Beratung zu KI, Security, Cloud und Kryptographie",
+    note: "Vorträge und Beratung",
   },
   {
-    href: PATHS.education,
+    href: PATHS.bildung,
     label: "Bildungsangebote",
-    note: "Workshops und Fortbildungen für Schulen, Lehrkräfte und Erwachsene",
+    note: "Workshops, Vorträge und Fortbildungen",
+    items: [
+      { href: PATHS.schools, label: "Schulen & Lehrkräfte" },
+      { href: PATHS.companies, label: "Unternehmen & Universitäten" },
+      { href: PATHS.individuals, label: "Privatpersonen" },
+    ],
   },
   {
     href: SITE.dSolveSite,
     label: "Software",
-    note: "Produkte und Projekte über dSolve",
+    note: "Softwareprodukte und Projekte über dSolve",
     external: true,
   },
   {
     href: PATHS.blog,
     label: "Blog",
-    note: "Mein persönlicher Blog zu KI, IT-Sicherheit und Bildung",
+    note: "Mein persönlicher Blog",
   },
 ];
 
@@ -138,14 +157,27 @@ export interface NavGroup {
 
 export const NAV: readonly (NavItem | NavGroup)[] = [
   { href: "#speaking", label: "Keynotes & Fachvorträge", spy: "speaking" },
-  { href: "#bildung", label: "Bildungsangebote", spy: "bildung" },
-  { href: PATHS.blog, label: "Blog", spy: "blog" },
+  {
+    label: "Bildungsangebote",
+    items: [
+      { href: "#bildung", label: "Überblick", spy: "bildung" },
+      { href: PATHS.schools, label: "Schulen & Lehrkräfte" },
+      { href: PATHS.companies, label: "Unternehmen & Universitäten" },
+      { href: PATHS.individuals, label: "Privatpersonen" },
+    ],
+  },
+  { href: "#software", label: "Software", spy: "software" },
+  // Anchor, not the path: clicking Blog lands on the teaser section like
+  // every other bar entry, and the section itself links on to /blog/.
+  { href: "#blog", label: "Blog", spy: "blog" },
   {
     label: "Mehr",
     items: [
       { href: "#ueber-mich", label: "Über mich", spy: "ueber-mich" },
       { href: "#publikationen", label: "Publikationen", spy: "publikationen" },
-      { href: "#aktuelles", label: "Aktuelles", spy: "aktuelles" },
+      // "Aktuelles" ist auf der Startseite auskommentiert (siehe index.astro).
+      // Der Menüpunkt muss mitgehen, sonst zeigt er auf einen Abschnitt, den
+      // es nicht gibt — wieder einbauen, sobald der Abschnitt zurückkommt.
       { href: "#presse", label: "Material für Veranstalter", spy: "presse" },
     ],
   },

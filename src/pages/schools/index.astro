@@ -4,6 +4,7 @@ import Layout from "../../education/EduLayout.astro";
 import Hero from "../../education/components/Hero.astro";
 import Section from "../../education/components/Section.astro";
 import AngebotCard from "../../education/components/AngebotCard.astro";
+import ZielgruppenHinweis from "../../education/components/ZielgruppenHinweis.astro";
 import { SITE, PATHS } from "../../consts";
 import { EDU_PATHS, angebotPath } from "../../education/consts";
 
@@ -20,8 +21,8 @@ const angebote = (await getCollection("angebote")).sort(
   <Section
     id="angebote"
     eyebrow="Was ich anbiete"
-    title="Angebote für Schulen, Lehrkräfte, Eltern und Erwachsene"
-    lead="Vom Pädagogischen Tag zu KI bis zum Workshop zu Cybersicherheit – erprobte Formate, für Schulen ebenso wie für die Erwachsenenbildung."
+    title="Angebote für Schulen, Unternehmen und Privatpersonen"
+    lead="Vom Pädagogischen Tag über Klassen-Workshops und Elternabende bis zur AG über ein Halbjahr – erprobte Formate, die sich auf andere Zielgruppen zuschneiden lassen."
   >
     <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {
@@ -41,6 +42,8 @@ const angebote = (await getCollection("angebote")).sort(
       }
     </div>
 
+    <ZielgruppenHinweis />
+
     <p class="mx-auto mt-10 max-w-2xl rounded-2xl border border-brand-200 bg-brand-50 px-6 py-5 text-center text-sm leading-relaxed text-brand-900">
       Sie suchen ein Thema, das hier nicht dabei ist?
       <strong>Neue Workshops erstelle ich gerne auf Anfrage</strong> – passgenau für Ihre Schule, Klassenstufe und Ihren Zeitrahmen.
@@ -50,6 +53,7 @@ const angebote = (await getCollection("angebote")).sort(
 
   <Section
     background="muted"
+    id="preise"
     eyebrow="Honorare"
     title="Preise auf einen Blick"
     lead="Transparente Spannen statt Verhandlungspoker – das endgültige Honorar hängt von Umfang und Zielgruppe ab."
@@ -85,6 +89,7 @@ const angebote = (await getCollection("angebote")).sort(
 
   <Section
     background="muted"
+    id="warum"
     eyebrow="Warum ich"
     title="Doppelqualifikation, die Schulen heute brauchen"
     lead="Pädagogik allein reicht nicht, IT-Expertise allein verfehlt die Klasse. Beides zusammen ist selten – und genau das ist mein Angebot."
@@ -117,6 +122,7 @@ const angebote = (await getCollection("angebote")).sort(
   </Section>
 
   <Section
+    id="haltung"
     eyebrow="Haltung"
     title="Was mir wichtig ist"
     lead=""
@@ -151,6 +157,7 @@ const angebote = (await getCollection("angebote")).sort(
   </Section>
 
   <Section
+    id="ablauf"
     eyebrow="So läuft eine Buchung"
     title="In drei Schritten zum Workshop"
     lead="Kein langer Verkaufsprozess. Sie schreiben, ich antworte, wir machen es."

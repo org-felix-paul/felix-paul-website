@@ -22,8 +22,7 @@ const year = new Date().getFullYear();
           <span class="text-lg font-semibold text-ink-900">{SITE.name}</span>
         </a>
         <p class="mt-3 max-w-xs text-sm leading-relaxed text-ink-600">
-          Keynotes &amp; Fachvorträge, Bildungsangebote und Software – zu KI, IT-Sicherheit,
-          Cloud und Kryptographie.
+          Keynotes &amp; Fachvorträge, Bildungsangebote und Software
         </p>
       </div>
 
@@ -46,6 +45,17 @@ const year = new Date().getFullYear();
                   {a.label}
                 </a>
                 <span class="block text-xs text-ink-500">{a.note}</span>
+                {a.items && (
+                  <ul class="mt-1.5 space-y-1 border-l border-ink-200 pl-3 text-xs">
+                    {a.items.map((i) => (
+                      <li>
+                        <a href={i.href} class="text-ink-600 hover:text-brand-700">
+                          {i.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))
           }
@@ -59,9 +69,6 @@ const year = new Date().getFullYear();
       <p>© {year} {SITE.author}. Alle Rechte vorbehalten.</p>
       <ul class="flex flex-wrap gap-x-5 gap-y-2">
         <li><a href={PATHS.kontakt} class="font-medium hover:text-brand-700">Kontakt</a></li>
-        <li>
-          <a href={SITE.linkedin} target="_blank" rel="noopener noreferrer" class="hover:text-brand-700">LinkedIn</a>
-        </li>
         <li><a href={PATHS.impressum} class="hover:text-brand-700">Impressum</a></li>
         <li><a href={PATHS.datenschutz} class="hover:text-brand-700">Datenschutz</a></li>
       </ul>

@@ -4,8 +4,9 @@ import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
 import Section from "../components/Section.astro";
 import ContactForm from "../components/ContactForm.astro";
-import { SITE, PATHS, PORTRAIT } from "../consts";
+import { SITE, PATHS, PORTRAIT, PROJECTS } from "../consts";
 import { EDU_PATHS, angebotPath } from "../education/consts";
+import ZielgruppenHinweis from "../education/components/ZielgruppenHinweis.astro";
 import { postPath } from "../blog/consts";
 import { NEWS_KIND_LABELS } from "../news/collection";
 
@@ -13,9 +14,13 @@ import { NEWS_KIND_LABELS } from "../news/collection";
 // straight from the same collections the sub-pages use. That is deliberate:
 // a visitor who only scrolls this page should see the real content, and there
 // is no second copy of it to drift out of sync.
-const angebote = (await getCollection("angebote", ({ data }) => !data.preview)).sort(
+const alleAngebote = (await getCollection("angebote", ({ data }) => !data.preview)).sort(
   (a, b) => a.data.order - b.data.order,
 );
+// Only a taste on the home page: the full catalogue is what /schools/ is
+// for, and repeating all of it here left nothing to click through to.
+const angebote = alleAngebote.slice(0, 2);
+const weitereAngebote = alleAngebote.length - angebote.length;
 
 const latestPosts = (await getCollection("posts", ({ data }) => !data.draft && !data.preview))
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
@@ -47,14 +52,16 @@ const orientation = [
   {
     label: "Software",
     line: "Lauffähige Software und Projekte über dSolve.",
-    href: SITE.dSolveSite,
+    href: "#software",
     bar: "bg-amber-500",
   },
   {
     // Kein Angebot, deshalb optisch zurückgenommen (graue Marke statt Akzentfarbe).
+    // Wie die anderen Zeilen ein Anker auf den Abschnitt weiter unten, nicht
+    // direkt auf /blog/ — der Absprung auf die Blogseite steht dort.
     label: "Blog",
     line: "Beiträge zu Themen die mich beschäftigen wie KI, IT-Sicherheit und schulische Bildung.",
-    href: PATHS.blog,
+    href: "#blog",
     bar: "bg-ink-300",
   },
 ] as const;
@@ -158,8 +165,7 @@ const weitereThemen = [
         <div>
           <div class="prose-content">
             <p>
-              Was mich antreibt: Immer Neues zu lernen, die Welt um mich herum zu verstehen, Dinge selbst umzusetzen und das gewonnene Wissen
-               weiterzugeben.
+              Was mich antreibt: Neues lernen, Zusammenhänge verstehen, selbst nachprüfen, umsetzen, weitergeben.
             </p>
             <p>  
               Den ausführlichen Lebenslauf gibt es auf <a href={SITE.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>.
@@ -221,7 +227,7 @@ const weitereThemen = [
 
                 <p class="text-xs leading-relaxed text-ink-500">
                   Drei vollständige Studiengänge nebeneinander: Informatik und Mathematik fachlich,
-                  Lehramt didaktisch. Dazu die tägliche Praxis als Enterprise Architect in der
+                  Lehramt didaktisch. Dazu die tägliche Praxis als Solution Architect in der
                   Finanzbranche – deshalb bleiben Vorträge und Workshops nah an dem, was wirklich
                   passiert.
                 </p>
@@ -314,19 +320,25 @@ const weitereThemen = [
   </Section>
 
   <!-- BILDUNGSANGEBOTE -->
-  <!-- Die Karten kommen aus derselben Content-Collection wie /education/, aber
+  <!-- Die Karten kommen aus derselben Content-Collection wie /schools/, aber
        bewusst knapper: hier steht nur, WAS es gibt (Titel, Untertitel, Teaser).
        Zielgruppe, Dauer und Preis – also alles, was man zum Abwägen braucht –
-       stehen auf /education/ und der jeweiligen Angebotsseite. Wer nur diese
+       stehen auf /schools/ und der jeweiligen Angebotsseite. Wer nur diese
        Seite scrollt, kennt trotzdem jedes Angebot beim Namen. -->
   <Section
     id="bildung"
     background="muted"
     eyebrow="Bildung"
     title="Bildungsangebote"
-    lead="Workshops, Vorträge und Fortbildungen zu KI, IT-Sicherheit und Medienkompetenz – für Schulen, Lehrkräfte, Eltern und Schüler:innen, zunehmend auch in der Erwachsenenbildung."
+    lead="Workshops, Vorträge und Fortbildungen – für Schulen, Universitäten, Unternehmen und Privatpersonen."
   >
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <ZielgruppenHinweis compact />
+
+    <p class="mt-8 text-sm font-semibold uppercase tracking-wider text-ink-500">
+      Einblick in unsere Workshops für Schulen
+    </p>
+
+    <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {
         angebote.map((a) => (
           <a
@@ -339,20 +351,77 @@ const weitereThemen = [
           </a>
         ))
       }
+
+      <!-- Dritte Kachel: der Rest des Katalogs, sichtbar als eigener Weg statt
+           als Link unter den Karten. -->
+      <a
+        href={PATHS.schools}
+        class="group flex h-full flex-col justify-center rounded-2xl border border-dashed border-emerald-300 bg-emerald-50/60 p-5 text-center transition hover:border-emerald-400 hover:bg-emerald-50"
+      >
+        <span class="font-display text-3xl font-bold text-emerald-700">+{weitereAngebote}</span>
+        <span class="mt-1 text-sm font-semibold text-emerald-900">weitere Schulworkshops</span>
+        <span class="mt-2 text-xs leading-relaxed text-emerald-900">
+          Elternabende, Cybersicherheit, Cybermobbing, AGs zu Vibe Coding und
+          Zehnfingersystem – mit Zielgruppen, Dauer und Preisen.
+        </span>
+        <span class="mt-3 inline-flex items-center justify-center gap-1 text-sm font-medium text-emerald-800">
+          Alle ansehen
+          <svg class="h-4 w-4 transition group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </span>
+      </a>
     </div>
 
     <div class="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
       <a
-        href={PATHS.education}
+        href={PATHS.schools}
         class="rounded-lg bg-emerald-600 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-700"
       >
-        Alle Bildungsangebote ansehen
+        Alle Schulworkshops ansehen
       </a>
       <a
-        href={EDU_PATHS.projekte}
+        href={EDU_PATHS.insights}
         class="rounded-lg border border-ink-200 bg-white px-5 py-3 text-sm font-medium text-ink-800 shadow-sm transition hover:border-emerald-300 hover:text-emerald-700"
       >
-        Einblicke aus Workshops
+        Vergangene Workshops & Materialien
+      </a>
+    </div>
+  </Section>
+
+  <!-- SOFTWARE -->
+  <!-- dSolve ist der Bereich; NECK steht nur als eine anfassbare Referenz
+       daneben, nicht als gleichwertiger zweiter Block. Ohne irgendein
+       konkretes Beispiel wäre der Abschnitt nur ein Link nach außen. -->
+  <Section
+    id="software"
+    eyebrow="Software"
+    title="Was ich gebaut habe"
+  >
+    <div class="mx-auto max-w-4xl">
+      <a
+        href={SITE.dSolveSite}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group relative flex flex-col overflow-hidden rounded-2xl border border-ink-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md md:p-8"
+      >
+        <span class="absolute inset-x-0 top-0 h-1 bg-amber-500" aria-hidden="true" />
+        <span class="inline-flex w-fit rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-amber-800">
+          dSolve
+        </span>
+        <h3 class="mt-3 font-display text-2xl font-bold text-ink-900">
+          Professionelle Softwareprodukte
+        </h3>
+        <p class="mt-3 max-w-2xl leading-relaxed text-ink-600">
+          Über dSolve entwickle und vertreibe ich Software. Daneben entstehen kleinere Projekte für
+          die Allgemeinheit – Dinge, die einen Nutzen stiften sollen, ohne ein Produkt zu sein.
+        </p>
+        <span class="mt-5 inline-flex items-center gap-2 text-sm font-medium text-amber-800">
+          d-solve.de
+          <svg class="h-4 w-4 transition group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </span>
       </a>
     </div>
   </Section>
@@ -360,6 +429,7 @@ const weitereThemen = [
   <!-- PUBLIKATIONEN -->
   <Section
     id="publikationen"
+    background="muted"
     eyebrow="Publikationen"
     title="Buch & Paper"
     lead="Forschung zu Kryptographie und KI – als Buch bei Springer und als Fachbeiträge."
@@ -437,11 +507,10 @@ const weitereThemen = [
   <!-- AKTUELLES -->
   <!-- Gepflegt über src/news/content/*.md — eine Datei pro Eintrag.
        Der Abschnitt blendet sich aus, solange es keine Einträge gibt. -->
-  {
+  <!--  {
     newsItems.length > 0 && (
       <Section
         id="aktuelles"
-    background="muted"
         eyebrow="Aktuelles"
         title="Zuletzt gemacht"
         lead="Gehaltene Workshops und Vorträge, Veröffentlichungen und Releases – in umgekehrter Reihenfolge."
@@ -477,50 +546,57 @@ const weitereThemen = [
       </Section>
     )
   }
+     -->
+
 
   <!-- BLOG -->
-  <Section id="blog">
-    <div class="rounded-3xl bg-gradient-to-br from-brand-700 to-brand-900 p-8 text-white md:p-12">
-      <div class="grid items-center gap-8 md:grid-cols-[1.4fr_1fr]">
-        <div>
-          <p class="text-sm font-semibold uppercase tracking-widest text-brand-200">Blog</p>
-          <h2 class="mt-2 font-display text-3xl font-bold leading-tight md:text-4xl">Mein persönlicher Blog</h2>
-          <p class="mt-4 max-w-xl text-brand-100">
-            Gedanken zu Themen, die mich umtreiben – IT Security, KI, IT in der Bildung und eigene spannende Tech-Projekte. Für Professionals, Lehrer, Eltern, Schüler und allgemeine Tech-Enthusiast:innen.
-          </p>
-          <a
-            href={PATHS.blog}
-            class="mt-6 inline-flex items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-medium text-brand-800 shadow-sm transition hover:bg-brand-50"
-          >
-            Zum Blog
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-          </a>
-        </div>
-        <ul class="grid gap-3 text-sm">
-          {
-            latestPosts.map((post) => (
-              <li>
-                <a
-                  href={postPath(post.id)}
-                  class="block rounded-xl bg-white/10 px-4 py-3 transition hover:bg-white/20"
-                >
-                  <span class="block font-medium leading-snug text-white">{post.data.title}</span>
-                  <time datetime={post.data.pubDate.toISOString()} class="mt-1 block text-xs text-brand-200">
-                    {postFmt.format(post.data.pubDate)}
-                  </time>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
+  <!-- Bewusst im normalen Seitenlayout statt als dunkler Block: der Blog ist
+       kein Angebot, und in der Übersicht oben steht er aus demselben Grund
+       als schmale Leiste unter den drei Bereichen. Ein Kasten, der lauter ist
+       als alles andere auf der Seite, widerspricht dieser Reihenfolge. -->
+  <Section
+    id="blog"
+    background="muted"
+    eyebrow="Blog"
+    title="Mein persönlicher Blog"
+    lead="Gedanken zu Themen, die mich umtreiben – IT-Sicherheit, KI, IT in der Bildung und eigene Tech-Projekte. Für Professionals, Lehrkräfte, Eltern, Schüler:innen und Neugierige."
+  >
+    <ul class="mx-auto grid max-w-4xl gap-4 sm:grid-cols-3">
+      {
+        latestPosts.map((post) => (
+          <li>
+            <a
+              href={postPath(post.id)}
+              class="group flex h-full flex-col rounded-2xl border border-ink-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md"
+            >
+              <time datetime={post.data.pubDate.toISOString()} class="text-xs text-ink-500">
+                {postFmt.format(post.data.pubDate)}
+              </time>
+              <span class="mt-2 flex-1 font-semibold leading-snug text-ink-900 group-hover:text-brand-700">
+                {post.data.title}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-8 text-center">
+      <a
+        href={PATHS.blog}
+        class="inline-flex items-center gap-2 rounded-lg border border-ink-200 bg-white px-5 py-3 text-sm font-medium text-ink-800 shadow-sm transition hover:border-brand-300 hover:text-brand-700"
+      >
+        Alle Beiträge
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
     </div>
   </Section>
 
   <!-- KONTAKT -->
   <Section
     id="kontakt"
-    background="muted"
     eyebrow="Kontakt"
     title="Lassen Sie uns sprechen"
     lead="Ein Vortrag, ein Workshop,  eine Zusammenarbeit oder einfach eine Frage – eine kurze Nachricht genügt. Ich melde mich werktags innerhalb von 48 Stunden."
@@ -553,6 +629,7 @@ const weitereThemen = [
   <!-- PRESSE / REDNERPROFIL -->
   <Section
     id="presse"
+    background="muted"
     eyebrow="Presse & Rednerprofil"
     title="Material für Veranstalter & Presse"
     lead="Kurzbio, Foto und Rednerprofil – das Wichtigste auf einen Blick."
@@ -562,7 +639,7 @@ const weitereThemen = [
         <h3 class="font-display text-lg font-semibold text-ink-900">Kurzbio (zum Kopieren)</h3>
         <p class="mt-3 text-sm leading-relaxed text-ink-700">
           Felix Paul ist Informatiker und Mathematiker mit Schwerpunkt IT Security, KI und Cloud. Hauptberuflich ist er
-          Enterprise Architect bei der Atruvia AG, dem IT-Dienstleister der genossenschaftlichen Banken. Daneben ist er auch freiberuflich sehr aktiv. 
+          Solution Architect bei der Atruvia AG, dem IT-Dienstleister der genossenschaftlichen Banken. Daneben ist er auch freiberuflich sehr aktiv. 
           Als Keynote-Speaker spricht er auf Konferenzen, an Universitäten
           und in Unternehmen über IT-Security, KI und weitere IT-Themen. Außerdem hält er Vorträge an Schulen, vertreibt eigene Softwareprodukte und 
           veröffentlichte ein Buch über Post-Quanten-Kryptographie bei Springer.

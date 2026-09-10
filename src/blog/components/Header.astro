@@ -1,16 +1,18 @@
 ---
-// Blog branding on the shared header. Layout, mobile menu and nav behaviour
-// live once in src/components/SiteHeader.astro.
+// The blog keeps its own wordmark and favicon, but uses the site navigation.
+// Before this it had no nav at all: a reader arriving from search could reach
+// the contact form and nothing else — not the workshops the posts are about.
 import SiteHeader from "../../components/SiteHeader.astro";
-import { PATHS } from "../../consts";
+import { PATHS, NAV } from "../../consts";
 import { BLOG } from "../consts";
 ---
 
 <SiteHeader
   home={BLOG.base}
+  anchorBase={PATHS.home}
   logo={BLOG.logo}
   logoAlt="Felix Paul – Blog"
   wordmark={BLOG.name}
-  width="max-w-5xl"
+  nav={NAV}
   cta={{ href: PATHS.kontakt, label: "Kontakt" }}
 />

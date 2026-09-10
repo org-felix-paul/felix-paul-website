@@ -232,7 +232,7 @@ Man muss kein SEO-Geheimwissen kaufen. Eine schnelle, korrekt ausgezeichnete Sei
 
 ## Einen Workshop buchen
 
-Du möchtest verstehen, wie deine eigene (oder die schulische) Website gefunden wird – im klassischen Google *und* von KI-Antwortmaschinen? Ich biete dazu praxisnahe Workshops an, in denen wir die Pipeline an einer echten Website durchgehen. Wenn das für dich oder deine Schüler:innen interessant ist, [melde dich](/#kontakt) oder sieh dir das Programm auf [felix-paul.de/education](/education/) an.
+Du möchtest verstehen, wie deine eigene (oder die schulische) Website gefunden wird – im klassischen Google *und* von KI-Antwortmaschinen? Ich biete dazu praxisnahe Workshops an, in denen wir die Pipeline an einer echten Website durchgehen. Wenn das für dich oder deine Schüler:innen interessant ist, [melde dich](/#kontakt) oder sieh dir das Programm auf [felix-paul.de/schools](/schools/) an.
 
 ---
 

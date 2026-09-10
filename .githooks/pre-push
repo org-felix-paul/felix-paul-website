@@ -1,0 +1,18 @@
+#!/bin/sh
+# Verhindert, dass gebrochene interne Links live gehen.
+#
+# Einmalig aktivieren:   git config core.hooksPath .githooks
+# Einmalig überspringen: git push --no-verify
+set -e
+
+echo "pre-push: astro check + build + Linkprüfung …"
+npm run --silent check >/dev/null
+npm run --silent build >/dev/null
+node scripts/check-links.mjs || {
+  echo ""
+  echo "pre-push abgebrochen: gebrochene interne Links (siehe oben)."
+  echo "Entweder den Link reparieren oder — wenn er wirklich nicht zu retten"
+  echo "ist — mit Begründung in die KNOWN-Liste in scripts/check-links.mjs."
+  exit 1
+}
+echo "pre-push: ok"

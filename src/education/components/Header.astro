@@ -1,8 +1,29 @@
 ---
-// Education branding on the shared header.
+// The schools pages navigate the schools area — their own sections and the
+// practice page. Everything else on the site is folded into one dropdown, so
+// the bar makes clear this page is for schools rather than competing with the
+// rest of the site. The wordmark and favicon stay section-specific.
 import SiteHeader from "../../components/SiteHeader.astro";
 import { SITE, PATHS } from "../../consts";
-import { EDU, EDU_PATHS, NAV } from "../consts";
+import { EDU, EDU_PATHS } from "../consts";
+
+const nav = [
+  { href: "#angebote", label: "Angebote", spy: "angebote" },
+  { href: "#preise", label: "Preise", spy: "preise" },
+  { href: "#ablauf", label: "Ablauf", spy: "ablauf" },
+  { href: EDU_PATHS.insights, label: "Workshops & Materialien" },
+  {
+    label: "Mehr von Felix Paul",
+    items: [
+      { href: PATHS.home, label: "Startseite" },
+      { href: PATHS.speaking, label: "Keynotes & Fachvorträge" },
+      { href: PATHS.companies, label: "Für Unternehmen & Universitäten" },
+      { href: PATHS.individuals, label: "Für Privatpersonen" },
+      { href: PATHS.software, label: "Software" },
+      { href: PATHS.blog, label: "Blog" },
+    ],
+  },
+];
 ---
 
 <SiteHeader
@@ -10,6 +31,6 @@ import { EDU, EDU_PATHS, NAV } from "../consts";
   logo={EDU.logo}
   logoAlt="Felix Paul – Teaching"
   wordmark={`Teaching@${SITE.name}`}
-  nav={NAV}
+  nav={nav}
   cta={{ href: PATHS.kontakt, label: "Anfrage senden" }}
 />

@@ -196,7 +196,7 @@ flowchart TD
 
 ## Einen Workshop buchen
 
-Du möchtest mit deiner Klasse oder dem Kollegium praktisch durchgehen, wie Tracking technisch funktioniert – und wie man sich schützt? Ich biete dazu Workshops an, in denen wir den Request-Wasserfall live auseinandernehmen und Schutzmaßnahmen einrichten. Wenn das für dich interessant ist, [melde dich](/#kontakt) oder sieh dir das Programm auf [felix-paul.de/education](/education/) an.
+Du möchtest mit deiner Klasse oder dem Kollegium praktisch durchgehen, wie Tracking technisch funktioniert – und wie man sich schützt? Ich biete dazu Workshops an, in denen wir den Request-Wasserfall live auseinandernehmen und Schutzmaßnahmen einrichten. Wenn das für dich interessant ist, [melde dich](/#kontakt) oder sieh dir das Programm auf [felix-paul.de/schools](/schools/) an.
 
 ---
 

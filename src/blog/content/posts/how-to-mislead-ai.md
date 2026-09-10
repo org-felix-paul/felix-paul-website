@@ -210,7 +210,7 @@ Für Schule und Alltag ist die Lehre einfacher und wichtiger zugleich: KI ist ke
 
 ## Einen Workshop buchen
 
-Du möchtest Prompt Injection nicht nur erklärt bekommen, sondern selbst sehen, wie eine Empfehlung umkippt? In meinem Workshop ist die *prompt-injection-demo* ein anfassbares Werkzeug: zwei Produktseiten, ein Assistent, und du baust den versteckten Befehl selbst ein. Ich biete Workshops für eine einzelne Klasse, einen ganzen Jahrgang oder das Kollegium an, auf Deutsch oder Englisch. [Melde dich](/#kontakt) oder sieh dir das vollständige Programm auf [felix-paul.de/education](/education/) an.
+Du möchtest Prompt Injection nicht nur erklärt bekommen, sondern selbst sehen, wie eine Empfehlung umkippt? In meinem Workshop ist die *prompt-injection-demo* ein anfassbares Werkzeug: zwei Produktseiten, ein Assistent, und du baust den versteckten Befehl selbst ein. Ich biete Workshops für eine einzelne Klasse, einen ganzen Jahrgang oder das Kollegium an, auf Deutsch oder Englisch. [Melde dich](/#kontakt) oder sieh dir das vollständige Programm auf [felix-paul.de/schools](/schools/) an.
 
 ---
 

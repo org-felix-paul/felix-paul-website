@@ -1,0 +1,169 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Section from "../components/Section.astro";
+import { PATHS } from "../consts";
+
+// Drei Zuschnitte, weil sich die Frage je nach Größe der Organisation
+// grundlegend unterscheidet: die einzelne Rolle, das ganze Unternehmen, oder
+// ein konkreter Engpass im Konzern. Bewusst ohne Pakete, Dauer oder Preise —
+// das entsteht im Gespräch.
+type Accent = "brand" | "emerald" | "amber";
+
+const zuschnitte: {
+  label: string;
+  title: string;
+  text: string;
+  accent: Accent;
+  wide?: boolean;
+}[] = [
+  {
+    label: "Einzelpersonen & Führungskräfte",
+    title: "Die eigene Rolle",
+    text: "Eine arbeits- und rollenspezifische Analyse: Wo macht KI die eigenen Abläufe effizienter, wo lassen sie sich neu denken, und was lässt sich sinnvoll automatisieren? Für einzelne Führungskräfte ebenso wie für ein kleines Leitungsteam.",
+    accent: "brand",
+  },
+  {
+    label: "Kleine & mittelständische Unternehmen",
+    title: "Der Blick aufs Ganze",
+    text: "In dieser Größe ist der ganzheitliche Blick noch möglich: Prozesse, Werkzeuge und Verantwortlichkeiten gemeinsam durchgehen und entscheiden, wo KI wirklich trägt – und wo sie nur Aufwand erzeugt.",
+    accent: "emerald",
+  },
+  {
+    label: "Großkonzerne",
+    title: "Ein Engpass, konkret",
+    text: "Statt der Gesamtschau eine gezielte Analyse des tatsächlichen Schmerzpunkts – meist die Frage, wie sich KI über viele Bereiche hinweg skalieren lässt: Integrationspattern, Verfügbarkeit und Auswahl von Werkzeugen, Governance.",
+    accent: "amber",
+    wide: true,
+  },
+];
+
+// Wiederkehrende Grundlagen, die in fast jedem Gespräch auftauchen. Als HTML,
+// damit die Trifecta auf den Blogpost verweisen kann, in dem sie mit Quelle
+// erklärt ist – statt sie hier ein zweites Mal auszuformulieren.
+const grundlagen = [
+  `Die <strong>Lethal Trifecta</strong> (Simon Willison): Ein Agent wird gefährlich, sobald Zugriff auf
+   sensible Daten, ungeprüfte Inhalte und ein Kanal nach außen zusammenkommen – und wie man diese
+   Kombination in der eigenen Landschaft auseinanderhält.
+   <a href="${PATHS.blog}how-to-mislead-ai/" class="font-medium text-brand-700 underline underline-offset-2 hover:text-brand-900">Ausführlich im Blog</a>`,
+  `<strong>Identity &amp; Access Management im KI-Umfeld:</strong> Wer darf welche Modelle mit welchen
+   Daten nutzen – und wie weist man das nach?`,
+  `<strong>Überblick behalten:</strong> Welche Werkzeuge, MCP-Server und Agenten gibt es überhaupt, wer
+   betreibt sie, wer darf sie nutzen, und wie kommen neue kontrolliert dazu?`,
+  `<strong>Integrationspattern:</strong> wann eine API reicht, wann ein Agent trägt, und wann beides die
+   falsche Antwort ist.`,
+  `<strong>Governance, die mitwächst</strong> statt zu bremsen – Leitplanken, die auch dann noch
+   funktionieren, wenn nicht mehr eine Handvoll Teams beteiligt sind.`,
+  `<strong>Kostenmanagement:</strong> Verbrauch sichtbar machen, etwa über Snapshots der Anwendungen mit
+   KI-Bezug, bevor die Rechnung die Diskussion führt.`,
+  `<strong>Schatten-IT:</strong> warum sie im KI-Kontext besonders schnell entsteht und wie man ihr
+   begegnet, ohne alles zu verbieten.`,
+];
+
+const styles = {
+  brand: { bar: "bg-brand-500", chip: "bg-brand-50 text-brand-800" },
+  emerald: { bar: "bg-emerald-500", chip: "bg-emerald-50 text-emerald-800" },
+  amber: { bar: "bg-amber-500", chip: "bg-amber-50 text-amber-800" },
+};
+---
+
+<Layout
+  title="Bildungsangebote für Unternehmen & Universitäten"
+  description="Workshops, Vorträge und Fortbildungen für Unternehmen und Universitäten – zugeschnitten auf Rolle und Organisation, vom Einzelgespräch bis zum Konzernthema. Auf Anfrage."
+>
+  <Section
+    as="h1"
+    eyebrow="Bildungsangebote"
+    title="Für Unternehmen & Universitäten"
+    lead="Workshops, Vorträge und Fortbildungen, zugeschnitten auf die Rolle und die Organisation. Was passt, hängt stark von der Größe ab – deshalb drei Zuschnitte statt eines Katalogs."
+  >
+    <div class="grid gap-6 md:grid-cols-2">
+      {
+        zuschnitte.map((z) => {
+          const s = styles[z.accent];
+          return (
+            <article
+              class:list={[
+                "relative flex flex-col overflow-hidden rounded-2xl border border-ink-200 bg-white p-6 shadow-sm",
+                z.wide && "md:col-span-2",
+              ]}
+            >
+              <span class={`absolute inset-x-0 top-0 h-1 ${s.bar}`} aria-hidden="true" />
+              <span class={`inline-flex w-fit rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider ${s.chip}`}>
+                {z.label}
+              </span>
+              <h2 class="mt-3 text-lg font-semibold text-ink-900">{z.title}</h2>
+              <p class="mt-2 text-sm leading-relaxed text-ink-600">{z.text}</p>
+            </article>
+          );
+        })
+      }
+    </div>
+
+    <div class="mt-6 rounded-2xl border border-ink-200 bg-white p-6 shadow-sm">
+      <h2 class="text-sm font-semibold uppercase tracking-wider text-ink-500">
+        Grundlagen, die fast immer dazugehören
+      </h2>
+      <ul class="mt-4 space-y-2 text-sm text-ink-700">
+        {
+          grundlagen.map((g) => (
+            <li class="flex items-start gap-2">
+              <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-brand-500" aria-hidden="true" />
+              <span set:html={g} />
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-4 text-sm leading-relaxed text-ink-600">
+        Darüber hinaus lassen sich alle Themen aus
+        <a href={PATHS.speaking} class="font-medium text-brand-700 underline underline-offset-2 hover:text-brand-900">
+          Keynotes &amp; Fachvorträgen
+        </a>
+        auch als Workshop halten – KI, IT-Sicherheit, Cloud, Identity &amp; Access Management und Kryptographie.
+      </p>
+    </div>
+
+    <!-- Fachlich tiefer Zuschnitt. Vor allem für Hochschulen relevant, wo ein
+         Gastvortrag eher Vorlesungsniveau als Awareness-Workshop ist — aber
+         auch für Architektur- und Plattformteams. -->
+    <div class="mt-6 rounded-2xl border border-ink-200 bg-white p-6 shadow-sm">
+      <h2 class="text-sm font-semibold uppercase tracking-wider text-ink-500">
+        Fachlich tiefer – vor allem für Hochschulen
+      </h2>
+      <p class="mt-3 text-sm leading-relaxed text-ink-600">
+        Für Vorlesungen, Seminare und Architekturteams geht es weniger um
+        Einordnung als um Mechanik. Dann steigen wir eine Ebene tiefer ein:
+      </p>
+      <ul class="mt-4 space-y-2 text-sm text-ink-700">
+        {
+          [
+            "Identity &amp; Access Management von den Grundlagen her: Authentifizierung, Autorisierung, Föderation – und warum die Begriffe in der Praxis dauernd vermischt werden",
+            "Token-Flows im Detail: Authorization Code mit PKCE, Client Credentials, Device Code – wann welcher, und was jeweils schiefgeht",
+            "Token Exchange (RFC 8693) und Delegation: wie ein Dienst im Namen eines Nutzers weiterruft, ohne dessen Rechte zu erben",
+            "Protokolle im Vergleich: OAuth 2.1, OIDC und SAML – Zuschnitt, Grenzen und die Migrationsfragen dazwischen",
+            "Skalierungsprobleme aus echten Umgebungen: warum KI-Integrationen an Identität, Governance und Betrieb scheitern statt am Modell",
+          ].map((t) => (
+            <li class="flex items-start gap-2">
+              <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-brand-500" aria-hidden="true" />
+              <span set:html={t} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="mt-8 rounded-2xl border border-brand-200 bg-brand-50 p-6 text-center">
+      <h2 class="font-display text-lg font-semibold text-brand-900">Angebote nur auf Anfrage</h2>
+      <p class="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-brand-900">
+        Es gibt hier bewusst keine fertigen Pakete. Zuschnitt, Umfang und Preis ergeben sich aus dem, was
+        Sie erreichen wollen – schreiben Sie mir kurz, worum es geht, und wir klären in einem Gespräch, ob
+        und wie es passt.
+      </p>
+      <a
+        href={PATHS.kontakt}
+        class="mt-5 inline-flex items-center justify-center rounded-lg bg-brand-700 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-brand-800"
+      >
+        Anfrage senden
+      </a>
+    </div>
+  </Section>
+</Layout>

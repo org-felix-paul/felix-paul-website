@@ -164,7 +164,7 @@ Die einzige zulässige Übungsumgebung ist daher: **eigene Infrastruktur, erfund
 
 ## Einen Workshop buchen
 
-Du möchtest erleben, wie eine Phishing-Seite entsteht – sicher, offline und ohne reale Opfer? In meinem Workshop bauen die Teilnehmenden mit GoPhish, einem lokalen „SchoolPortal" und MailHog selbst eine harmlose Übungsseite und verstehen danach genau, worauf sie achten müssen. Ich biete Workshops für eine einzelne Klasse, einen ganzen Jahrgang oder das Kollegium an, auf Deutsch oder Englisch. [Melde dich](/#kontakt) oder sieh dir das vollständige Programm auf [felix-paul.de/education](/education/) an.
+Du möchtest erleben, wie eine Phishing-Seite entsteht – sicher, offline und ohne reale Opfer? In meinem Workshop bauen die Teilnehmenden mit GoPhish, einem lokalen „SchoolPortal" und MailHog selbst eine harmlose Übungsseite und verstehen danach genau, worauf sie achten müssen. Ich biete Workshops für eine einzelne Klasse, einen ganzen Jahrgang oder das Kollegium an, auf Deutsch oder Englisch. [Melde dich](/#kontakt) oder sieh dir das vollständige Programm auf [felix-paul.de/schools](/schools/) an.
 
 ---
 

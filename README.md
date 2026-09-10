@@ -15,7 +15,10 @@ npm install
 npm run dev       # http://localhost:4321
 npm run build     # -> dist/
 npm run preview   # serve dist/ locally
-npm run check     # astro check (types + diagnostics)
+npm run check       # astro check (types + diagnostics)
+npm run check:links # broken internal links, resolved the way the host does
+npm run check:links -- --live   # additionally fetch every page from the live site
+npm run verify      # check + build + link check, all three
 npm run slug -- "Ein Titel"   # slug helper for new blog posts
 ```
 
@@ -53,6 +56,82 @@ The four areas of the business — Keynotes & Fachvorträge, Bildungsangebote,
 Software, Blog — are declared once as `AREAS` in `src/consts.ts` and reused by
 the footer and the overview block, so the same four labels appear everywhere.
 
+## Setting up a clone
+
+```bash
+git clone git@github.com:org-felix-paul/official-representation.git
+cd official-representation
+npm install
+git config core.hooksPath .githooks   # ← do not skip this
+```
+
+**Why that last line is needed.** Git's own hook directory is `.git/hooks/`,
+which is never cloned or pushed — anything in there stays on one machine. So
+the hook lives in `.githooks/`, a normal tracked folder that *does* travel with
+the repo, and `core.hooksPath` tells git to look there instead.
+
+The config itself is per-clone and is deliberately not synced: a repo you clone
+must not be able to run code on your machine without you opting in. So the
+script arrives automatically, the activation does not. **On every new machine,
+run that one command.**
+
+Check it is active:
+
+```bash
+git config --get core.hooksPath     # should print: .githooks
+```
+
+## Before pushing
+
+With the hook active, `git push` first runs `.githooks/pre-push`:
+
+```
+npm run check      # astro check — types and diagnostics
+npm run build      # produces dist/
+node scripts/check-links.mjs        # link check against that fresh build
+```
+
+Roughly 25–30 seconds, almost all of it the build. It runs on **push**, not on
+commit — committing work in progress stays free.
+
+**If anything fails, the push is aborted** and nothing reaches the remote; the
+commits stay local until it is fixed. Git's rule is just exit code 0 = proceed,
+anything else = stop. A typical failure:
+
+```
+  /impressum/
+    → /gibt-es-nicht/
+      404 – keine Datei, die ausgeliefert würde
+
+pre-push abgebrochen: gebrochene interne Links (siehe oben).
+```
+
+Fix the link, or — if it genuinely cannot be repaired — add it to `KNOWN` in
+`scripts/check-links.mjs` with a reason.
+
+### Skipping the hook
+
+```bash
+git push --no-verify
+```
+
+Skips every pre-push hook. Legitimate when you need the commits on the remote
+and know what the check would say — for instance pushing a branch that is not
+deployed. Do not make it a habit on `main`: this site deploys straight from
+`main`, so whatever passes here goes live.
+
+**Why a custom link checker.** "Does the file exist?" is the wrong question: a
+folder without an `index.html` exists on disk but is served as a 404. That is
+exactly how `/projects/neck/css` slipped through. `scripts/check-links.mjs`
+resolves every link the way the host does — trailing slash, implicit
+`.html`, implicit `index.html`, folder-without-index — checks relative links
+too, covers the reference projects under `/projects/`, and verifies that
+`#anchors` exist on the page they point at.
+
+Links that genuinely cannot be repaired live in the `KNOWN` list at the top of
+that script, each with a reason. One of them is deliberate: a Codenight page
+about alt texts shows a missing image on purpose.
+
 ## Deploy
 
 Cloudflare Pages, git-connected: push to `main` → build → live. Build command
@@ -72,7 +151,7 @@ all-manual and free — no tooling to install. Deeper strategy (content, E-E-A-T
 GEO) lives in `administration/discussions/seo.md`; this is the mechanical check
 for *this* repo.
 
-## A. Before pushing — checks against `dist/`
+## A. Manual checks against `dist/`
 
 ```bash
 npm run build
@@ -100,21 +179,17 @@ PY
 Zero output before `done` = pass. A page with no H1 usually means a `Section`
 that should carry `as="h1"` doesn't.
 
-**2. No broken internal links**
+**2. No broken internal links** — automated, nothing to do here
 
 ```bash
-python3 - <<'PY'
-import re, pathlib, urllib.parse
-d = pathlib.Path("dist")
-ok = lambda u: (d/urllib.parse.unquote(u.lstrip("/"))).is_file() or (d/urllib.parse.unquote(u.lstrip("/"))/"index.html").is_file() or u == "/"
-bad = 0
-for p in d.rglob("*.html"):
-    if "projects" in p.relative_to(d).parts: continue
-    for u in re.findall(r'(?:href|src)="(/[^"#?]*)', p.read_text(errors="ignore")):
-        if not ok(u): print(f"  BROKEN {p.relative_to(d)} -> {u}"); bad += 1
-print(f"done ({bad} broken)")
-PY
+npm run check:links
 ```
+
+This runs on every push via `.githooks/pre-push`. An earlier version of this
+checklist had an inline script for it; it was removed because it asked "does
+the path exist", which treats a folder without an `index.html` as valid when
+the host serves it as a 404. `scripts/check-links.mjs` resolves links the way
+the host does instead.
 
 **3. Meta descriptions present and 120–160 characters**
 

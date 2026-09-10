@@ -762,3 +762,526 @@ penalty — Google simply truncates the snippet, and often writes its own
 anyway — so this is a display question, not a defect. The worst are
 `how-to-mislead-ai` (247), `how-easy-is-it-to-fall-for-phishing` (240) and
 `social-media-ai-smartphone-elternabend` (240).
+
+---
+
+## 15. Ninth pass — audience band and two new formats
+
+### "Nicht nur für Schulen" band
+
+The offers are written for the school context, which made the whole section
+read as school-only. A static band now sits **above** the offer grid on both
+`/education/` and the home page's `#bildung`, in three columns: Schulen &
+Lehrkräfte, Privatpersonen, Unternehmen — the last linking to `#speaking`,
+since a company can book the keynote topics as a workshop.
+
+It is one component (`src/education/components/ZielgruppenHinweis.astro`)
+rendered in both places, **verified byte-identical**, so the two pages cannot
+drift. Green ground against the white offer cards, so it reads as framing
+rather than as a seventh offer.
+
+The adjacent heading was updated to match: "Angebote für Schulen, Lehrkräfte,
+Eltern und Erwachsene" → "Angebote für Schulen, Unternehmen und
+Privatpersonen".
+
+### Two new offers, and the AG format
+
+| entry | order | note |
+|---|---|---|
+| `vibe-coding-ag.md` | 6 | Programmieren mit KI — AG, Projekttag oder Kompaktkurs |
+| `zehnfingersystem-kurs.md` | 7 | Blind tippen — AG oder Kompaktkurs |
+
+Both name the **AG über ein Halbjahr** explicitly in `dauer` and in the Format
+section, which is what puts the recurring-AG format on the site at all; the
+existing five are all one-off events.
+
+Two icons were added to `AngebotCard` for them (`code`, `keyboard`).
+
+**`preis` is "auf Anfrage" on both** — deliberately. Duration and price for an
+AG depend on term length and group size, and inventing numbers for offers that
+have not been priced would be worse than leaving the field honest. The price
+table on `/education/` picks the value up automatically and shows "auf
+Anfrage"; replace it with a range whenever the figures exist.
+
+Both offers appear on `/education/`, in the price table, on the home page's
+`#bildung`, and in the sitemap — all of it from the one collection, no
+manual wiring.
+
+### Still school-framed
+
+`/education/`'s "Warum ich" heading still reads "Doppelqualifikation, die
+Schulen heute brauchen". It sits well below the band and is positioning copy
+rather than an offer description, so it was left alone — but it is the one
+remaining place where the page contradicts the new framing.
+
+---
+
+## 16. Tenth pass — school-first ordering, contrast, blog prominence
+
+Context: schools are the target for the current outreach; adult education and
+companies come later. That sequencing decides several of these.
+
+### The "Warum ich" suggestion was withdrawn
+
+§15 flagged "Doppelqualifikation, die Schulen heute brauchen" as inconsistent
+with the wider framing. **Left exactly as it is.** It is the sharpest sentence
+on the page for the buyer being chased right now, and M.Ed. + M.Sc. Informatik
+is a specific, evidenced claim. Widening it would trade that for a vague one,
+in exchange for a segment with no customers yet. Revisit when company outreach
+actually starts.
+
+### Audience block: position now differs by page, on purpose
+
+- **`/education/` — below the offers.** This is the page linked in school
+  outreach. Opening it with a headline saying "Nicht nur für Schulen" told the
+  primary target the page was not specifically for them. Now: offers in their
+  terms first, the wider applicability after.
+- **Home page — above the offers.** That page serves a mixed audience, so
+  naming who the formats are for belongs up front.
+
+Same component, same text, one source. Only the position differs, because the
+two pages have different jobs.
+
+The heading changed from the negation "Nicht nur für Schulen" to
+"Auch außerhalb der Schule".
+
+### Contrast fixed
+
+The block was `emerald-900/80` on `emerald-50` — translucent dark text on a
+tinted ground, genuinely hard to read. Now white cards with a coloured top bar
+and a solid-colour label chip, matching the pillar cards. No translucent text
+remains in the section.
+
+Each audience carries the colour it already has elsewhere on the site, so the
+colours mean something rather than merely differing:
+
+| audience | colour | why |
+|---|---|---|
+| Schulen & Lehrkräfte | emerald | the education area in the overview strip |
+| Unternehmen | brand blue | Keynotes & Fachvorträge, where the company topics live |
+| Privatpersonen | amber | the third pillar |
+
+### Home page shows two offers, not seven
+
+The catalogue grew from five to seven, which made `#bildung` the heaviest block
+on a page where education is one of three areas — and it reproduced nearly all
+of `/education/`, leaving little reason to click through.
+
+Now: the audience cards, the first two offers, and a **"+5 weitere Angebote"**
+tile as the third cell of the row — a visible route rather than a link under
+the cards. 183 → 133 words.
+
+This narrows §12's reasoning rather than reversing it: the point there was
+that education must not look thinner than the five keynote topics. The
+audience cards plus the counted tile carry that now, and the offers still
+appear by name — just on the page built to convert them.
+
+### Blog block toned down
+
+It was a dark blue gradient card, the loudest element on the page — while the
+overview strip deliberately renders the blog as a quiet grey row because it is
+not an offer. The page contradicted its own hierarchy.
+
+Now a normal section in the page rhythm: three post cards and an "Alle
+Beiträge" button. Same content, same three posts, no shouting.
+
+---
+
+## 17. Eleventh pass — audience pages
+
+### Structure
+
+Bildungsangebote is now three pages, one per audience, and the header entry
+became a dropdown rather than a fourth and fifth top-level tab:
+
+```
+Keynotes & Fachvorträge | Bildungsangebote ▾        | Blog | Mehr ▾ | [Kontakt]
+                          ├ Überblick (#bildung)
+                          ├ Schulen & Lehrkräfte  /education/
+                          ├ Unternehmen & Universitäten  /unternehmen/
+                          └ Privatpersonen  /privatpersonen/
+```
+
+`/education/` is **unchanged** and stays school-first: school offers, then the
+"Auch außerhalb der Schule" block below them, "Doppelqualifikation, die
+Schulen heute brauchen" intact. The two new pages are siblings, not children,
+so nothing dilutes the page used for school outreach.
+
+The audience cards now each link to their own page instead of being text only.
+
+### Wording
+
+The generic description is "Workshops, Vorträge und Fortbildungen – für
+Schulen, Universitäten, Unternehmen und Privatpersonen" — no topics named at
+that level. Topics still appear on `/education/`, where they are the offer.
+
+### `/unternehmen/`
+
+Three cuts, because the question differs fundamentally with organisation size:
+
+| cut | question it answers |
+|---|---|
+| Einzelpersonen & Führungskräfte | the individual role: where does AI make my own work faster, what can be automated |
+| Kleine & mittelständische Unternehmen | the whole company is still small enough to see at once |
+| Großkonzerne (full width) | one real bottleneck, usually scaling: integration patterns, tool availability, governance |
+
+Plus a "Grundlagen" list — IAM in the AI context, governance that scales, cost
+visibility via snapshots of AI-touching applications, shadow IT, integration
+patterns — and a pointer that every keynote topic can be held as a workshop.
+
+### `/privatpersonen/`
+
+Framed as Erwachsenenbildung: understand what actually happens, find your own
+use, stay safe, stay employable as the market shifts. Points back at
+`/education/` for the courses that transfer directly (Zehnfingersystem, Vibe
+Coding).
+
+### Both pages
+
+No packages, no durations, no prices — a short "Angebote nur auf Anfrage"
+block with a link to the contact form instead. That was the explicit brief and
+it is also the honest state: neither audience has a customer yet.
+
+### Open
+
+One topic from the brief could not be transcribed with confidence — something
+like "wie begegnet man dem …-Effekt" in the company context. Not guessed at,
+so it is missing from the Grundlagen list.
+
+---
+
+## 18. Twelfth pass — blog anchor, and the company fundamentals
+
+### Blog links land on the section first
+
+In the header bar and in the overview strip, "Blog" pointed straight at
+`/blog/` while every neighbouring entry was an anchor into the home page. Both
+are now `#blog`, so the behaviour matches: you land on the teaser section, and
+the section's own "Alle Beiträge" button takes you to the blog. From a
+sub-page the anchor resolves to `/#blog` as usual.
+
+The footer still links `/blog/` directly — a footer is a list of destinations,
+not a tour of the current page.
+
+### `/unternehmen/` fundamentals, expanded
+
+Now seven entries, led by the **Lethal Trifecta** — Simon Willison's
+observation that an agent turns dangerous once access to sensitive data,
+exposure to untrusted content, and an outbound channel meet. It is not
+re-explained here: the item links to `how-to-mislead-ai`, where it already
+appears with the source. Same reason the offers are not duplicated on the home
+page — one place per fact.
+
+The rest: IAM in the AI context, keeping an overview of tools / MCP servers /
+agents and who may use them, integration patterns (API vs. agent vs. neither),
+governance that scales, cost visibility via snapshots, and shadow IT.
+
+The list items are HTML strings rendered with `set:html`, which is what allows
+the inline link. Fine here because the content is authored in the file, not
+user input.
+
+---
+
+## 19. Thirteenth pass — naming the excerpt, folding the footer
+
+### The home-page excerpt says whose workshops it shows
+
+`#bildung` opens with three audience cards (Schulen, Unternehmen,
+Privatpersonen) and then shows two offers. Those two are school workshops, but
+nothing said so — after three audiences, a reader could reasonably take them
+for the whole catalogue across all three.
+
+Added above the tiles: **"Ein Ausschnitt aus den Workshops für Schulen"**, and
+the surrounding labels now name the audience too — "+5 weitere
+Schulworkshops", "Alle Schulworkshops ansehen", "Einblicke aus
+Schulworkshops".
+
+### Footer folded back to five rows
+
+Three separate "Bildungsangebote: …" rows had grown the footer to seven
+destinations. `Area` gained an optional `items`, so Bildungsangebote is one row
+with its three audience pages indented beneath it behind a left rule:
+
+```
+Startseite                 Software
+Keynotes & Fachvorträge    Blog
+Bildungsangebote
+  │ Schulen & Lehrkräfte
+  │ Unternehmen & Universitäten
+  │ Privatpersonen
+```
+
+The parent links to `#bildung` — the overview on the home page — so the row is
+a real destination rather than a dead label. Still one component with no props,
+verified byte-identical across all 24 pages.
+
+---
+
+## 20. Fourteenth pass — English routes, shared navigation
+
+### Route segments are English and name the audience
+
+`/education/` was named after the topic while `/companies/` and
+`/individuals/` named the audience, and the German segments sat oddly next to
+the English ones. Rule applied: **route segments are structure, so English;
+visible copy stays German.**
+
+| was | now |
+|---|---|
+| `/education/` | `/schools/` |
+| `/education/angebote/<slug>/` | `/schools/workshops/<slug>/` |
+| `/education/projekte/` | `/schools/insights/` |
+| `/unternehmen/` | `/companies/` |
+| `/privatpersonen/` | `/individuals/` |
+
+**Two deliberate exceptions.** `/impressum/` and `/datenschutz/` stay German:
+those are the terms German visitors and authorities look for, and an English
+rename would cost recognition for nothing. The workshop slugs
+(`ki-lehrerworkshop`, …) stay German too — they are the offers' own names, not
+structure.
+
+`public/education/` moved to `public/schools/` so the section's assets match
+its URL. The source folder `src/education/` keeps its name: it holds the whole
+education domain, including the components shared by all three audience pages.
+
+Old URLs are covered by 301s in `public/_redirects`, including a splat rule for
+the workshop slugs. Seven hardcoded `/education/` links in blog posts and one
+news entry were repointed rather than left to bounce through a redirect.
+`llms.txt` now lists all three audience pages.
+
+### One navigation for the whole site
+
+The blog header had **no nav at all** — a reader arriving from search could
+reach the contact form and nothing else, not even the workshops the post was
+about. The schools header had only Start/Einblicke, with no way back to the
+main site. Both used the footer as their only escape.
+
+Both now use the site navigation while keeping their own wordmark and favicon,
+so the section still feels like itself. The schools bar prepends its own
+"Einblicke". No "Startseite" tab is needed, because the shared bar has none.
+
+### A bug this introduced, and the fix
+
+Sharing the nav broke the anchors: `SiteHeader` prefixed in-page anchors with
+its `home` prop, so `#speaking` became `/blog/#speaking` on a blog post and
+`/schools/#speaking` on a schools page — pointing at sections those pages do
+not have. The link checker missed it because `/blog/#speaking` strips to
+`/blog/`, which exists.
+
+`SiteHeader` now takes **`anchorBase`** separately from `home`: `home` is where
+the brand mark links, `anchorBase` is the page that owns the anchors. The blog
+and schools headers pass `/`. All cross-page anchors resolve again.
+
+### `/companies/`: technical depth for universities
+
+Rather than a third audience page, the university angle became a section on
+the existing page — IAM from first principles, token flows (Authorization Code
+with PKCE, Client Credentials, Device Code), Token Exchange (RFC 8693) and
+delegation, OAuth 2.1 / OIDC / SAML compared, and why AI integrations fail on
+identity and operations rather than on the model.
+
+---
+
+## 21. Fifteenth pass — schools navigation, mermaid rendering
+
+### The schools bar navigates the schools area
+
+Giving every section the site navigation (§20) made the schools bar too full
+and stopped signalling that the page is for schools. It now navigates the
+schools area itself, with everything else folded into one dropdown:
+
+```
+Angebote │ Preise │ Ablauf │ Aus der Praxis │ Mehr von Felix Paul ▾ │ [Anfrage senden]
+                                                ├ Startseite
+                                                ├ Keynotes & Fachvorträge
+                                                ├ Für Unternehmen & Universitäten
+                                                ├ Für Privatpersonen
+                                                └ Blog
+```
+
+The first three are in-page anchors; four section ids (`preise`, `warum`,
+`haltung`, `ablauf`) had to be added, only `angebote` existed. From
+`/schools/insights/` and the workshop pages they resolve to `/schools/#…`
+because the header's anchor base is the section root there — the blog keeps
+`anchorBase="/"` since it uses the site nav.
+
+"Einblicke" became **"Aus der Praxis"**.
+
+### Mermaid: not a syntax problem
+
+All **31 diagrams parse cleanly** — verified by running `mermaid.parse()`
+against every block headlessly (jsdom, installed with `--no-save` and not
+committed). Two real defects were behind the bad rendering:
+
+**1. Diagrams were shrunk, not scrolled.** `svg { max-width: 100% }` plus
+mermaid's own `useMaxWidth` default scaled every diagram down to the 48rem
+prose column — and on a phone, down to about 360px, where a wide flowchart is
+unreadable. Now `useMaxWidth: false` for flowchart, sequence and xychart, the
+SVG keeps its natural size, and the container scrolls horizontally.
+
+**2. One broken diagram could hide all the others.** The CSS hides
+`.mermaid:not([data-processed])` so raw source never flashes before rendering.
+But `mermaid.run()` stops at the first failure, so every diagram after a bad
+one keeps no `data-processed` attribute — and stays permanently invisible. A
+blank gap, with nothing in the console for a reader to notice.
+
+Now `run()` gets `suppressErrors: true`, and a `finally` block marks anything
+still unprocessed with `data-mermaid-failed`, which the CSS renders as a
+readable monospace block. A diagram that fails degrades to its source instead
+of disappearing.
+
+### Job title
+
+"Enterprise Architect" became "Solution Architect" — Felix's own edit, checked
+across the whole source: five files, no stale occurrence left in the build,
+including the schema.org `jobTitle`.
+
+---
+
+## 22. Sixteenth pass — the practice page, reachable and named
+
+Renamed from "Aus der Praxis" to **"Vergangene Workshops"** — the old label
+said how the content came about rather than what it is, so nobody could tell
+what was behind it.
+
+It is now reachable from every page: added to the **Bildungsangebote dropdown**
+in the site navigation, and as a fourth child under Bildungsangebote in the
+footer. The dropdown rather than the top-level bar, because a fifth top-level
+entry would recreate exactly the crowding that was just fixed on the schools
+bar.
+
+Labels aligned so nav, page and CTA agree: nav "Vergangene Workshops", page
+title "Vergangene Workshops & Projekte", eyebrow "Vergangene Workshops",
+home-page button "Vergangene Workshops ansehen". `PATHS.pastWorkshops` is the
+single definition.
+
+### Worth a decision: the page lists three things, one of which is not a workshop
+
+| entry | actually |
+|---|---|
+| NECK | learning software, built alongside the teaching work |
+| Codenight | genuinely a workshop series (März 2022) |
+| ReadMyBook | a discontinued dSolve Android app — never a workshop |
+
+Under the old vague label this passed. Under "Vergangene Workshops" it is a
+visible mismatch, and it is one this log introduced when ReadMyBook was added
+to that page (§15). Options: widen the page to "Workshops & Projekte", move
+ReadMyBook somewhere else, or leave it and accept that the third card explains
+itself. Not decided here — it is a content call.
+
+### The URL still says insights
+
+`/schools/insights/` no longer matches the label. Left alone rather than
+churning a URL that changed one commit ago; it would need another redirect for
+no reader-visible gain.
+
+---
+
+## 23. Seventeenth pass — the practice page scoped back, Software given a section
+
+### Vergangene Workshops belongs to the schools area
+
+§22 put it in the site-wide dropdown and the footer. Reverted: the page shows
+past **school** workshops, so it is linked from the schools bar and from the
+`#bildung` block on the home page, and nowhere else. Verified: it now appears
+only on `index.html` and the `/schools/` pages.
+
+Relabelled to **"Workshops & Materialien"** (page title: "Vergangene Workshops
+& Materialien"), which covers what is actually on it — Codenight was a workshop
+series, NECK is software that came out of the teaching work, ReadMyBook is a
+reference. That resolves the mismatch §22 flagged without moving anything off
+the page.
+
+### Software was the least represented of the three areas
+
+Measured before changing anything:
+
+| | Keynotes | Bildungsangebote | Software |
+|---|---|---|---|
+| own section on the home page | yes | yes | **no** |
+| entry in the header | yes | yes (dropdown) | **no** |
+| elsewhere | — | 3 audience pages | one strip row, one footer link |
+
+And his own built software — NECK with two handbooks, ReadMyBook — was
+reachable from exactly one page on the whole domain (`/schools/insights/`),
+framed there as workshop material rather than as software.
+
+So yes, under-represented. But a section that only points at d-solve.de would
+have been the weakest block on the page: an outbound link with nothing to show.
+**`#software` shows the software instead** — dSolve (external), NECK (opens in
+the browser, on this domain) and ReadMyBook — so the section has substance.
+
+Software is now **top-level in the bar**, not inside "Mehr": it is one of the
+three business areas, while "Mehr" holds things about Felix (Über mich,
+Publikationen, Aktuelles, Pressekit). The bar is Keynotes & Fachvorträge ·
+Bildungsangebote ▾ · Software · Blog · Mehr ▾.
+
+The overview strip's Software row now anchors to `#software` instead of
+jumping straight to d-solve.de, matching how the other rows behave. And the
+schools "Mehr von Felix Paul" dropdown gained Software, which it was missing
+entirely.
+
+Inserting a section broke the light/dark rhythm again — `#software` and
+`#publikationen` both ended up white. Re-alternated; zero adjacent repeats.
+
+### Note
+
+NECK and ReadMyBook now appear in two places: `#software` (as software he
+built) and `/schools/insights/` (as what came out of the teaching work). Two
+framings of the same artefacts, deliberately — neither list claims to be
+complete.
+
+---
+
+## 24. Eighteenth pass — link checking, and the mobile menu
+
+### Why the 404s were invisible to the old check
+
+It asked "does this path exist in `dist/`". A **folder without an
+`index.html` exists on disk and is served as a 404** — so `/projects/neck/css`
+and `/projects/neck/js` passed locally and failed live. Both were links this
+log created in §20 while "fixing" the NECK handbook: a folder cannot be a page,
+so they are `<code>` spans now.
+
+`scripts/check-links.mjs` resolves links the way the host does — trailing
+slash, implicit `.html`, implicit `index.html`, folder-without-index — follows
+relative links (the old check skipped them entirely), covers the reference
+projects, and verifies `#anchors` exist on the target page. `--live` fetches
+every built page from the deployed site.
+
+**The checker had a bug of its own first.** Relative links on a directory URL
+were resolved against the parent directory, which reported 275 problems. After
+fixing that, the real count was 14 — a reminder to verify the tool before
+acting on its output.
+
+Of those 14: 6 were the NECK links. The remaining 8 are pre-existing gaps in
+the reference projects with no recoverable file, and **one is deliberate** — a
+Codenight page teaching alt texts deliberately shows a missing image. They sit
+in `KNOWN` with a reason each, so the gate can be green without hiding
+anything.
+
+`.githooks/pre-push` runs check, build and link check; `git config
+core.hooksPath .githooks` activates it.
+
+### Mobile menu: groups were flattened
+
+On the phone the dropdowns collapsed into the list, so the four audience pages
+under Bildungsangebote sat at the same level as Software and Blog — twelve
+equal rows with no visible hierarchy.
+
+Groups are `<details>` on mobile now too, closed by default, with their
+children indented behind a left rule in smaller type. **12 rows → 6**, on
+every section:
+
+| | before | after |
+|---|---|---|
+| home / blog | 12 flat | 6 visible, 8 nested |
+| schools | 11 flat | 6 visible, 6 nested |
+
+The desktop bar is unchanged.
+
+### Software section
+
+dSolve is the block; NECK is one sentence underneath as something to try
+without installing; ReadMyBook removed. Two equal cards beside dSolve made a
+section about the company look like a project list.

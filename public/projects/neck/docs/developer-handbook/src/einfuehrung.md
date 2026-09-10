@@ -3,8 +3,8 @@
 ## Wo finde ich was?
 
 - Die Datei [index.html](../../../index.html) ist unser Haupt-Dokument. von hier aus werden alle weiteren Skripte geladen. Die Datei lässt sich direkt im Browser ausführen.
-- Im [css Ordner](../../../css) können individuelle Design-Änderungen via CSS3 vorgenommen werden. Neue Skripte sollten im head-Tag der index.html-Datei verknüpft werden.
-- Im [js Ordner](../../../js) können neue JavaScript Dateien angelegt werden. Diese sollten ganz am Ende des body-Tags geladen werden.
+- Im `css`-Ordner können individuelle Design-Änderungen via CSS3 vorgenommen werden. Neue Skripte sollten im head-Tag der index.html-Datei verknüpft werden.
+- Im `js`-Ordner können neue JavaScript Dateien angelegt werden. Diese sollten ganz am Ende des body-Tags geladen werden.
 
 ***
 

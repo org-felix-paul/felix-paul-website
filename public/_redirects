@@ -1,22 +1,42 @@
 # Cloudflare Pages redirects.
 #
 # The former subdomains (blog., edu., neck., tierparks., codenight.) are gone
-# and their DNS records are deleted, so no redirect can be served for them —
-# they resolve nowhere. Only same-origin moves are handled here.
+# and their DNS records are deleted, so nothing resolves there to redirect
+# from. Everything below is a same-origin move.
 
-# Pages that were removed from the education section before the merge.
-/education/ueber-mich/   /education/         301
-/education/ueber-mich    /education/         301
-/education/angebote/     /education/#angebote 301
+# ── Route segments went English (2026-09) ────────────────────────────────
+# /education/ was named after the topic rather than the audience, which made
+# it inconsistent with /companies/ and /individuals/.
+/education/angebote/*    /schools/workshops/:splat   301
+/education/projekte/     /schools/insights/          301
+/education/projekte      /schools/insights/          301
+/education/              /schools/                   301
+/education               /schools/                   301
+/unternehmen/            /companies/                 301
+/unternehmen             /companies/                 301
+/privatpersonen/         /individuals/               301
+/privatpersonen          /individuals/               301
 
-# Contact and the post-submit page are domain-wide now; the education section
-# no longer keeps its own copies.
-/education/kontakt/      /#kontakt           301
-/education/kontakt       /#kontakt           301
-/education/danke/        /thank-you/         301
-/education/danke         /thank-you/         301
+# ── Pages removed from the education section before the merge ────────────
+/schools/ueber-mich/     /schools/                   301
+/schools/ueber-mich      /schools/                   301
+/schools/angebote/       /schools/#angebote          301
+/education/ueber-mich/   /schools/                   301
+/education/angebote/     /schools/#angebote          301
 
-# Section landing pages without a trailing slash.
-/blog        /blog/        301
-/education   /education/   301
-/projects    /projects/    301
+# ── Contact and the post-submit page are domain-wide ─────────────────────
+/schools/kontakt/        /#kontakt                   301
+/schools/kontakt         /#kontakt                   301
+/schools/danke/          /thank-you/                 301
+/schools/danke           /thank-you/                 301
+/education/kontakt/      /#kontakt                   301
+/education/kontakt       /#kontakt                   301
+/education/danke/        /thank-you/                 301
+/education/danke         /thank-you/                 301
+
+# ── Section landing pages without a trailing slash ───────────────────────
+/blog                    /blog/                      301
+/schools                 /schools/                   301
+/companies               /companies/                 301
+/individuals             /individuals/               301
+/projects                /projects/                  301

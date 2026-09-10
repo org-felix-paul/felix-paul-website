@@ -300,7 +300,7 @@ Zum Schluss das Praktische – eine Kurzübersicht der wichtigsten Bordmittel, d
 
 ## Einen Elternabend buchen
 
-Du möchtest das mit anderen Eltern an deiner Schule vertiefen – inklusive der gemeinsamen Absprache, die den sozialen Druck nimmt? Ich halte dazu Elternabende, auf Deutsch oder Englisch. Wenn du das für deine Schule oder Klasse möchtest, [melde dich gern](/#kontakt) oder sieh dir das vollständige Programm auf [felix-paul.de/education](/education/) an.
+Du möchtest das mit anderen Eltern an deiner Schule vertiefen – inklusive der gemeinsamen Absprache, die den sozialen Druck nimmt? Ich halte dazu Elternabende, auf Deutsch oder Englisch. Wenn du das für deine Schule oder Klasse möchtest, [melde dich gern](/#kontakt) oder sieh dir das vollständige Programm auf [felix-paul.de/schools](/schools/) an.
 
 ---
 

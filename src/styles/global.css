@@ -133,15 +133,38 @@ body {
   border: 0;
   background: transparent;
   text-align: center;
+  /* Breite Diagramme scrollen hier statt auf Spaltenbreite geschrumpft zu
+     werden – geschrumpft sind sie auf dem Handy nicht mehr lesbar. */
   overflow-x: auto;
+  overscroll-behavior-x: contain;
 }
 
 .prose-content .mermaid svg {
-  max-width: 100%;
+  /* mermaid setzt selbst kein max-width mehr (useMaxWidth:false), das hier
+     verhindert nur, dass eine fremde Regel doch noch skaliert. */
+  max-width: none;
   height: auto;
 }
 
 /* Rohen Diagrammtext verbergen, bis mermaid ihn durch ein SVG ersetzt. */
 .prose-content .mermaid:not([data-processed]) {
   visibility: hidden;
+}
+
+/* Konnte mermaid ein Diagramm nicht rendern, ist der Quelltext lesbar besser
+   als eine leere Lücke. */
+.prose-content .mermaid[data-mermaid-failed] {
+  visibility: visible;
+  display: block;
+  overflow-x: auto;
+  border: 1px solid var(--color-ink-200);
+  border-radius: 0.75rem;
+  background: var(--color-ink-50);
+  padding: 1rem;
+  text-align: left;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--color-ink-700);
+  white-space: pre;
 }

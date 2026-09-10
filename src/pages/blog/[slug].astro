@@ -103,7 +103,7 @@ const schema = [
             Kontakt aufnehmen
           </a>
           <a
-            href={PATHS.education}
+            href={PATHS.schools}
             class="rounded-lg border border-ink-200 bg-white px-5 py-3 text-sm font-medium text-ink-800 shadow-sm transition hover:border-brand-300 hover:text-brand-700"
           >
             Bildungsangebote
@@ -145,8 +145,25 @@ const schema = [
         xyChart: { plotColorPalette: "#0d8fe8" }, // brand-500
       },
       themeCSS: ".edgeLabel { color: #1f2733; }",
-      flowchart: { curve: "basis" },
+      // useMaxWidth:false lässt die Diagramme in ihrer natürlichen Größe.
+      // Mit dem Default schrumpft mermaid jedes SVG auf die Spaltenbreite –
+      // auf dem Handy werden breite Diagramme dadurch unleserlich klein.
+      // Stattdessen scrollt der Container (siehe global.css).
+      flowchart: { curve: "basis", useMaxWidth: false },
+      sequence: { useMaxWidth: false },
+      xyChart: { useMaxWidth: false },
     });
-    await mermaid.run({ nodes: blocks });
+    // suppressErrors: sonst bricht run() beim ersten fehlerhaften Diagramm ab
+    // und alle folgenden bleiben unverarbeitet – und damit (siehe CSS)
+    // dauerhaft unsichtbar.
+    try {
+      await mermaid.run({ nodes: blocks, suppressErrors: true });
+    } finally {
+      // Was mermaid nicht verarbeiten konnte, wird sichtbar gemacht: ein
+      // lesbarer Codeblock ist besser als eine leere Lücke im Text.
+      blocks.forEach((b) => {
+        if (!b.dataset.processed) b.dataset.mermaidFailed = "true";
+      });
+    }
   }
 </script>
