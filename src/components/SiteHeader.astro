@@ -1,0 +1,226 @@
+---
+// One header for the whole domain. The three sections used to ship three
+// near-identical copies of this markup (sticky shell, mobile toggle, nav list,
+// CTA); only the branding and the nav entries ever differed. Those are props
+// now, so each section still owns its identity — as data, not as a fork.
+//
+// Nav entries may be either in-page anchors ("#speaking") or paths ("/blog/").
+// Anchors get scroll-spy and are prefixed with `home` when the visitor is on a
+// different page; paths get aria-current on match. Both kinds can be mixed.
+
+interface NavItem {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  /** Where the brand mark links, and the page the anchors live on. */
+  home: string;
+  /** Image mark. Without it the `initials` box is rendered instead. */
+  logo?: string;
+  logoAlt?: string;
+  /** Fallback mark, e.g. "FP". */
+  initials?: string;
+  wordmark: string;
+  /** Second half of the wordmark, rendered in the brand colour. */
+  wordmarkAccent?: string;
+  nav?: readonly NavItem[];
+  cta?: { href: string; label: string };
+  /** Tailwind max-width class for the content row. */
+  width?: string;
+}
+
+const {
+  home,
+  logo,
+  logoAlt = "",
+  initials = "FP",
+  wordmark,
+  wordmarkAccent,
+  nav = [],
+  cta,
+  width = "max-w-6xl",
+} = Astro.props;
+
+const current = Astro.url.pathname.replace(/\/$/, "") || "/";
+const homePath = home.replace(/\/$/, "") || "/";
+const onHome = current === homePath;
+
+// An anchor only works on the page that owns the sections; from anywhere else
+// it has to travel there first.
+const toHref = (href: string) =>
+  href.startsWith("#") && !onHome ? `${home.replace(/\/$/, "")}/${href}` : href;
+
+const isActive = (href: string) => {
+  if (href.startsWith("#")) return false; // handled by scroll-spy at runtime
+  const n = href.replace(/\/$/, "") || "/";
+  if (n === homePath) return current === homePath;
+  return current === n || current.startsWith(n + "/");
+};
+---
+
+<header
+  class="sticky top-0 z-40 border-b border-ink-100 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70"
+>
+  <div class={`mx-auto flex ${width} items-center justify-between gap-6 px-6 py-4`}>
+    <a href={toHref(home)} class="flex items-center gap-2 font-display font-semibold tracking-tight">
+      {
+        logo ? (
+          <img src={logo} alt={logoAlt} width="36" height="36" class="h-9 w-9 rounded-lg" />
+        ) : (
+          <span
+            class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-brand-700 font-bold text-white"
+            aria-hidden="true"
+          >
+            {initials}
+          </span>
+        )
+      }
+      <span class="text-lg text-ink-900" set:html={
+        wordmarkAccent
+          ? `${wordmark} <span class="text-brand-700">${wordmarkAccent}</span>`
+          : wordmark
+      } />
+    </a>
+
+    {
+      nav.length > 0 && (
+        <nav aria-label="Hauptnavigation" class="hidden md:block">
+          <ul class="flex items-center gap-7 text-sm font-medium text-ink-700">
+            {nav.map((item) => (
+              <li>
+                <a
+                  href={toHref(item.href)}
+                  data-spy={item.href.startsWith("#") ? "" : undefined}
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                  class:list={[
+                    "border-b-2 border-transparent pb-0.5 transition-colors hover:text-brand-700",
+                    "aria-[current]:border-brand-600 aria-[current]:text-brand-700",
+                  ]}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+
+    {
+      cta && (
+        <a
+          href={toHref(cta.href)}
+          class="hidden rounded-lg bg-brand-700 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-800 md:inline-block"
+        >
+          {cta.label}
+        </a>
+      )
+    }
+
+    <button
+      type="button"
+      class="rounded-lg p-2 text-ink-700 hover:bg-ink-50 md:hidden"
+      aria-controls="mobile-nav"
+      aria-expanded="false"
+      data-mobile-menu-button
+    >
+      <span class="sr-only">Menü öffnen</span>
+      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5"></path>
+      </svg>
+    </button>
+  </div>
+
+  <nav id="mobile-nav" aria-label="Mobile Navigation" class="hidden border-t border-ink-100 md:hidden" data-mobile-menu>
+    <ul class="space-y-1 px-6 py-4 text-base font-medium text-ink-800">
+      {
+        nav.map((item) => (
+          <li>
+            <a
+              href={toHref(item.href)}
+              data-mobile-link
+              data-spy={item.href.startsWith("#") ? "" : undefined}
+              aria-current={isActive(item.href) ? "page" : undefined}
+              class="block rounded-md px-3 py-2 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+      {
+        cta && (
+          <li class="pt-2">
+            <a
+              href={toHref(cta.href)}
+              data-mobile-link
+              class="block rounded-lg bg-brand-700 px-4 py-2 text-center text-white transition hover:bg-brand-800"
+            >
+              {cta.label}
+            </a>
+          </li>
+        )
+      }
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>("[data-mobile-menu-button]");
+  const menu = document.querySelector<HTMLElement>("[data-mobile-menu]");
+  if (btn && menu) {
+    btn.addEventListener("click", () => {
+      const open = menu.classList.toggle("hidden") === false;
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    menu.querySelectorAll("[data-mobile-link]").forEach((link) => {
+      link.addEventListener("click", () => {
+        menu.classList.add("hidden");
+        btn.setAttribute("aria-expanded", "false");
+      });
+    });
+  }
+
+  // Scroll-spy for in-page anchors only. Path links are marked server-side.
+  const spyLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-spy]"));
+  const setActive = (id: string | null) => {
+    spyLinks.forEach((link) => {
+      const href = link.getAttribute("href") ?? "";
+      if (id && (href === `#${id}` || href.endsWith(`/#${id}`))) {
+        link.setAttribute("aria-current", "true");
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    });
+  };
+
+  const ids = [
+    ...new Set(
+      spyLinks
+        .map((l) => (l.getAttribute("href") ?? "").split("#")[1])
+        .filter((x): x is string => Boolean(x)),
+    ),
+  ];
+  const sections = ids
+    .map((id) => document.getElementById(id))
+    .filter((el): el is HTMLElement => el !== null);
+
+  if (sections.length) {
+    // A section counts as "active" while its top crosses a thin band near the
+    // upper third of the viewport. Track the topmost intersecting section.
+    const visible = new Set<string>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) visible.add(entry.target.id);
+          else visible.delete(entry.target.id);
+        }
+        const current = ids.find((id) => visible.has(id)) ?? null;
+        if (current) setActive(current);
+      },
+      { rootMargin: "-30% 0px -60% 0px", threshold: 0 },
+    );
+    sections.forEach((s) => observer.observe(s));
+  }
+</script>

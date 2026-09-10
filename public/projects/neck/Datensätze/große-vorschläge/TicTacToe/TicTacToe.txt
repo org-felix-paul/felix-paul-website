@@ -1,0 +1,9 @@
+Kurzübersicht:
+Der Datensatz enthält 77 Zeilen und 9 Spalten + 1 Labelspalte.
+Dabei wird angegeben, in welchem Feld sich ein Kreuz oder ein Kreis befindet und dann gelabelt, ob es einen Geewinner gibt, oder zu einem Unentschieden kommt.
+
+Ziel:
+Ziel ist es ein neuronales Netz zu entwerfen, das vorhersagen kann, ob das TicTacToe-Spiel einen Gewinner hat.
+
+Anzahl Spalten: 9+1
+Anzahl Zeilen: 77

@@ -1,0 +1,49 @@
+.matrix {
+    padding: 5px;
+    background-color: rgb(38, 70, 83);
+    border-radius: 15px;
+}
+
+.matrix td {
+    padding: 5px;
+}
+
+.matrix input {
+    width: 50px;
+    aspect-ratio: 1/1;
+    text-align: center;
+    border-radius: .5rem;
+    border: none;
+}
+
+#canvas[data-active-tool="link"][data-linking-tool-status="select-output"] .matrix input {
+    cursor: pointer;
+    transition: all .1s ease-in-out;
+}
+#canvas[data-active-tool="link"][data-linking-tool-status="select-output"] .matrix input:hover {
+    color: white;
+    background-color: #0d6efd;
+}
+
+.matrix input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+#sideBar .sidebarMatrix {
+    width: 100%;
+    border-radius: .5rem;
+    overflow: hidden;
+    border: 1px solid black;
+}
+
+#sideBar .sidebarMatrixRow {
+    width: 100%;
+    display: flex;
+}
+
+#sideBar .sidebarMatrixEntry {
+    width: 100%;
+    aspect-ratio: 1/1;
+}
+

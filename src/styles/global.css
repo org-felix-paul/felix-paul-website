@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: #f0f7ff;
+  --color-brand-100: #e0effe;
+  --color-brand-200: #bae0fd;
+  --color-brand-300: #7cc7fb;
+  --color-brand-400: #36abf7;
+  --color-brand-500: #0d8fe8;
+  --color-brand-600: #0072c6;
+  --color-brand-700: #015aa0;
+  --color-brand-800: #064c84;
+  --color-brand-900: #0a406d;
+  --color-brand-950: #072849;
+
+  --color-ink-50: #f6f7f9;
+  --color-ink-100: #ebeef2;
+  --color-ink-200: #d3dae3;
+  --color-ink-300: #adb9c8;
+  --color-ink-400: #8092a8;
+  --color-ink-500: #61748d;
+  --color-ink-600: #4d5d75;
+  --color-ink-700: #404c5f;
+  --color-ink-800: #384151;
+  --color-ink-900: #1f2733;
+  --color-ink-950: #0f141c;
+
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ink-900);
+  background-color: white;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.prose-content :where(h2):not(:first-child) {
+  margin-top: 2.5rem;
+}
+
+/* Angesprungene Überschriften (per Inhaltsverzeichnis-Anker) mit klarem
+   Abstand zum oberen Rand stoppen, damit die ganze Überschrift samt etwas
+   Luft darüber sichtbar ist, statt bündig an der Kante zu kleben. */
+.prose-content :where(h1, h2, h3, h4, h5, h6) {
+  scroll-margin-top: 5rem;
+}
+
+.prose-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-ink-900);
+  margin-bottom: 1rem;
+}
+
+.prose-content h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-ink-900);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose-content p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+  color: var(--color-ink-700);
+}
+
+.prose-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-ink-700);
+}
+
+.prose-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-ink-700);
+}
+
+.prose-content li {
+  margin-bottom: 0.25rem;
+  line-height: 1.65;
+}
+
+.prose-content strong {
+  font-weight: 600;
+  color: var(--color-ink-900);
+}
+
+.prose-content a {
+  color: var(--color-brand-700);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose-content a:hover {
+  color: var(--color-brand-900);
+}
+
+.prose-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.prose-content th,
+.prose-content td {
+  border: 1px solid var(--color-ink-200);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.prose-content th {
+  background-color: var(--color-ink-50);
+  font-weight: 600;
+}
+
+/* Mermaid-Diagramme: als zentrierte Grafik, nicht als Code-Block darstellen. */
+.prose-content .mermaid {
+  margin: 1.5rem 0 2rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  overflow-x: auto;
+}
+
+.prose-content .mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Rohen Diagrammtext verbergen, bis mermaid ihn durch ein SVG ersetzt. */
+.prose-content .mermaid:not([data-processed]) {
+  visibility: hidden;
+}

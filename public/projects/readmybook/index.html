@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReadMyBook · Felix Paul</title>
+    <meta
+      name="description"
+      content="ReadMyBook — an AI-based Android app with text recognition that reads a children's book aloud. A small, meaningful project by Felix Paul."
+    />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a href="/" style="display:flex;align-items:center;gap:.625rem;text-decoration:none;color:inherit">
+          <img src="favicon.svg" alt="" aria-hidden="true" width="36" height="36" />
+          <span class="brand">ReadMyBook</span>
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero -->
+      <section class="hero">
+        <div class="wrap">
+          <p class="eyebrow">Android app · AI / ML Kit</p>
+          <h1>ReadMyBook</h1>
+          <p>
+            An AI-based app with text recognition that reads a children's book aloud. Developed as a
+            complement to a children's book by a private friend, the goal is to let children —
+            especially those with busy parents — independently have a book read to them by scanning
+            a page.
+          </p>
+        </div>
+      </section>
+
+      <!-- Overview + video -->
+      <section class="block">
+        <div class="wrap">
+          <div class="grid-2">
+            <div>
+              <p>
+                By scanning designated stickers, users can choose between three reading modes. Page
+                recognition uses the text-recognition feature of Android's ML Kit; users can also
+                navigate to the right page with button controls.
+              </p>
+              <p class="credit">
+                Designs of the buttons and graphics were created by
+                <strong>Klarissa Okfen</strong>.
+              </p>
+            </div>
+
+            <div class="frame">
+              <div class="aspect-video">
+                <!-- TODO (manual): verify this YouTube link + account, see README -->
+                <iframe
+                  src="https://www.youtube.com/embed/2dvV22lTHV8?si=37XnDg_DxUG7e-Lm"
+                  title="ReadMyBook — app demo video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allowfullscreen
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Three reading modes -->
+      <section class="block muted">
+        <div class="wrap">
+          <h2>Three reading modes</h2>
+          <div class="modes">
+            <figure>
+              <img
+                src="img/autorin-liest.png"
+                alt="ReadMyBook mode 1: the audio recorded by the author is played"
+              />
+              <figcaption>1. The audio recorded by the author is played.</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="img/Eltern-lesen.png"
+                alt="ReadMyBook mode 2: the audio recorded by the parents is played"
+              />
+              <figcaption>2. The audio recorded by the parents is played.</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="img/nachtmodus.png"
+                alt="ReadMyBook mode 3: the author's audio with audio description, including image descriptions"
+              />
+              <figcaption>
+                3. The author's audio, with audio description (including image descriptions), is
+                played.
+              </figcaption>
+            </figure>
+          </div>
+
+          <p class="note">
+            Parents can record their own audio and set page transitions, so reading starts from the
+            correct page. Besides recognizing the correct page through text recognition, users can
+            also navigate with button controls.
+          </p>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section class="block">
+        <div class="wrap">
+          <h2>How it works</h2>
+          <p>The graphic below briefly explains the app's functionality (in German).</p>
+          <figure class="frame" style="margin: 1rem 0 0">
+            <img
+              src="img/readmybook-description.jpg"
+              alt="Diagram explaining the ReadMyBook app functionality, in German"
+            />
+          </figure>
+        </div>
+      </section>
+
+      <!-- Discontinued note -->
+      <section class="discontinued">
+        <div class="wrap">
+          <span class="pill">⚠ Discontinued</span>
+          <p>
+            <strong>This project has been discontinued.</strong><br />
+            Dieses Projekt wurde eingestellt.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        ReadMyBook — a project by
+        <a href="/">Felix Paul</a>.
+        Designs by Klarissa Okfen.
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+Bei diesem Datensatz versucht dein neuronales Netz die Vorhersage von Krebs anhand von RÖntgenbildern zu machen.
+
+Trainiere mit Backpropagation, 
+Sigmoid als Aktivierungsfunktion
+und einer Lernrate von 0.8
+mindestens 40 Runden.
+
+
+probiere auch mit einer Lernrate von 1.6 und gerne auch mit 40 Runden
+welchen Effekt stellst du fest
+
+
+Das kann etwas dauern aber es lohnt sich.
+(erstelle ein 2*2 Standardnetz zum trainieren)
+
+Du siehst du kannst echt super gut Krebs vorhersagen, wenn du sagst alles unter 0.1 ist 0 und alles darüber ist 1. 
+
+Wenn du länger trainierst oder die Lernrate höher einstellt bekommst du noch bessere Werte - probiere es aus. 
+
+Ist das nicht krass, dass du Krebs ziemlich gut vorhersagen kannst?

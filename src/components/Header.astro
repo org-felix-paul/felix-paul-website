@@ -1,0 +1,14 @@
+---
+// Main-site branding on the shared header.
+import SiteHeader from "./SiteHeader.astro";
+import { SITE, NAV, PATHS } from "../consts";
+---
+
+<SiteHeader
+  home={PATHS.home}
+  initials="FP"
+  wordmark={SITE.name}
+  wordmarkAccent="persönlich"
+  nav={NAV}
+  cta={{ href: "#kontakt", label: "Kontakt" }}
+/>

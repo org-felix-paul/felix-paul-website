@@ -1,0 +1,15 @@
+---
+// Education branding on the shared header.
+import SiteHeader from "../../components/SiteHeader.astro";
+import { SITE, PATHS } from "../../consts";
+import { EDU, EDU_PATHS, NAV } from "../consts";
+---
+
+<SiteHeader
+  home={EDU_PATHS.home}
+  logo={EDU.logo}
+  logoAlt="Felix Paul – Teaching"
+  wordmark={`Teaching@${SITE.name}`}
+  nav={NAV}
+  cta={{ href: PATHS.kontakt, label: "Anfrage senden" }}
+/>

@@ -1,0 +1,9 @@
+Kurzübersicht:
+Der Datensatz enthält 1431 Zeilen und 20 Spalten + 1 Labelspalte
+Dabei werden verschiedene Eigenschaften angegeben und dann gelabelt, ob der Mensch depressiv ist.
+
+Ziel:
+Ziel ist es ein neuronales Netz zu entwerfen, das vorhersagen kann, ob ein Mensch mit gegebenen Eigenschaften depressiv ist oder nicht.
+
+Anzahl Spalten: 20+1
+Anzahl Zeilen: 1431

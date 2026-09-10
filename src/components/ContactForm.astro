@@ -1,0 +1,82 @@
+---
+import { SITE, PATHS } from "../consts";
+---
+
+<form
+  action={`https://formsubmit.co/${SITE.email}`}
+  method="POST"
+  class="space-y-5 rounded-2xl border border-ink-200 bg-white p-6 shadow-sm md:p-8"
+>
+  <input type="hidden" name="_subject" value="Neue Anfrage über felix-paul.de" />
+  <input type="hidden" name="_template" value="table" />
+  <input type="hidden" name="_captcha" value="true" />
+  <input type="hidden" name="_next" value="https://felix-paul.de/thank-you/" />
+  <input
+    type="hidden"
+    name="_autoresponse"
+    value="Vielen Dank für Ihre Nachricht über felix-paul.de. Ich habe Ihre Anfrage erhalten und melde mich in der Regel innerhalb von 48 Stunden zurück. Beste Grüße, Felix Paul"
+  />
+  <input type="text" name="_honey" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+
+  <div>
+    <label for="name" class="block text-sm font-medium text-ink-800">Name *</label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      required
+      autocomplete="name"
+      class="mt-1 w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm shadow-sm transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 focus:outline-none"
+    />
+  </div>
+
+  <div>
+    <label for="email" class="block text-sm font-medium text-ink-800">E-Mail *</label>
+    <input
+      type="email"
+      id="email"
+      name="email"
+      required
+      autocomplete="email"
+      class="mt-1 w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm shadow-sm transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 focus:outline-none"
+    />
+  </div>
+
+  <div>
+    <label for="message" class="block text-sm font-medium text-ink-800">Nachricht *</label>
+    <textarea
+      id="message"
+      name="message"
+      rows="5"
+      required
+      placeholder="Worum geht es? Gerne mit Anlass, ungefährem Termin und Zielgruppe."
+      class="mt-1 w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm shadow-sm transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 focus:outline-none"
+    ></textarea>
+  </div>
+
+  <div class="flex items-start gap-2 text-sm text-ink-600">
+    <input
+      id="privacy"
+      type="checkbox"
+      name="privacy"
+      value="yes"
+      required
+      class="mt-1 h-4 w-4 rounded border-ink-300 text-brand-700 focus:ring-brand-500"
+    />
+    <label for="privacy">
+      Ich habe die <a href={PATHS.datenschutz} class="text-brand-700 underline">Datenschutzerklärung</a> gelesen und willige
+      ein, dass meine Angaben zur Bearbeitung der Anfrage verarbeitet werden.
+    </label>
+  </div>
+
+  <button
+    type="submit"
+    class="inline-flex w-full items-center justify-center rounded-lg bg-brand-700 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-brand-800 sm:w-auto"
+  >
+    Anfrage senden
+  </button>
+
+  <p class="text-xs text-ink-500">
+    Oder direkt schreiben: <a class="text-brand-700 underline" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+  </p>
+</form>

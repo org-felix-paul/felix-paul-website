@@ -1,0 +1,9 @@
+Kurzübersicht:
+Der Datensatz enthält 200 Zeilen und 15 Spalten + 1 Labelspalte
+Dabei werden versch. Eigenschaften eines Pokemon angegeben und dann gelabelt, ob dieses Pokemon legendär ist oder nicht
+
+Ziel:
+Ziel ist es ein neuronales Netz zu entwerfen, das vorhersagen kann, wie viel ein Auto mit gegebenen Eigenschaften kostet.
+
+Anzahl Spalten: 5+1
+Anzahl Zeilen: 200

@@ -1,0 +1,203 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../education/EduLayout.astro";
+import Hero from "../../education/components/Hero.astro";
+import Section from "../../education/components/Section.astro";
+import AngebotCard from "../../education/components/AngebotCard.astro";
+import { SITE, PATHS } from "../../consts";
+import { EDU_PATHS, angebotPath } from "../../education/consts";
+
+const angebote = (await getCollection("angebote")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<Layout
+  title="Workshops & Vorträge für Schulen"
+>
+  <Hero />
+
+  <Section
+    id="angebote"
+    eyebrow="Was ich anbiete"
+    title="Angebote für Schulen, Lehrkräfte und Schüler:innen"
+    lead="Vom Pädagogischen Tag zu KI bis zum Schüler-Workshop zu Cybersicherheit – erprobte Formate für Schulen."
+  >
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {
+        angebote.map((angebot) => (
+          <AngebotCard
+            href={angebotPath(angebot.id)}
+            title={angebot.data.title}
+            subtitle={angebot.data.subtitle}
+            zielgruppe={angebot.data.zielgruppe}
+            dauer={angebot.data.dauer}
+            preis={angebot.data.preis}
+            teaser={angebot.data.teaser}
+            icon={angebot.data.icon}
+            preview={angebot.data.preview}
+          />
+        ))
+      }
+    </div>
+
+    <p class="mx-auto mt-10 max-w-2xl rounded-2xl border border-brand-200 bg-brand-50 px-6 py-5 text-center text-sm leading-relaxed text-brand-900">
+      Sie suchen ein Thema, das hier nicht dabei ist?
+      <strong>Neue Workshops erstelle ich gerne auf Anfrage</strong> – passgenau für Ihre Schule, Klassenstufe und Ihren Zeitrahmen.
+      <a href={EDU_PATHS.kontakt} class="font-medium text-brand-700 underline">Schreiben Sie mir kurz.</a>
+    </p>
+  </Section>
+
+  <Section
+    background="muted"
+    eyebrow="Honorare"
+    title="Preise auf einen Blick"
+    lead="Transparente Spannen statt Verhandlungspoker – das endgültige Honorar hängt von Umfang und Zielgruppe ab."
+  >
+    <div class="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-ink-200 bg-white shadow-sm">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-ink-50 text-ink-700">
+          <tr>
+            <th class="px-5 py-3 font-semibold">Format</th>
+            <th class="px-5 py-3 font-semibold">Dauer</th>
+            <th class="px-5 py-3 font-semibold">Honorar</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-ink-100 text-ink-800">
+          {
+            angebote.filter((a) => !a.data.preview).map((angebot) => (
+              <tr>
+                <td class="px-5 py-3">
+                  <a href={angebotPath(angebot.id)} class="hover:text-brand-700">{angebot.data.title}</a>
+                </td>
+                <td class="px-5 py-3 text-ink-600">{angebot.data.dauer}</td>
+                <td class="px-5 py-3 whitespace-nowrap font-medium">{angebot.data.preis}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="mx-auto mt-6 max-w-3xl text-center text-sm text-ink-600">
+      Alle Beträge sind Orientierungswerte zzgl. Reisekosten – das endgültige Honorar stimmen wir individuell ab.
+    </p>
+  </Section>
+
+  <Section
+    background="muted"
+    eyebrow="Warum ich"
+    title="Doppelqualifikation, die Schulen heute brauchen"
+    lead="Pädagogik allein reicht nicht, IT-Expertise allein verfehlt die Klasse. Beides zusammen ist selten – und genau das ist mein Angebot."
+  >
+    <div class="grid gap-8 md:grid-cols-3">
+      <div class="rounded-2xl border border-ink-100 bg-white p-6 shadow-sm">
+        <div class="text-4xl font-bold text-brand-700">M.Ed.</div>
+        <h3 class="mt-2 text-lg font-semibold text-ink-900">Lehramt</h3>
+        <p class="mt-2 text-sm leading-relaxed text-ink-600">
+          Master of Education in Mathematik und Informatik. Ich weiß, wie Schule funktioniert.
+        </p>
+      </div>
+      <div class="rounded-2xl border border-ink-100 bg-white p-6 shadow-sm">
+        <div class="text-4xl font-bold text-brand-700">M.Sc.</div>
+        <h3 class="mt-2 text-lg font-semibold text-ink-900">Informatik</h3>
+        <p class="mt-2 text-sm leading-relaxed text-ink-600">
+          B.Sc. Mathematik, B.Sc. + M.Sc. Informatik. KI, Security, Cloud – ich weiß wie die Technik funktioniert.
+        </p>
+      </div>
+      <div class="rounded-2xl border border-ink-100 bg-white p-6 shadow-sm">
+        <div class="text-4xl font-bold text-brand-700">Praxis</div>
+        <h3 class="mt-2 text-lg font-semibold text-ink-900">Berufserfahrung</h3>
+        <p class="mt-2 text-sm leading-relaxed text-ink-600">
+          Hauptberuflich Enterprise-Architekt in der Finanzindustrie. Reale Projekte, reale Sicherheitsanforderungen –
+          echte Erfahrung.
+        </p>
+      </div>
+    </div>
+
+  </Section>
+
+  <Section
+    eyebrow="Haltung"
+    title="Was mir wichtig ist"
+    lead=""
+  >
+    <ul class="mx-auto grid max-w-3xl gap-4 sm:grid-cols-2">
+      {
+        [
+          "Zeilgruppengerechte Workshops, die einen echten Mehrwert liefern für die Menschen, mit denen ich arbeite",
+          "Lösungen, die nicht dazu führen, dass Kinder noch länger vor Bildschirmen sitzen",
+          "Klare, ehrliche Kommunikation",
+          "Aktiv Lernen statt Frontalbeschallung",
+        ].map((punkt) => (
+          <li class="flex items-start gap-3 rounded-2xl border border-ink-100 bg-white p-5 shadow-sm">
+            <span class="mt-0.5 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </span>
+            <span class="text-sm leading-relaxed text-ink-700">{punkt}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed text-ink-600">
+      Vollständiger Lebenslauf, Berufsstationen und Empfehlungen auf
+      <a class="font-medium text-brand-700 underline" href={SITE.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>.
+      Neben den schulischen Angeboten halte ich auch professionelle Keynotes und Fachvorträge
+      (u. a. an Hochschulen und auf Konferenzen) – mehr dazu auf
+      <a class="font-medium text-brand-700 underline" href={PATHS.home}>felix-paul.de</a>.
+    </p>
+  </Section>
+
+  <Section
+    eyebrow="So läuft eine Buchung"
+    title="In drei Schritten zum Workshop"
+    lead="Kein langer Verkaufsprozess. Sie schreiben, ich antworte, wir machen es."
+  >
+    <ol class="grid gap-6 md:grid-cols-3">
+      <li class="relative rounded-2xl border border-ink-200 bg-white p-6 shadow-sm">
+        <div class="absolute -top-4 left-6 inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white">1</div>
+        <h3 class="mt-2 text-lg font-semibold text-ink-900">Anfrage</h3>
+        <p class="mt-2 text-sm leading-relaxed text-ink-600">
+          Sie schreiben mir kurz: Schule, Zielgruppe, mögliches Datum, Thema.
+        </p>
+      </li>
+      <li class="relative rounded-2xl border border-ink-200 bg-white p-6 shadow-sm">
+        <div class="absolute -top-4 left-6 inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white">2</div>
+        <h3 class="mt-2 text-lg font-semibold text-ink-900">Abstimmung</h3>
+        <p class="mt-2 text-sm leading-relaxed text-ink-600">
+          Innerhalb von 48 Stunden Rückmeldung mit Terminvorschlag, Honorarangebot und – falls nötig – Datenschutz-Klärung.
+        </p>
+      </li>
+      <li class="relative rounded-2xl border border-ink-200 bg-white p-6 shadow-sm">
+        <div class="absolute -top-4 left-6 inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white">3</div>
+        <h3 class="mt-2 text-lg font-semibold text-ink-900">Durchführung</h3>
+        <p class="mt-2 text-sm leading-relaxed text-ink-600">
+          Workshop vor Ort. Rechnung danach.
+        </p>
+      </li>
+    </ol>
+  </Section>
+
+  <Section background="muted">
+    <div class="grid items-center gap-10 rounded-3xl bg-gradient-to-br from-brand-700 to-brand-900 p-8 text-white md:grid-cols-[2fr_1fr] md:p-12">
+      <div>
+        <h2 class="font-display text-3xl font-bold leading-tight md:text-4xl">
+          Sie wollen einen Termin oder ein Angebot?
+        </h2>
+        <p class="mt-3 max-w-xl text-brand-100">
+          Schreiben Sie mir formlos – ich melde mich werktags innerhalb von 48 Stunden mit einem Vorschlag zurück.
+        </p>
+      </div>
+      <div class="flex md:justify-end">
+        <a
+          href={EDU_PATHS.kontakt}
+          class="inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 text-sm font-medium text-brand-800 shadow-sm transition hover:bg-brand-50"
+        >
+          Jetzt anfragen
+        </a>
+      </div>
+    </div>
+  </Section>
+</Layout>

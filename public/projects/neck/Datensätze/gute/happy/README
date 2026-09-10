@@ -1,0 +1,18 @@
+Der Datensatz soll einfach angeben, ob eine Person in der gegebenen Situation glücklich ist.
+Du kannst dir super schnell einen vergleichbaren Datensatz überlegen. 
+
+Achte darauf, dass du möglichst jedes Merkmal einmal mit ja und einmal mit nein drin hast, dann lernt dein neuronales Netz schneller. 
+
+Wählst du als Lernverfahren Backpropagation 
+und Sigmoid als Aktivierungsfunktion
+mit einer Lernrate von 0.15 solltest du sehr schnell sehen dass neuronale Netze wirklich gut sind. 
+
+(lasse das Standardnetz also 2 Neuronen auf der ersten Ebene, ein Neuron in der zweiten Ebene)
+
+Trainiere 600 Runden oder auch gerne mehr und schaue dir an wie gut Backpropagation funktioniert.
+
+Vergleiche auf mit Random Training!
+
+Mit dem neuronalen Netz kannst du jetzt einem Roboter sagen, ob er einen heißen Tee, Taschentücher und eine warme Kuscheldecke bringen soll oder doch lieber eine Musikbox und einen Ball. 
+
+Füge auch gerne mal zwei Datensätze mit gleichen Merkmalen aber einmal mit dem Ausgang glücklich und einmal mit dem Ausgang unglücklich und gucke wie genau diese zwei Datensätze gelernt werden. 

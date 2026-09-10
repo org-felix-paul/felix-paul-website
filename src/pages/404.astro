@@ -1,0 +1,29 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Seite nicht gefunden" description="Diese Seite existiert nicht.">
+  <section class="mx-auto max-w-3xl px-6 py-32 text-center">
+    <p class="text-sm font-semibold uppercase tracking-widest text-brand-700">404</p>
+    <h1 class="mt-3 font-display text-4xl font-bold tracking-tight text-ink-900">
+      Diese Seite existiert nicht.
+    </h1>
+    <p class="mt-4 text-lg text-ink-600">
+      Vielleicht ist sie umgezogen – oder hat nie existiert. Zurück zur Startseite geht es hier.
+    </p>
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <a
+        href="/"
+        class="rounded-lg bg-brand-700 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-brand-800"
+      >
+        Zur Startseite
+      </a>
+      <a
+        href="/#publikationen"
+        class="rounded-lg border border-ink-200 bg-white px-5 py-3 text-sm font-medium text-ink-800 shadow-sm transition hover:border-brand-300 hover:text-brand-700"
+      >
+        Publikationen ansehen
+      </a>
+    </div>
+  </section>
+</Layout>

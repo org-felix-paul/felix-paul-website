@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Brand rounded square -->
+  <rect width="64" height="64" rx="14" fill="#015aa0"/>
+
+  <!-- RSS / feed glyph: a dot with two broadcasting arcs, signalling a blog feed -->
+  <g fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round">
+    <path d="M18 40 a18 18 0 0 1 18 18" transform="translate(-2 -8)"/>
+    <path d="M18 30 a28 28 0 0 1 28 28" transform="translate(-2 -8)"/>
+  </g>
+  <circle cx="18.5" cy="46.5" r="4.5" fill="#ffffff"/>
+
+  <!-- "Blog" wordmark across the top to make the purpose unmistakable -->
+  <text x="32" y="22" text-anchor="middle"
+        font-family="Inter, ui-sans-serif, system-ui, sans-serif"
+        font-size="16" font-weight="700" fill="#ffffff">Blog</text>
+</svg>

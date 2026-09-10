@@ -1,0 +1,222 @@
+---
+import Layout from "../../education/EduLayout.astro";
+import Section from "../../education/components/Section.astro";
+import { PROJECTS } from "../../consts";
+import { EDU, EDU_PATHS } from "../../education/consts";
+---
+
+<Layout
+  title="Projekte & Referenzen"
+  description="Bildungsprojekte und Lernsoftware von Felix Paul: NECK (neuronale Netze zum Anfassen), die Programmiertage Codenight und die Vorlese-App ReadMyBook – plus Referenzen aus vergangenen Workshops."
+>
+  <Section
+    as="h1"
+    eyebrow="Projekte & Referenzen"
+    title="Lernsoftware und durchgeführte Workshops"
+    lead="Eine wachsende Sammlung dessen, was bereits an Schulen entstanden ist."
+  >
+    <!-- NECK -->
+    <article class="rounded-3xl border border-ink-200 bg-white p-6 shadow-sm md:p-10">
+      <div class="grid gap-8 md:grid-cols-[1.1fr_1fr] md:items-start">
+        <div>
+          <div class="text-xs font-semibold uppercase tracking-widest text-brand-700">Lernsoftware</div>
+          <h2 class="mt-3 font-display text-3xl font-bold tracking-tight text-ink-900">NECK – Network Construction Kit</h2>
+          <p class="mt-4 leading-relaxed text-ink-600">
+            Eine Lernwebsite, auf der Schüler:innen die Funktionsweise neuronaler Netze spielerisch
+            erkunden. Geschrieben in reinem HTML, CSS und JavaScript – ganz ohne externe Bibliotheken.
+            Sämtliche Abläufe, inklusive der Backpropagation, sind eigenständig implementiert.
+          </p>
+          <ul class="mt-4 space-y-2 text-sm text-ink-600">
+            <li>• Eigene neuronale Netze bauen (Neuronen anlegen, verbinden, verschieben, löschen)</li>
+            <li>• Gewichte beim Training sperren, Bias aktivieren/deaktivieren</li>
+            <li>• Lernverfahren, Aktivierungsfunktionen und Fehlermetriken wechseln</li>
+            <li>• Netze und Trainingsdaten speichern und laden</li>
+            <li>• Backpropagation, Gewichtsverlauf und Ausgaben visualisieren</li>
+          </ul>
+          <div class="mt-6 flex flex-wrap gap-3 text-sm font-medium">
+            <a
+              href={PROJECTS.neck}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded-lg bg-brand-700 px-4 py-2 text-white shadow-sm transition hover:bg-brand-800"
+            >
+              NECK öffnen
+            </a>
+            <a
+              href={PROJECTS.neckUserHandbook}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded-lg border border-ink-200 bg-white px-4 py-2 text-ink-800 shadow-sm transition hover:border-brand-300 hover:text-brand-700"
+            >
+              Benutzerhandbuch
+            </a>
+            <a
+              href={PROJECTS.neckDevHandbook}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded-lg border border-ink-200 bg-white px-4 py-2 text-ink-800 shadow-sm transition hover:border-brand-300 hover:text-brand-700"
+            >
+              Entwicklerhandbuch
+            </a>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <a href={PROJECTS.neck} target="_blank" rel="noopener noreferrer" class="block transition hover:opacity-90">
+            <img
+              src={`${EDU.base}img/neck/neck.avif`}
+              alt="Screenshot der NECK-Lernsoftware für neuronale Netze"
+              class="w-full cursor-pointer rounded-2xl border border-ink-100 shadow-sm"
+            />
+          </a>
+          <div class="overflow-hidden rounded-2xl border border-ink-100">
+            <div class="aspect-video w-full">
+              <iframe
+                class="h-full w-full"
+                src="https://www.youtube.com/embed/2TRHbH5S06c?si=RM-VXEW3ibl5So8Q"
+                title="NECK – Network Construction Kit (Video)"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Codenight -->
+    <article class="mt-8 rounded-3xl border border-ink-200 bg-white p-6 shadow-sm md:p-10">
+      <div class="grid gap-8 md:grid-cols-[1fr_1.1fr] md:items-start">
+        <div class="order-2 md:order-1">
+          <a href={PROJECTS.codenight} target="_blank" rel="noopener noreferrer" class="block transition hover:opacity-90">
+            <img
+              src={`${EDU.base}img/codenight/lion.avif`}
+              alt="Codenight – Programmiertage am Gymnasium Nieder-Olm"
+              class="w-full cursor-pointer rounded-2xl border border-ink-100 shadow-sm"
+            />
+          </a>
+        </div>
+        <div class="order-1 md:order-2">
+          <div class="text-xs font-semibold uppercase tracking-widest text-brand-700">Workshops · Programmiertage</div>
+          <h2 class="mt-3 font-display text-3xl font-bold tracking-tight text-ink-900">Codenight</h2>
+          <p class="mt-4 leading-relaxed text-ink-600">
+            Im März 2022 habe ich die Programmiertage „Codenight" am Gymnasium Nieder-Olm übernommen und
+            fünf Workshops für alle Altersstufen geplant – von Website-Programmierung über
+            Spieleentwicklung bis zu einer KI, die mit dem Minimax-Algorithmus Tic-Tac-Toe löst.
+          </p>
+          <p class="mt-3 leading-relaxed text-ink-600">
+            Im Workshop „Tierwebsite" hat jede:r Schüler:in eine eigene Website über ein Tier in HTML und CSS
+            programmiert – die verlinkte <strong class="text-ink-800">Tierpark-Website</strong> bündelt all diese
+            Schüler-Seiten. Die <strong class="text-ink-800">Codenight-Website</strong> selbst entstand als
+            begleitende Ergänzung mit allen Informationen zu den einzelnen Workshops.
+          </p>
+          <ul class="mt-4 space-y-2 text-sm text-ink-600">
+            <li>• <strong class="text-ink-800">Blockly</strong> – spielerische Grundlagen (Klasse 5–6)</li>
+            <li>• <strong class="text-ink-800">Tierwebsite</strong> in HTML &amp; CSS (Klasse 5–8)</li>
+            <li>• <strong class="text-ink-800">Autorennen</strong> in Scratch (Klasse 7–8)</li>
+            <li>• <strong class="text-ink-800">Ping Pong</strong> in Scratch (Klasse 9–10)</li>
+            <li>• <strong class="text-ink-800">Tic-Tac-Toe</strong> in Python mit Minimax (Oberstufe)</li>
+          </ul>
+          <div class="mt-6 flex flex-wrap gap-3 text-sm font-medium">
+            <a
+              href={PROJECTS.codenight}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded-lg bg-brand-700 px-4 py-2 text-white shadow-sm transition hover:bg-brand-800"
+            >
+              Codenight ansehen
+            </a>
+            <a
+              href={PROJECTS.tierpark}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded-lg border border-ink-200 bg-white px-4 py-2 text-ink-800 shadow-sm transition hover:border-brand-300 hover:text-brand-700"
+            >
+              Tierpark-Website der Schüler:innen
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <a href={PROJECTS.codenight} target="_blank" rel="noopener noreferrer" class="block transition hover:opacity-90">
+          <img src={`${EDU.base}img/codenight/blockly.avif`} alt="Codenight-Workshop: Blockly" class="w-full cursor-pointer rounded-xl border border-ink-100 shadow-sm" />
+        </a>
+        <a href={PROJECTS.codenight} target="_blank" rel="noopener noreferrer" class="block transition hover:opacity-90">
+          <img src={`${EDU.base}img/codenight/autorennen.avif`} alt="Codenight-Workshop: Autorennen in Scratch" class="w-full cursor-pointer rounded-xl border border-ink-100 shadow-sm" />
+        </a>
+        <a href={PROJECTS.codenight} target="_blank" rel="noopener noreferrer" class="block transition hover:opacity-90">
+          <img src={`${EDU.base}img/codenight/pingpong.avif`} alt="Codenight-Workshop: Ping Pong in Scratch" class="w-full cursor-pointer rounded-xl border border-ink-100 shadow-sm" />
+        </a>
+        <a href={PROJECTS.codenight} target="_blank" rel="noopener noreferrer" class="block transition hover:opacity-90">
+          <img src={`${EDU.base}img/codenight/tic-tac-toe.avif`} alt="Codenight-Workshop: Tic-Tac-Toe-KI in Python" class="w-full cursor-pointer rounded-xl border border-ink-100 shadow-sm" />
+        </a>
+      </div>
+    </article>
+
+    <!-- ReadMyBook -->
+    <article class="mt-8 rounded-3xl border border-ink-200 bg-white p-6 shadow-sm md:p-10">
+      <div class="grid gap-8 md:grid-cols-[1.1fr_1fr] md:items-start">
+        <div>
+          <div class="text-xs font-semibold uppercase tracking-widest text-brand-700">
+            Android-App · KI / Texterkennung
+          </div>
+          <h2 class="mt-3 font-display text-3xl font-bold tracking-tight text-ink-900">ReadMyBook</h2>
+          <p class="mt-4 leading-relaxed text-ink-600">
+            Eine App, die per Texterkennung (Google ML Kit) ein Kinderbuch vorliest. Entstanden als
+            Ergänzung zum Kinderbuch einer Bekannten, mit dem Ziel, dass Kinder sich ein Buch auch
+            dann vorlesen lassen können, wenn gerade niemand Zeit hat – sie scannen die Seite einfach
+            selbst.
+          </p>
+          <p class="mt-3 leading-relaxed text-ink-600">
+            Fachlich interessant ist daran, wie wenig KI nötig ist, damit etwas nützlich wird:
+            Texterkennung und Sprachausgabe sind fertige Bausteine – die Arbeit steckt darin, sie für
+            Kinderhände bedienbar zu machen (Nachtmodus, große Flächen, kein Konto, keine Werbung).
+          </p>
+          <p class="mt-3 text-sm leading-relaxed text-ink-500">
+            <strong class="font-semibold text-ink-700">Dieses Projekt wurde eingestellt.</strong> Die
+            Projektseite bleibt als Referenz erhalten.
+          </p>
+          <div class="mt-6 flex flex-wrap gap-3 text-sm font-medium">
+            <a
+              href={PROJECTS.readmybook}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded-lg bg-brand-700 px-4 py-2 text-white shadow-sm transition hover:bg-brand-800"
+            >
+              ReadMyBook ansehen
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <a href={PROJECTS.readmybook} target="_blank" rel="noopener noreferrer" class="block transition hover:opacity-90">
+            <img
+              src={`${PROJECTS.readmybook}img/readmybook-cover.jpg`}
+              alt="ReadMyBook – App, die ein Kinderbuch per Texterkennung vorliest"
+              loading="lazy"
+              class="w-full cursor-pointer rounded-2xl border border-ink-100 shadow-sm"
+            />
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- References note -->
+    <div class="mt-10 rounded-2xl border border-brand-200 bg-brand-50 p-6 md:p-8">
+      <h2 class="font-display text-xl font-semibold text-brand-900">Referenzen &amp; Stimmen aus Schulen</h2>
+      <p class="mt-2 text-sm leading-relaxed text-brand-900">
+        Hier sammeln sich künftig Rückmeldungen und Referenzen aus durchgeführten Workshops und
+        Vorträgen an Schulen. Sie planen einen Termin und möchten vorab mit einer Schule sprechen, die
+        bereits dabei war? Schreiben Sie mir – ich stelle den Kontakt gerne her.
+      </p>
+      <a
+        href={EDU_PATHS.kontakt}
+        class="mt-5 inline-flex items-center justify-center rounded-lg bg-brand-700 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-brand-800"
+      >
+        Anfrage senden
+      </a>
+    </div>
+  </Section>
+</Layout>

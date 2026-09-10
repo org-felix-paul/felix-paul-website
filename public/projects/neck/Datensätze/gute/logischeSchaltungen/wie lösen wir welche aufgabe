@@ -1,0 +1,49 @@
+and
+----------
+standardnetz behalten (2 neuronen, 1 neuron, 1 output)
+- backpropagation
+- ReLu
+- lernrate 0.1
+- bias aktiv 
+- initiale gewichte 0.001
+- 100 Runden 
+--> alles perfekt gelernt
+
+or
+----------
+lernt nicht perfekt aber lernt die klassifizierung korrekt 
+- wenn 
+>0.5 heißt 1
+<0.5 heißt 0
+standardnetz behalten (2 neuronen, 1 neuron, 1 output)
+- backpropagation
+- ReLu
+- lernrate 0.1
+- bias aktiv 
+- initiale gewichte 0.001
+- 100 Runden 
+--> alles richtig gelernt
+
+
+xor
+----------
+nur ein neuron
+- backpropagation 
+- ReLu
+- lernrate 0.1
+- bias aktiv 
+- initiale gewichte 0.001 --> hier war das Problem und viel zu wenig runden trainiert
+- initiale Gewichte 
+[-1.1718844, -1.1461827],bias 0 
+[-0.3867808,  0.868343 ]], bias 0
+[ 0.96635735],[-0.20417345]], bias 0
+- 20.000 Runden 
+wenn man fertig ist hat man 
+--> alles 0.497 als ausgabe - lernt maximal schlecht - kann es einfach nicht lernen
+
+
+xor 
+------------
+3 Neuronen
+- probiere selbst aus mit welchem verfahren du den größten erfolg hast 
+- du siehst aber man kann es mit einem Netz mit 3 Neuronen darstellen

@@ -1,0 +1,196 @@
+---
+import "@fontsource-variable/inter";
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE, PATHS, PORTRAIT, FAVICONS } from "../consts";
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  /** Brand shown after the page title and in og:site_name (sections override it). */
+  siteName?: string;
+  /** "website" for pages, "article" for blog posts. */
+  ogType?: string;
+  /** Extra schema.org nodes merged into the site-wide @graph (BlogPosting, Service, …). */
+  schema?: Record<string, unknown>[];
+  /** Browser-tab icon. Each section has its own mark. */
+  favicon?: string;
+}
+
+const {
+  title,
+  description = SITE.description,
+  ogImage = "/og-default.png",
+  siteName = SITE.name,
+  ogType = "website",
+  schema = [],
+  favicon = FAVICONS.main,
+} = Astro.props;
+
+const fullTitle = title ? `${title} · ${siteName}` : `${SITE.name} · ${SITE.tagline}`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).toString();
+const ogImageUrl = new URL(ogImage, Astro.site ?? SITE.url).toString();
+const ogImageType = ogImage.endsWith(".jpg") || ogImage.endsWith(".jpeg")
+  ? "image/jpeg"
+  : "image/png";
+const isHome = Astro.url.pathname === "/";
+
+// ── Structured data ────────────────────────────────────────────────────────
+// felix-paul.de is one origin, therefore one identity. The Person /
+// Organization / WebSite nodes are emitted here exactly once for the whole
+// domain — sections must NOT define their own copies, or answer engines see
+// several competing descriptions of the same entity. Page-level nodes
+// (WebPage, BlogPosting, Service) are passed in via the `schema` prop.
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": `${SITE.url}/#person`,
+      name: SITE.author,
+      alternateName: SITE.name,
+      url: SITE.url,
+      image: new URL(PORTRAIT.press, SITE.url).toString(),
+      description:
+        "Informatiker & Mathematiker (M.Sc.), Keynote-Speaker zu KI, IT Security und Kryptographie, Anbieter von Schulworkshops und Gründer von dSolve. Hauptberuflich Enterprise Architect bei der Atruvia AG.",
+      jobTitle: ["Enterprise Architect", "Keynote-Speaker"],
+      worksFor: { "@type": "Organization", name: "Atruvia AG" },
+      founder: { "@id": `${SITE.url}/#dsolve` },
+      email: `mailto:${SITE.email}`,
+      knowsLanguage: ["de", "en"],
+      knowsAbout: [
+        "Künstliche Intelligenz",
+        "Fully Homomorphic Encryption",
+        "Post-Quanten-Kryptographie",
+        "Kryptographie",
+        "IT Security",
+        "Cloud",
+        "Medienkompetenz",
+      ],
+      makesOffer: [
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Keynotes & Fachvorträge",
+            serviceType: "Keynote-Speaker",
+            url: `${SITE.url}/#speaking`,
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Schulworkshops & Fortbildungen",
+            serviceType:
+              "Workshops und Vorträge für Schulen zu KI, IT-Sicherheit und Medienkompetenz",
+            url: new URL(PATHS.education, SITE.url).toString(),
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Consulting",
+            serviceType: "Beratung zu IT Security, KI und Cloud",
+            url: `${SITE.url}/#speaking`,
+          },
+        },
+      ],
+      // Only genuinely external profiles belong here. The former entries for
+      // edu./blog.felix-paul.de were removed: they are paths on this same
+      // domain now, and pointing sameAs at yourself carries no signal.
+      sameAs: [SITE.linkedin, SITE.github, SITE.dSolveSite],
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: SITE.city,
+        addressRegion: SITE.region,
+        postalCode: SITE.plz,
+        addressCountry: "DE",
+      },
+    },
+    {
+      "@type": "Organization",
+      "@id": `${SITE.url}/#dsolve`,
+      name: "dSolve",
+      url: SITE.dSolveSite,
+      description: "Entwicklung und Vertrieb professioneller Softwareprodukte.",
+      founder: { "@id": `${SITE.url}/#person` },
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE.url}/#website`,
+      url: SITE.url,
+      name: `${SITE.name} · ${SITE.tagline}`,
+      description: SITE.description,
+      inLanguage: "de-DE",
+      publisher: { "@id": `${SITE.url}/#person` },
+    },
+    {
+      "@type": isHome ? "ProfilePage" : "WebPage",
+      "@id": `${canonical}#webpage`,
+      url: canonical,
+      name: fullTitle,
+      description,
+      isPartOf: { "@id": `${SITE.url}/#website` },
+      about: { "@id": `${SITE.url}/#person` },
+      ...(isHome ? { mainEntity: { "@id": `${SITE.url}/#person` } } : {}),
+      inLanguage: "de-DE",
+    },
+    ...schema,
+  ],
+};
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href={favicon} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="canonical" href={canonical} />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:type" content={ogImageType} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${SITE.name} – ${SITE.tagline}`} />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:site_name" content={siteName} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={`${SITE.name} – ${SITE.tagline}`} />
+
+    <meta name="author" content={SITE.author} />
+    <meta name="theme-color" content="#015aa0" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+  </head>
+  <body class="flex min-h-screen flex-col bg-white text-ink-900">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-brand-700 focus:px-4 focus:py-2 focus:text-white"
+    >
+      Zum Inhalt springen
+    </a>
+    <slot name="header"><Header /></slot>
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <slot name="footer"><Footer /></slot>
+  </body>
+</html>

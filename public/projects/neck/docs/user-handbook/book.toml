@@ -1,0 +1,6 @@
+[book]
+authors = ["fepaul"]
+language = "de"
+multilingual = false
+src = "src"
+title = "Benutzerhandbuch"

@@ -1,0 +1,5 @@
+# One origin, one robots.txt, one sitemap.
+User-agent: *
+Allow: /
+
+Sitemap: https://felix-paul.de/sitemap-index.xml

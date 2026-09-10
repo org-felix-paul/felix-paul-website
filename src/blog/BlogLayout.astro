@@ -1,0 +1,40 @@
+---
+// Blog chrome on top of the shared Layout. The shared Layout owns everything
+// in <head> (canonical, OG, the site-wide schema.org graph); this file only
+// supplies the blog's own branding defaults and its Header/Footer.
+import Layout from "../layouts/Layout.astro";
+import { FAVICONS } from "../consts";
+import Header from "./components/Header.astro";
+import Footer from "./components/Footer.astro";
+import { BLOG } from "./consts";
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: string;
+  schema?: Record<string, unknown>[];
+}
+
+const {
+  title = "Blog",
+  description = BLOG.description,
+  ogImage = BLOG.ogImage,
+  ogType = "website",
+  schema = [],
+} = Astro.props;
+---
+
+<Layout
+  title={title}
+  description={description}
+  ogImage={ogImage}
+  siteName={BLOG.name}
+  ogType={ogType}
+  schema={schema}
+  favicon={FAVICONS.blog}
+>
+  <Header slot="header" />
+  <slot />
+  <Footer slot="footer" />
+</Layout>
