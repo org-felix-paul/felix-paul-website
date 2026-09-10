@@ -1,89 +1,56 @@
 ---
-// One footer for the whole domain. Same reasoning as SiteHeader: the three
-// sections shipped three near-identical footers that differed only in the
-// brand block and the link columns. Those are props; the legal bar is fixed,
-// because Impressum, Datenschutz and the copyright holder are properties of
-// the domain, not of a section.
-import { SITE, PATHS } from "../consts";
-
-interface FooterLink {
-  href: string;
-  label: string;
-  /** Small line under the link. */
-  note?: string;
-  /** Opens in a new tab; only for links that leave this domain. */
-  external?: boolean;
-}
-
-interface Props {
-  logo?: string;
-  logoAlt?: string;
-  initials?: string;
-  wordmark: string;
-  blurb: string;
-  columns?: readonly { heading: string; links: readonly FooterLink[] }[];
-  width?: string;
-}
-
-const {
-  logo,
-  logoAlt = "",
-  initials = "FP",
-  wordmark,
-  blurb,
-  columns = [],
-  width = "max-w-6xl",
-} = Astro.props;
+// The footer, identical on every page of the domain — main site, blog,
+// education. It takes no props on purpose: a visitor should meet the same
+// four areas, the same contact link and the same legal links wherever they
+// are, and there should be exactly one place to change them.
+import { SITE, PATHS, AREAS } from "../consts";
 
 const year = new Date().getFullYear();
-const cols = columns.length + 1;
-const gridCols = cols >= 3 ? "md:grid-cols-3" : "md:grid-cols-2";
 ---
 
 <footer class="mt-24 border-t border-ink-100 bg-ink-50">
-  <div class={`mx-auto ${width} px-6 py-12`}>
-    <div class={`grid gap-10 ${gridCols}`}>
+  <div class="mx-auto max-w-6xl px-6 py-12">
+    <div class="grid gap-10 md:grid-cols-[1fr_1.4fr]">
       <div>
-        <div class="flex items-center gap-2">
-          {
-            logo ? (
-              <img src={logo} alt={logoAlt} width="36" height="36" class="h-9 w-9 rounded-lg" />
-            ) : (
-              <span
-                class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-brand-700 font-bold text-white"
-                aria-hidden="true"
-              >
-                {initials}
-              </span>
-            )
-          }
-          <span class="text-lg font-semibold text-ink-900">{wordmark}</span>
-        </div>
-        <p class="mt-3 max-w-xs text-sm leading-relaxed text-ink-600">{blurb}</p>
+        <a href={PATHS.home} class="flex w-fit items-center gap-2">
+          <span
+            class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-brand-700 font-bold text-white"
+            aria-hidden="true"
+          >
+            FP
+          </span>
+          <span class="text-lg font-semibold text-ink-900">{SITE.name}</span>
+        </a>
+        <p class="mt-3 max-w-xs text-sm leading-relaxed text-ink-600">
+          Keynotes &amp; Fachvorträge, Bildungsangebote und Software – zu KI, IT-Sicherheit,
+          Cloud und Kryptographie.
+        </p>
       </div>
 
-      {
-        columns.map((col) => (
-          <div>
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-ink-500">{col.heading}</h2>
-            <ul class="mt-3 space-y-3 text-sm text-ink-700">
-              {col.links.map((l) => (
-                <li>
-                  <a
-                    href={l.href}
-                    target={l.external ? "_blank" : undefined}
-                    rel={l.external ? "noopener noreferrer" : undefined}
-                    class="font-medium text-ink-800 hover:text-brand-700"
-                  >
-                    {l.label}
-                  </a>
-                  {l.note && <span class="block text-xs text-ink-500">{l.note}</span>}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))
-      }
+      <div>
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-ink-500">Alle Bereiche</h2>
+        <ul class="mt-3 grid gap-3 text-sm text-ink-700 sm:grid-cols-2">
+          <li>
+            <a href={PATHS.home} class="font-medium text-ink-800 hover:text-brand-700">Startseite</a>
+            <span class="block text-xs text-ink-500">Überblick, Hintergrund und Kontakt</span>
+          </li>
+          {
+            AREAS.map((a) => (
+              <li>
+                <a
+                  href={a.href}
+                  target={a.external ? "_blank" : undefined}
+                  rel={a.external ? "noopener noreferrer" : undefined}
+                  class="font-medium text-ink-800 hover:text-brand-700"
+                >
+                  {a.label}
+                </a>
+                <span class="block text-xs text-ink-500">{a.note}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </div>
 
     <div
@@ -91,7 +58,7 @@ const gridCols = cols >= 3 ? "md:grid-cols-3" : "md:grid-cols-2";
     >
       <p>© {year} {SITE.author}. Alle Rechte vorbehalten.</p>
       <ul class="flex flex-wrap gap-x-5 gap-y-2">
-        <li><a href={`mailto:${SITE.email}`} class="hover:text-brand-700">{SITE.email}</a></li>
+        <li><a href={PATHS.kontakt} class="font-medium hover:text-brand-700">Kontakt</a></li>
         <li>
           <a href={SITE.linkedin} target="_blank" rel="noopener noreferrer" class="hover:text-brand-700">LinkedIn</a>
         </li>

@@ -4,7 +4,6 @@
 import Layout from "../layouts/Layout.astro";
 import { FAVICONS } from "../consts";
 import Header from "./components/Header.astro";
-import Footer from "./components/Footer.astro";
 import { EDU } from "./consts";
 
 interface Props {
@@ -35,5 +34,4 @@ const {
 >
   <Header slot="header" />
   <slot />
-  <Footer slot="footer" />
 </Layout>

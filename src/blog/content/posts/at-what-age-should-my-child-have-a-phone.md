@@ -1,7 +1,7 @@
 ---
 title: "Kinder, Handys, Social Media und KI? Wie sollten wir damit umgehen?"
 description: "Macht ein frühes Smartphone mein Kind digital fit oder eher unglücklich? Wird es ohne Handy ausgeschlossen? Und ab wann ist KI okay? Eine quellenbasierte, ehrliche Orientierung – inklusive einer einfachen Entscheidungshilfe."
-pubDate: 2026-10-01
+pubDate: 2026-9-01
 audience: ["parents"]
 topics: ["general", "ai"]
 draft: false

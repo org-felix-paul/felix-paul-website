@@ -1,7 +1,7 @@
 ---
 title: "Wie die Google-Suche tatsächlich funktioniert – und wie man (und KI) gefunden wird"
 description: "Von Crawling über Indexierung bis Ranking: wie Google Seiten findet und sortiert – und was sich durch KI-Antworten (AI Overviews) ändert. Mit dem Beispiel meiner eigenen Website."
-pubDate: 2026-07-6
+pubDate: 2026-07-7
 audience: ["students", "teachers"]
 topics: ["general"]
 draft: false

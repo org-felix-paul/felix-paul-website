@@ -19,6 +19,18 @@ npm run check     # astro check (types + diagnostics)
 npm run slug -- "Ein Titel"   # slug helper for new blog posts
 ```
 
+## Adding content
+
+| what | where |
+|---|---|
+| Blog post | `src/blog/content/posts/<slug>.md` |
+| Bildungsangebot | `src/education/content/angebote/<slug>.md` |
+| Aktuelles-Eintrag (Vortrag, Workshop, Release) | `src/news/content/<slug>.md` — copy `_vorlage.md`, set `draft: false` |
+
+The home page renders the education offers, the three latest posts and the
+news log **from these same collections**. Add a file, and it appears in both
+places at once — there is no second copy to keep in sync.
+
 ## Layout in one paragraph
 
 `src/consts.ts` holds site identity and **every URL** (`PATHS`, `PROJECTS`,
@@ -34,7 +46,12 @@ extractable. `src/pages/` holds routes only.
 
 Single copies, on purpose: one contact form (the `#kontakt` block on the home
 page), one confirmation page (`/thank-you/`), one Impressum, one Datenschutz,
-one portrait image. Each section has its own favicon.
+one portrait image, and one footer (`SiteFooter.astro` takes no props and is
+byte-identical on every page). Each section has its own favicon.
+
+The four areas of the business — Keynotes & Fachvorträge, Bildungsangebote,
+Software, Blog — are declared once as `AREAS` in `src/consts.ts` and reused by
+the footer and the overview block, so the same four labels appear everywhere.
 
 ## Deploy
 

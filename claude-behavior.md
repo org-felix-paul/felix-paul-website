@@ -465,3 +465,192 @@ page.
 - `public/projects/tierpark/UnserTierparkFiles/` (3.8 MB) appears to be the
   saved-page assets of an `UnserTierpark.html` that is not in the repo — i.e.
   probably orphaned. Not touched: tierpark content was out of scope.
+
+---
+
+## 10. Fourth pass — structure, wording and overview
+
+### One vocabulary
+
+The four areas are declared once as `AREAS` in `src/consts.ts` and reused by
+the footer and the home page's overview block, so a visitor meets the same four
+labels everywhere: **Keynotes & Fachvorträge · Bildungsangebote · Software ·
+Blog**.
+
+"Schulworkshops" is gone from the whole site in favour of **Bildungsangebote**,
+because the offer is meant to grow into adult education. That touched the site
+tagline and description, the schema.org `Offer`, the education section's own
+tagline and headings, the hero and the blog's CTA. `/software` was deliberately
+not created — d-solve.de is its own site, so the area links out.
+
+### One footer
+
+`SiteFooter.astro` now takes **no props** and is rendered directly by `Layout`.
+The three per-section footer wrappers were deleted. It carries the brand block
+with a generic line, all five destinations with their subtexts (Startseite plus
+the four areas), and a legal bar with **Kontakt as a link** instead of a bare
+mail address, plus LinkedIn, Impressum and Datenschutz.
+
+**Verified byte-identical across all 20 pages.**
+
+The blog header's "Startseite" tab was removed — the brand mark already links
+home, so the tab was one redundant control in a two-item nav.
+
+### Home page: everything on one scroll
+
+The brief was that scrolling the home page alone should give the whole picture,
+without divergence between it and the sub-pages. The fix is structural rather
+than editorial: **the home page reads the same content collections the
+sub-pages do.**
+
+- `#bildung` renders the real `angebote` collection — the same five offers as
+  `/education/`, not a paraphrase of them
+- the blog block lists the three newest posts instead of three static topic
+  chips
+- `#aktuelles` renders the news collection
+
+Add a markdown file and it appears in both places at once. There is no second
+copy that can drift.
+
+New section order:
+
+```
+Hero → #saeulen → #ueber-mich → #speaking → #bildung
+     → #publikationen → #aktuelles → #blog → #presse → #kontakt
+```
+
+`#saeulen` shows the three offer areas as cards and **the blog as a thin strip
+underneath** — present, but visibly not an offer.
+
+### Speaking topics
+
+Split into five cards, one per talk that stands on its own: Künstliche
+Intelligenz, **Identity & Access Management** (new), **IT Security** and
+**Cloud** (previously one card), and **Kryptographie** (FHE and
+Post-Quanten-Kryptographie merged into one card, both named in the body).
+
+Below them, `weitereThemen` renders as a plain bulleted list — KI und
+Arbeitsmarkt, gesellschaftliche Folgen von KI, Skalierung von Enterprise-IT,
+Hybrid Cloud, Post-Quanten-Migration, Medienkompetenz, Architekturarbeit in
+regulierten Branchen. It is a list precisely so it can grow without the section
+turning into a wall of cards.
+
+### Background visualisation
+
+Reworked so the qualifications explain themselves: two labelled groups —
+**Fachstudium** (B.Sc./M.Sc. Informatik, B.Sc. Mathematik, brand blue) and
+**Lehramtsstudium** (B.Ed./M.Ed., green, so M.Ed. is visibly the teaching
+track) — each with a thin caption underneath. **Praxiserfahrung** is now a
+full-width bar carrying both, with one sentence of prose explaining why the
+combination matters.
+
+### Aktuelles
+
+New collection at `src/news/content/*.md`, same shape as the other sections
+(`collection.ts` next to the content, registered in the aggregator). Fields:
+`title`, `date`, `kind` (workshop / vortrag / publikation / software),
+`summary`, optional `location`, `url`, `urlLabel`, and `draft`.
+
+Seeded with **one** entry — the Codenight Programmiertage, März 2022 — because
+that is the only dated activity the repo actually states. The publications have
+no dates anywhere in the codebase, so none were invented. `_vorlage.md` is a
+copy-paste template with `draft: true`. The whole section hides itself while
+the collection is empty.
+
+### Verification
+
+```
+astro check      0 errors, 0 warnings
+internal links   500 checked, 0 broken
+cross-page anchors  bildung, kontakt, publikationen, speaking, ueber-mich — all resolve
+footer           identical on all 20 pages
+h1 / titles      one h1 per page, no duplicate titles
+```
+
+### Suggestions — what was taken up
+
+1. **Hero names the audience.** ✅ The eyebrow is now
+   "Für Konferenzen, Schulen & Unternehmen" instead of
+   "Informatiker & Mathematiker", so a visitor can self-identify immediately.
+   The qualifications still follow in the body text and in `#ueber-mich`.
+2. **`#saeulen` stopped selling.** ✅ It was a duplicate of `#bildung` once the
+   latter carried the real offers. It is now a signpost: one row per area with
+   a single line of text, in a compact bordered list — no cards, no CTAs. The
+   blog is the fourth row with a grey marker instead of an accent colour, so
+   it reads as an addition rather than an offer.
+3. **`#presse` moved below `#kontakt`.** ✅ It only matters to organisers, and
+   it was sitting between the blog and the contact form.
+4. **Prices** — explained rather than built, see below.
+5. **Proof on the speaking cards** — left to Felix.
+
+---
+
+## 11. Fifth pass — orientation, order, and the background graphic
+
+- **Hero eyebrow** now names the audience (§10 suggestion 1).
+- **`#saeulen`** replaced: the three offer cards and the blog strip became a
+  single compact list, one line per area. `pillars` in the frontmatter became
+  `orientation`. It is a signpost now, not a second sales block — the real
+  content sits in `#speaking` and `#bildung`.
+- **`#presse` moved below `#kontakt`.**
+- **Praxiserfahrung sits beside the study blocks again**, not underneath. All
+  three groups share one row with their bottom edges aligned; the practice
+  block spans the full height of both block rows (`sm:h-[8.5rem]`), is wider
+  than the others and takes the remaining width, so it still reads as carrying
+  both strands. Each group keeps its thin caption — Fachstudium,
+  Lehramtsstudium, Enterprise Architect — and on mobile the practice block
+  wraps to its own full-width row.
+- **Section backgrounds re-alternated.** Moving `#presse` had left
+  `#bildung` and `#publikationen` both muted and then three white sections in
+  a row. The light/dark rhythm is now set explicitly per section.
+
+### Checked, not a defect
+
+Blog table-of-contents links to headings with umlauts appear "broken" to a
+naive string comparison: the `href` is percent-encoded
+(`#…m%C3%BCssen`) while `rehype-slug` writes the id as raw UTF-8
+(`#…müssen`). Browsers decode the fragment before matching, and the decoded id
+is present, so these resolve correctly. No change made — noted so the same
+false positive is not "fixed" later.
+
+### Prices — why it was suggested (not implemented)
+
+Every offer already carries a `preis` in its frontmatter
+("250–900 €", "400–600 €", …) and it is shown on `/education/angebote/<slug>/`,
+but not on the offer cards on the home page or on `/education/`. The argument
+for surfacing it: a visitor who cannot see a rough price has to send an email
+to find out whether talking is even worth it — and most people simply do not
+send that email. An indicative "ab 250 €" on the card filters out mismatches
+before they cost either side a mail exchange, and it makes the enquiries that
+do arrive more serious. The counter-argument is real too: a visible number
+anchors the negotiation and can look expensive without the context of what is
+included. It is a pricing decision, not a layout one, which is why it was left
+alone.
+
+---
+
+## 12. Sixth pass — the home page's education block, trimmed
+
+The question was whether the home page should list the real offers at all, or
+just link to `/education/`. It keeps them, for one reason above the others:
+**`#speaking` shows five concrete topics, so an education teaser would make the
+second business area look thinner than the first** — on a page headlined
+"Keynotes & Bildungsangebote". Concrete offer names are also what a teacher
+scans for ("Elternabend", "KI-Lehrerworkshop"), and they only appear if the
+offers are on the page.
+
+What changed instead is the *depth* of each card. Zielgruppe and Dauer were
+dropped from the home page; the two pages now have distinct jobs:
+
+| page | answers |
+|---|---|
+| home `#bildung` | **what exists** — title, subtitle, teaser |
+| `/education/` + offer pages | **does it fit** — Zielgruppe, Dauer, Preis, Referenzen |
+
+That gives `/education/` a reason to exist beyond being a longer copy of a
+home-page section.
+
+Effect: `#bildung` 219 → 183 words (−16%), from 31% to 26% of the
+`/education/` page. All five offers are still named and linked. The page total
+moved 1094 → 1058 words, so **this is a role split, not a length fix** — the
+largest section is `#speaking` at 24%, and it was left alone.

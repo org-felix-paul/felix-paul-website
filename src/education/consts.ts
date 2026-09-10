@@ -5,9 +5,9 @@ import { PATHS, PORTRAIT } from "../consts";
 export const EDU = {
   /** Brand used in <title> and og:site_name for this section only. */
   name: "Felix Paul",
-  tagline: "KI-, Cybersicherheits- & Medienkompetenz-Workshops für Schulen",
+  tagline: "Bildungsangebote zu KI, Cybersicherheit & Medienkompetenz",
   description:
-    "Felix Paul – Doppelqualifikation aus Lehramt und Informatik (B.Sc. + M.Sc.). Vorträge, Workshops und Fortbildungen zu KI, Cybersicherheit und Medienkompetenz für Schulen, Lehrkräfte und Schüler.",
+    "Felix Paul – Doppelqualifikation aus Lehramt und Informatik (B.Sc. + M.Sc.). Bildungsangebote zu KI, Cybersicherheit und Medienkompetenz: Workshops, Vorträge und Fortbildungen für Schulen, Lehrkräfte, Eltern, Schüler:innen und Erwachsene.",
   /** Section root; every education URL is built from this. */
   base: PATHS.education,
   ogImage: "/education/og-default.jpg",

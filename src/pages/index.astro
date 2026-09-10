@@ -1,94 +1,152 @@
 ---
+import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
 import Section from "../components/Section.astro";
 import ContactForm from "../components/ContactForm.astro";
 import { SITE, PATHS, PORTRAIT } from "../consts";
+import { EDU_PATHS, angebotPath } from "../education/consts";
+import { postPath } from "../blog/consts";
+import { NEWS_KIND_LABELS } from "../news/collection";
 
-const pillars = [
+// The home page pulls the education offers, the latest posts and the news log
+// straight from the same collections the sub-pages use. That is deliberate:
+// a visitor who only scrolls this page should see the real content, and there
+// is no second copy of it to drift out of sync.
+const angebote = (await getCollection("angebote", ({ data }) => !data.preview)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const latestPosts = (await getCollection("posts", ({ data }) => !data.draft && !data.preview))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 3);
+
+const newsItems = (await getCollection("news", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 5);
+
+const newsFmt = new Intl.DateTimeFormat("de-DE", { year: "numeric", month: "long" });
+const postFmt = new Intl.DateTimeFormat("de-DE", { year: "numeric", month: "short", day: "numeric" });
+
+// Orientation strip at the top of the page: one line per area, no selling.
+// The detail lives in #speaking and #bildung further down, so this stays a
+// signpost rather than a second copy of the offer.
+const orientation = [
   {
-    eyebrow: "Teaching",
-    title: "Workshops & Vorträge für Schulen",
-    text: "Vorträge, Workshops und Fortbildungen zu IT-Sicherheit, KI, Medienkompetenz und weiteren IT-Themen für Schulen (Lehrkräfte, Eltern und Schüler:innen). Anfassbar und erlebbar mit Insights aus der Praxis statt reinem Lehrervortrag.",
-    href: PATHS.education,
-    cta: "Workshops ansehen",
-    accent: "emerald",
-  },
-  {
-    eyebrow: "Speaking & Consulting",
-    title: "Consulting, Keynotes & Fachvorträge",
-    text: "Hands on Beratung und Keynotes zu IT Security (Fully Homomorphic Encryption, Post-Quanten-Kryptographie), KI und weiteren Themen.",
+    label: "Keynotes & Fachvorträge",
+    line: "Vorträge und Beratung zu KI, IT-Sicherheit, Cloud, IAM und Kryptographie.",
     href: "#speaking",
-    cta: "Themen ansehen",
-    accent: "brand",
+    bar: "bg-brand-500",
   },
   {
-    eyebrow: "Doing",
-    title: "Running Software",
-    text: "Über dSolve entwickle und vertreibe ich professionelle Softwareprodukte.<br /><br />Daneben programmiere ich kleine Spaßprojekte für die Allgemeinheit, um einen Nutzen für die Gesellschaft zu stiften.",
+    label: "Bildungsangebote",
+    line: "Workshops und Fortbildungen für Schulen, Lehrkräfte und Erwachsene.",
+    href: "#bildung",
+    bar: "bg-emerald-500",
+  },
+  {
+    label: "Software",
+    line: "Produkte und Projekte über dSolve.",
     href: SITE.dSolveSite,
-    cta: "d-solve.de",
-    accent: "amber",
+    bar: "bg-amber-500",
+  },
+  {
+    // Kein Angebot, deshalb optisch zurückgenommen (graue Marke statt Akzentfarbe).
+    label: "Blog",
+    line: "Notizen zu KI, IT-Sicherheit und IT in der Bildung.",
+    href: PATHS.blog,
+    bar: "bg-ink-300",
   },
 ] as const;
 
+// Speaking topics. Each of these gets its own card because each is a talk I
+// can actually give end-to-end; everything narrower lives in `weitereThemen`
+// below as a plain list, so the section stays scannable as it grows.
 const topics = [
-  { title: "Künstliche Intelligenz", text: "Wie funktioniert KI, wo hilft sie, wo scheitert sie, wann sind Alternativen besser – und wie setzt man sie verantwortungsvoll, sicher und kosteneffizient ein, sowohl im Privaten als auch in großen Enterprises?" },
-  { title: "Fully Homomorphic Encryption (FHE)", text: "Rechnen auf verschlüsselten Daten, ohne sie je zu entschlüsseln. Verständlich erklärt, mit lauffähigen Demos und Analyse aktueller Use Cases und deren Relevanz für Ihren Kontext." },
-  { title: "Post-Quanten-Kryptographie", text: "Deep Dive in code-basierte Kryptographie (Goppa-Codes, McEliece) oder pragmatische hands-on Post Quanten Migration. Ich kann bei beiden Themen unterstützen." },
-  { title: "IT Security & Cloud", text: "Was sind Best Practices, was ist die gelebte Praxis – aus Sicht eines Enterprise Architects in der Finanzbranche." },
+  {
+    title: "Künstliche Intelligenz",
+    text: "Wie funktioniert KI, wo hilft sie, wo scheitert sie, wann sind Alternativen besser – und wie setzt man sie verantwortungsvoll, sicher und kosteneffizient ein, privat wie im Enterprise?",
+  },
+  {
+    title: "Identity & Access Management",
+    text: "Wer darf was, warum, und wie weist man das nach? Von Rollen- und Berechtigungsmodellen über moderne Authentifizierung bis zu Zero Trust und der Frage, warum IAM in der Praxis so oft scheitert.",
+  },
+  {
+    title: "IT Security",
+    text: "Was sind Best Practices, was ist die gelebte Praxis – aus Sicht eines Enterprise Architects in der Finanzbranche. Inklusive Angriffswegen, die man einmal gesehen haben sollte.",
+  },
+  {
+    title: "Cloud",
+    text: "Architektur, Betrieb und Kosten in der Cloud: Was skaliert wirklich, was kostet nur, wie sieht eine tragfähige Hybrid-Cloud aus – und welche Entscheidungen lassen sich später kaum noch korrigieren?",
+  },
+  {
+    title: "Kryptographie",
+    text: "Von den Grundlagen bis zur Anwendung. Fully Homomorphic Encryption – Rechnen auf verschlüsselten Daten, ohne sie je zu entschlüsseln – mit lauffähigen Demos, und Post-Quanten-Kryptographie als Deep Dive in code-basierte Verfahren (Goppa-Codes, McEliece) oder als pragmatische Migration.",
+  },
+];
+
+// Kürzere Formate und Themen, die ich ebenfalls abdecke. Bewusst als schlichte
+// Liste – sie darf wachsen, ohne den Abschnitt zu überladen.
+const weitereThemen = [
+  "KI und ihre Auswirkungen auf den Arbeitsmarkt",
+  "Gesellschaftliche Folgen von KI",
+  "Skalierung von Enterprise-IT",
+  "Hybrid Cloud in der Praxis",
+  "Post-Quanten-Migration: was jetzt zu tun ist",
+  "Medienkompetenz und digitale Selbstverteidigung",
+  "Architekturarbeit in regulierten Branchen",
 ];
 ---
 
 <Layout>
   <Hero />
 
-  <!-- DREI SÄULEN -->
+  <!-- ORIENTIERUNG -->
+  <!-- Bewusst knapp: eine Zeile pro Bereich, damit klar wird, was es gibt und
+       wo es weitergeht. Die eigentlichen Inhalte stehen weiter unten
+       (#speaking, #bildung) — hier wird nicht verkauft, hier wird sortiert. -->
   <Section
     id="saeulen"
-    eyebrow="Drei Säulen"
+    eyebrow="Überblick"
     title="Was ich mache"
-    lead="Meine selbstständige Arbeit ruht auf drei Säulen."
+    lead="Drei Bereiche – dazu ein Blog, in dem ich schreibe, was mich gerade beschäftigt."
   >
-    <div class="grid gap-6 md:grid-cols-3">
+    <ul class="mx-auto max-w-3xl divide-y divide-ink-100 overflow-hidden rounded-2xl border border-ink-200 bg-white shadow-sm">
       {
-        pillars.map((p) => {
-          // Three distinct accent colours so Teaching, Speaking & Doing read
-          // as clearly different pillars at a glance.
-          const styles = {
-            emerald: { bar: "bg-emerald-500", chip: "bg-emerald-50 text-emerald-700", cta: "text-emerald-700" },
-            brand: { bar: "bg-brand-500", chip: "bg-brand-50 text-brand-700", cta: "text-brand-700" },
-            amber: { bar: "bg-amber-500", chip: "bg-amber-50 text-amber-700", cta: "text-amber-700" },
-          }[p.accent];
-          const external = p.href.startsWith("http");
+        orientation.map((o) => {
+          const external = o.href.startsWith("http");
           return (
-            <a
-              href={p.href}
-              target={external ? "_blank" : undefined}
-              rel={external ? "noopener noreferrer" : undefined}
-              class="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-ink-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <span class={`absolute inset-x-0 top-0 h-1 ${styles.bar}`} />
-              <span class={`inline-flex w-fit rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest ${styles.chip}`}>
-                {p.eyebrow}
-              </span>
-              <h3 class="mt-4 text-xl font-semibold text-ink-900">{p.title}</h3>
-              <p class="mt-3 flex-1 text-sm leading-relaxed text-ink-600" set:html={p.text} />
-              <span class={`mt-5 inline-flex items-center gap-1 text-sm font-medium ${styles.cta}`}>
-                {p.cta}
-                <svg class="h-4 w-4 transition group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <li>
+              <a
+                href={o.href}
+                target={external ? "_blank" : undefined}
+                rel={external ? "noopener noreferrer" : undefined}
+                class="group flex items-center gap-4 px-5 py-4 transition hover:bg-ink-50 sm:px-6"
+              >
+                <span class={`h-8 w-1 shrink-0 rounded-full ${o.bar}`} aria-hidden="true" />
+                <span class="flex-1">
+                  <span class="block font-semibold text-ink-900">{o.label}</span>
+                  <span class="block text-sm leading-relaxed text-ink-600">{o.line}</span>
+                </span>
+                <svg
+                  class="h-4 w-4 shrink-0 text-ink-400 transition group-hover:translate-x-0.5 group-hover:text-brand-700"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
-              </span>
-            </a>
+              </a>
+            </li>
           );
         })
       }
-    </div>
+    </ul>
   </Section>
 
   <!-- ÜBER MICH -->
-  <Section id="ueber-mich" background="muted" eyebrow="Über mich" title="Kurz zu mir">
+  <Section id="ueber-mich"
+    background="muted" eyebrow="Über mich" title="Kurz zu mir">
     <div class="mx-auto max-w-5xl">
       <div class="grid items-start gap-10 md:grid-cols-[auto_1fr]">
         <figure class="mx-auto w-full max-w-xs">
@@ -118,30 +176,61 @@ const topics = [
               Mein Hintergrund
             </figcaption>
             <div class="mt-6">
-              <!-- Mobil: Studienbloecke in einer Reihe, Praxiserfahrung darunter (volle Breite). Desktop: alles nebeneinander. -->
-              <div class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-end sm:justify-start">
-                <div class="flex items-end justify-start gap-2 sm:gap-3">
-                  <!-- Informatik: B.Sc. + M.Sc. -->
-                  <div class="flex flex-col gap-2">
-                    <div class="flex h-14 w-20 items-center justify-center rounded-xl bg-brand-100 px-1.5 text-center text-[0.6rem] font-semibold leading-tight text-brand-900 ring-1 ring-brand-200 sm:h-16 sm:w-28 sm:px-2 sm:text-xs">M.Sc. Informatik</div>
-                    <div class="flex h-14 w-20 items-center justify-center rounded-xl bg-brand-100 px-1.5 text-center text-[0.6rem] font-semibold leading-tight text-brand-900 ring-1 ring-brand-200 sm:h-16 sm:w-28 sm:px-2 sm:text-xs">B.Sc. Informatik</div>
+              <!-- Drei Gruppen nebeneinander, Unterkanten der Blöcke bündig:
+                   die beiden Studienstränge und daneben die Praxiserfahrung,
+                   die über die volle Höhe beider Reihen läuft. Jede Gruppe hat
+                   eine dünne Bildunterschrift, damit klar ist, wofür M.Ed.
+                   steht. Auf Mobil bricht die Praxis in eine eigene Zeile. -->
+              <div class="flex flex-col gap-4">
+                <div class="flex flex-wrap items-end gap-4 sm:gap-6">
+                  <!-- Fachstudium: Informatik (B.Sc. + M.Sc.) und Mathematik (B.Sc.) -->
+                  <div>
+                    <div class="flex items-end gap-2 sm:gap-3">
+                      <div class="flex flex-col gap-2">
+                        <div class="flex h-14 w-20 items-center justify-center rounded-xl bg-brand-100 px-1.5 text-center text-[0.6rem] font-semibold leading-tight text-brand-900 ring-1 ring-brand-200 sm:h-16 sm:w-28 sm:px-2 sm:text-xs">M.Sc. Informatik</div>
+                        <div class="flex h-14 w-20 items-center justify-center rounded-xl bg-brand-100 px-1.5 text-center text-[0.6rem] font-semibold leading-tight text-brand-900 ring-1 ring-brand-200 sm:h-16 sm:w-28 sm:px-2 sm:text-xs">B.Sc. Informatik</div>
+                      </div>
+                      <div class="flex flex-col gap-2">
+                        <div class="flex h-14 w-20 items-center justify-center rounded-xl bg-brand-100 px-1.5 text-center text-[0.6rem] font-semibold leading-tight text-brand-900 ring-1 ring-brand-200 sm:h-16 sm:w-28 sm:px-2 sm:text-xs">B.Sc. Mathematik</div>
+                      </div>
+                    </div>
+                    <p class="mt-2 text-center text-[0.65rem] font-medium uppercase tracking-wider text-ink-500 sm:text-xs">
+                      Fachstudium
+                    </p>
                   </div>
-                  <!-- Lehramt: B.Ed. + M.Ed. -->
-                  <div class="flex flex-col gap-2">
-                    <div class="flex h-14 w-20 items-center justify-center rounded-xl bg-brand-100 px-1.5 text-center text-[0.6rem] font-semibold leading-tight text-brand-900 ring-1 ring-brand-200 sm:h-16 sm:w-28 sm:px-2 sm:text-xs">M.Ed. Mathematik &amp; Informatik</div>
-                    <div class="flex h-14 w-20 items-center justify-center rounded-xl bg-brand-100 px-1.5 text-center text-[0.6rem] font-semibold leading-tight text-brand-900 ring-1 ring-brand-200 sm:h-16 sm:w-28 sm:px-2 sm:text-xs">B.Ed. Mathematik &amp; Informatik</div>
+
+                  <!-- Lehramtsstudium: B.Ed. + M.Ed. -->
+                  <div>
+                    <div class="flex flex-col gap-2">
+                      <div class="flex h-14 w-20 items-center justify-center rounded-xl bg-emerald-100 px-1.5 text-center text-[0.6rem] font-semibold leading-tight text-emerald-900 ring-1 ring-emerald-200 sm:h-16 sm:w-28 sm:px-2 sm:text-xs">M.Ed. Mathematik &amp; Informatik</div>
+                      <div class="flex h-14 w-20 items-center justify-center rounded-xl bg-emerald-100 px-1.5 text-center text-[0.6rem] font-semibold leading-tight text-emerald-900 ring-1 ring-emerald-200 sm:h-16 sm:w-28 sm:px-2 sm:text-xs">B.Ed. Mathematik &amp; Informatik</div>
+                    </div>
+                    <p class="mt-2 text-center text-[0.65rem] font-medium uppercase tracking-wider text-ink-500 sm:text-xs">
+                      Lehramtsstudium
+                    </p>
                   </div>
-                  <!-- Mathematik: B.Sc. (kürzere Säule) -->
-                  <div class="flex flex-col gap-2">
-                    <div class="flex h-14 w-20 items-center justify-center rounded-xl bg-brand-100 px-1.5 text-center text-[0.6rem] font-semibold leading-tight text-brand-900 ring-1 ring-brand-200 sm:h-16 sm:w-28 sm:px-2 sm:text-xs">B.Sc. Mathematik</div>
+
+                  <!-- Praxiserfahrung: gleiche Höhe wie beide Block-Reihen
+                       zusammen, breiter und farblich dominant. -->
+                  <div class="w-full sm:w-auto sm:flex-1">
+                    <div class="flex h-16 w-full items-center justify-center rounded-xl bg-brand-600 px-4 text-white shadow-sm ring-1 ring-brand-700 sm:h-[8.5rem] sm:min-w-[12rem]">
+                      <span class="text-center text-sm font-semibold uppercase tracking-wider sm:text-base">
+                        Praxiserfahrung
+                      </span>
+                    </div>
+                    <p class="mt-2 text-center text-[0.65rem] font-medium uppercase tracking-wider text-ink-500 sm:text-xs">
+                      Enterprise Architect
+                    </p>
                   </div>
                 </div>
-                <!-- Praxiserfahrung: dominanter Block. Desktop: so hoch wie Bachelor + Master, so breit wie zwei Bachelor-Bloecke, daneben. Mobil: volle Breite darunter. Schrift horizontal und am Boden. -->
-                <div class="flex h-20 w-full items-end justify-center rounded-xl bg-brand-600 p-3 text-white shadow-sm ring-1 ring-brand-700 sm:h-[8.5rem] sm:w-[14.75rem]">
-                  <span class="text-sm font-semibold uppercase tracking-wider">Praxiserfahrung</span>
-                </div>
+
+                <p class="text-xs leading-relaxed text-ink-500">
+                  Zwei vollständige Studiengänge nebeneinander: Informatik und Mathematik fachlich,
+                  Lehramt didaktisch. Dazu die tägliche Praxis als Enterprise Architect in der
+                  Finanzbranche – deshalb bleiben Vorträge und Workshops nah an dem, was wirklich
+                  passiert.
+                </p>
               </div>
-            </div>
           </figure>
         </div>
       </div>
@@ -164,6 +253,22 @@ const topics = [
           </div>
         ))
       }
+    </div>
+
+    <!-- Weitere Themen: bewusst als schlichte Liste, damit der Abschnitt beim
+         Wachsen übersichtlich bleibt und die fünf Hauptthemen oben dominieren. -->
+    <div class="mt-6 rounded-2xl border border-ink-200 bg-white p-6 shadow-sm">
+      <h3 class="text-sm font-semibold uppercase tracking-wider text-ink-500">Weitere Themen</h3>
+      <ul class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink-700">
+        {
+          weitereThemen.map((t) => (
+            <li class="flex items-start gap-2">
+              <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-brand-500" aria-hidden="true" />
+              <span>{t}</span>
+            </li>
+          ))
+        }
+      </ul>
     </div>
 
     <div class="mt-6 rounded-2xl border border-brand-200 bg-brand-50 p-6 text-center shadow-sm">
@@ -213,10 +318,53 @@ const topics = [
     </div>
   </Section>
 
+  <!-- BILDUNGSANGEBOTE -->
+  <!-- Die Karten kommen aus derselben Content-Collection wie /education/, aber
+       bewusst knapper: hier steht nur, WAS es gibt (Titel, Untertitel, Teaser).
+       Zielgruppe, Dauer und Preis – also alles, was man zum Abwägen braucht –
+       stehen auf /education/ und der jeweiligen Angebotsseite. Wer nur diese
+       Seite scrollt, kennt trotzdem jedes Angebot beim Namen. -->
+  <Section
+    id="bildung"
+    background="muted"
+    eyebrow="Bildung"
+    title="Bildungsangebote"
+    lead="Workshops, Vorträge und Fortbildungen zu KI, IT-Sicherheit und Medienkompetenz – für Schulen, Lehrkräfte, Eltern und Schüler:innen, zunehmend auch in der Erwachsenenbildung."
+  >
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        angebote.map((a) => (
+          <a
+            href={angebotPath(a.id)}
+            class="group flex h-full flex-col rounded-2xl border border-ink-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
+          >
+            <h3 class="text-base font-semibold text-ink-900">{a.data.title}</h3>
+            <p class="mt-1 text-sm text-emerald-700">{a.data.subtitle}</p>
+            <p class="mt-3 flex-1 text-sm leading-relaxed text-ink-600">{a.data.teaser}</p>
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+      <a
+        href={PATHS.education}
+        class="rounded-lg bg-emerald-600 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-700"
+      >
+        Alle Bildungsangebote ansehen
+      </a>
+      <a
+        href={EDU_PATHS.projekte}
+        class="rounded-lg border border-ink-200 bg-white px-5 py-3 text-sm font-medium text-ink-800 shadow-sm transition hover:border-emerald-300 hover:text-emerald-700"
+      >
+        Projekte &amp; Referenzen
+      </a>
+    </div>
+  </Section>
+
   <!-- PUBLIKATIONEN -->
   <Section
     id="publikationen"
-    background="muted"
     eyebrow="Publikationen"
     title="Buch & Paper"
     lead="Forschung zu Kryptographie und KI – als Buch bei Springer und als Fachbeiträge."
@@ -291,6 +439,50 @@ const topics = [
     </div>
   </Section>
 
+  <!-- AKTUELLES -->
+  <!-- Gepflegt über src/news/content/*.md — eine Datei pro Eintrag.
+       Der Abschnitt blendet sich aus, solange es keine Einträge gibt. -->
+  {
+    newsItems.length > 0 && (
+      <Section
+        id="aktuelles"
+    background="muted"
+        eyebrow="Aktuelles"
+        title="Zuletzt gemacht"
+        lead="Gehaltene Workshops und Vorträge, Veröffentlichungen und Releases – in umgekehrter Reihenfolge."
+      >
+        <ol class="mx-auto max-w-3xl space-y-3">
+          {newsItems.map((n) => (
+            <li class="rounded-2xl border border-ink-200 bg-white p-5 shadow-sm">
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <span class="inline-flex rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-brand-700">
+                  {NEWS_KIND_LABELS[n.data.kind]}
+                </span>
+                <time datetime={n.data.date.toISOString()} class="text-xs text-ink-500">
+                  {newsFmt.format(n.data.date)}
+                </time>
+                {n.data.location && <span class="text-xs text-ink-500">· {n.data.location}</span>}
+              </div>
+              <h3 class="mt-2 text-base font-semibold text-ink-900">{n.data.title}</h3>
+              <p class="mt-1 text-sm leading-relaxed text-ink-600">{n.data.summary}</p>
+              {n.data.url && (
+                <a
+                  href={n.data.url}
+                  class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-brand-700 hover:text-brand-900"
+                >
+                  {n.data.urlLabel ?? "Mehr dazu"}
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </a>
+              )}
+            </li>
+          ))}
+        </ol>
+      </Section>
+    )
+  }
+
   <!-- BLOG -->
   <Section id="blog">
     <div class="rounded-3xl bg-gradient-to-br from-brand-700 to-brand-900 p-8 text-white md:p-12">
@@ -310,18 +502,62 @@ const topics = [
           </a>
         </div>
         <ul class="grid gap-3 text-sm">
-          <li class="rounded-xl bg-white/10 px-4 py-3">🔒 IT Security</li>
-          <li class="rounded-xl bg-white/10 px-4 py-3">🤖 Künstliche Intelligenz</li>
-          <li class="rounded-xl bg-white/10 px-4 py-3">💡 IT in der Bildung</li>
+          {
+            latestPosts.map((post) => (
+              <li>
+                <a
+                  href={postPath(post.id)}
+                  class="block rounded-xl bg-white/10 px-4 py-3 transition hover:bg-white/20"
+                >
+                  <span class="block font-medium leading-snug text-white">{post.data.title}</span>
+                  <time datetime={post.data.pubDate.toISOString()} class="mt-1 block text-xs text-brand-200">
+                    {postFmt.format(post.data.pubDate)}
+                  </time>
+                </a>
+              </li>
+            ))
+          }
         </ul>
       </div>
     </div>
   </Section>
 
+  <!-- KONTAKT -->
+  <Section
+    id="kontakt"
+    background="muted"
+    eyebrow="Kontakt"
+    title="Lassen Sie uns sprechen"
+    lead="Ein Vortrag, eine Zusammenarbeit oder einfach eine Frage – eine kurze Nachricht genügt. Ich melde mich werktags innerhalb von 48 Stunden."
+  >
+    <div class="grid gap-10 md:grid-cols-[1.2fr_1fr]">
+      <ContactForm />
+
+      <aside class="space-y-6">
+        <div class="rounded-2xl border border-ink-200 bg-white p-6 shadow-sm">
+          <h2 class="font-display text-lg font-semibold text-ink-900">Direkter Kontakt</h2>
+          <ul class="mt-4 space-y-3 text-sm">
+            <li>
+              <div class="font-medium text-ink-500">E-Mail</div>
+              <a class="text-brand-700 underline" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+            </li>
+            <li>
+              <div class="font-medium text-ink-500">LinkedIn</div>
+              <a class="text-brand-700 underline" href={SITE.linkedin} target="_blank" rel="noopener noreferrer">Profil ansehen</a>
+            </li>
+            <li>
+              <div class="font-medium text-ink-500">GitHub</div>
+              <a class="text-brand-700 underline" href={SITE.github} target="_blank" rel="noopener noreferrer">Profil ansehen</a>
+            </li>
+          </ul>
+        </div>
+
+      </aside>
+    </div>
+  </Section>
   <!-- PRESSE / REDNERPROFIL -->
   <Section
     id="presse"
-    background="muted"
     eyebrow="Presse & Rednerprofil"
     title="Material für Veranstalter & Presse"
     lead="Kurzbio, Foto und Rednerprofil – das Wichtigste auf einen Blick."
@@ -356,36 +592,4 @@ const topics = [
     </div>
   </Section>
 
-  <!-- KONTAKT -->
-  <Section
-    id="kontakt"
-    eyebrow="Kontakt"
-    title="Lassen Sie uns sprechen"
-    lead="Ein Vortrag, eine Zusammenarbeit oder einfach eine Frage – eine kurze Nachricht genügt. Ich melde mich werktags innerhalb von 48 Stunden."
-  >
-    <div class="grid gap-10 md:grid-cols-[1.2fr_1fr]">
-      <ContactForm />
-
-      <aside class="space-y-6">
-        <div class="rounded-2xl border border-ink-200 bg-white p-6 shadow-sm">
-          <h2 class="font-display text-lg font-semibold text-ink-900">Direkter Kontakt</h2>
-          <ul class="mt-4 space-y-3 text-sm">
-            <li>
-              <div class="font-medium text-ink-500">E-Mail</div>
-              <a class="text-brand-700 underline" href={`mailto:${SITE.email}`}>{SITE.email}</a>
-            </li>
-            <li>
-              <div class="font-medium text-ink-500">LinkedIn</div>
-              <a class="text-brand-700 underline" href={SITE.linkedin} target="_blank" rel="noopener noreferrer">Profil ansehen</a>
-            </li>
-            <li>
-              <div class="font-medium text-ink-500">GitHub</div>
-              <a class="text-brand-700 underline" href={SITE.github} target="_blank" rel="noopener noreferrer">Profil ansehen</a>
-            </li>
-          </ul>
-        </div>
-
-      </aside>
-    </div>
-  </Section>
 </Layout>

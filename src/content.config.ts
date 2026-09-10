@@ -4,5 +4,6 @@
 // shared schema file.
 import { posts } from "./blog/collection";
 import { angebote } from "./education/collection";
+import { news } from "./news/collection";
 
-export const collections = { posts, angebote };
+export const collections = { posts, angebote, news };

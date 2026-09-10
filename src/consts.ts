@@ -6,9 +6,9 @@
 // consts file (src/blog/consts.ts, src/education/consts.ts).
 export const SITE = {
   name: "Felix Paul",
-  tagline: "Keynote-Speaker · Schulworkshops · IT Security & KI",
+  tagline: "Keynotes · Bildungsangebote · IT Security & KI",
   description:
-    "Keynote-Speaker & Schulworkshops zu KI, IT Security, Kryptographie & Medienkompetenz. Software über d-solve.de Enterprise Architect bei der Atruvia AG.",
+    "Keynotes, Fachvorträge und Bildungsangebote zu KI, IT Security, Kryptographie und Medienkompetenz. Software über d-solve.de. Hauptberuflich Enterprise Architect bei der Atruvia AG.",
   url: "https://felix-paul.de",
   author: "Felix Peter Paul",
   email: "contact@felix-paul.de",
@@ -47,6 +47,11 @@ export const PATHS = {
   /** The one contact form on the domain: the #kontakt block on the home page.
    *  The education section used to carry a second copy at /education/kontakt/. */
   kontakt: "/#kontakt",
+  /** Home-page anchors that the rest of the site links back to. */
+  speaking: "/#speaking",
+  bildung: "/#bildung",
+  ueberMich: "/#ueber-mich",
+  publikationen: "/#publikationen",
   /** The one confirmation page every form returns to. */
   thankYou: "/thank-you/",
 } as const;
@@ -73,12 +78,48 @@ export const PROJECTS = {
   readmybook: `${PATHS.projects}readmybook/`,
 } as const;
 
-// Main-site navigation: anchors on the one-page home, plus the two sections
-// that are now real paths on the same domain.
+// The four areas of the business, named once. Every header, footer and
+// overview block on the site uses these exact labels, so a visitor meets the
+// same four words everywhere. "Bildungsangebote" rather than "Schulworkshops":
+// the offer is meant to cover adult education too.
+export interface Area {
+  href: string;
+  label: string;
+  note: string;
+  /** Leaves this domain — gets target="_blank". */
+  external?: boolean;
+}
+
+export const AREAS: readonly Area[] = [
+  {
+    href: PATHS.speaking,
+    label: "Keynotes & Fachvorträge",
+    note: "Vorträge und Beratung zu KI, Security, Cloud und Kryptographie",
+  },
+  {
+    href: PATHS.education,
+    label: "Bildungsangebote",
+    note: "Workshops und Fortbildungen für Schulen, Lehrkräfte und Erwachsene",
+  },
+  {
+    href: SITE.dSolveSite,
+    label: "Software",
+    note: "Produkte und Projekte über dSolve",
+    external: true,
+  },
+  {
+    href: PATHS.blog,
+    label: "Blog",
+    note: "Mein persönlicher Blog zu KI, IT-Sicherheit und Bildung",
+  },
+];
+
+// Header navigation: the four areas plus the two home-page anchors that carry
+// the credibility story.
 export const NAV = [
   { href: "#ueber-mich", label: "Über mich" },
-  { href: "#speaking", label: "Speaking & Consulting" },
+  { href: "#speaking", label: "Keynotes & Fachvorträge" },
+  { href: "#bildung", label: "Bildungsangebote" },
   { href: "#publikationen", label: "Publikationen" },
   { href: PATHS.blog, label: "Blog" },
-  { href: "#presse", label: "Pressekit" },
 ] as const;
