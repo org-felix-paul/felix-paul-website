@@ -187,11 +187,28 @@ const structuredData = {
     <meta name="twitter:image:alt" content={`${SITE.name} – ${SITE.tagline}`} />
 
     <meta name="author" content={SITE.author} />
-    <meta name="theme-color" content="#015aa0" />
+    <meta name="theme-color" content="#015aa0" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)" />
+
+    {/* Muss inline und vor dem Body laufen, sonst blitzt beim Laden kurz das
+        falsche Schema auf ("flash of unstyled theme"). Deshalb bewusst kein
+        gebündeltes Modul: das käme zu spät. */}
+    <script is:inline>
+      (() => {
+        let stored = null;
+        try {
+          stored = localStorage.getItem("theme");
+        } catch {}
+        const dark =
+          stored === "dark" ||
+          (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+      })();
+    </script>
 
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   </head>
-  <body class="flex min-h-screen flex-col bg-white text-ink-900">
+  <body class="flex min-h-screen flex-col bg-surface text-ink-900">
     <EnvBanner />
     <a
       href="#main"

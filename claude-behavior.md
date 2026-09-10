@@ -1326,3 +1326,79 @@ vier verbleibenden Begriffe stehen wörtlich auf ihren Seiten.
 Festgehalten, weil die naheliegende Reaktion — weiter umformulieren, bis der
 Prüfer schweigt — die Descriptions verschlechtert hätte. Eine Description soll
 den Inhalt zusammenfassen, nicht ihn zitieren.
+
+---
+
+## 26. Mermaid-Diagramme skalieren statt zu scrollen
+
+Vorher scrollten breite Diagramme horizontal. Der Grund war ein echter
+Zielkonflikt: skaliert man ein Flowchart auf die Textspalte (48rem, auf dem
+Handy ~360px), wird die Beschriftung unlesbar.
+
+Die Auflösung ist nicht „doch wieder schrumpfen", sondern **dem Diagramm mehr
+Platz geben als dem Fließtext**:
+
+- `useMaxWidth: true` für flowchart, sequence und xychart – mermaid skaliert
+  das SVG wieder auf die Containerbreite.
+- Der Container ist aber breiter als die Textspalte: er bricht seitlich aus
+  ihr aus, bis 64rem und auf schmalen Geräten bis an den Bildschirmrand.
+
+Zwei Details, die beim Bauen auffielen:
+
+`100cqw` in der Breitenberechnung wäre ohne `container-type` auf einem
+Vorfahren ungültig gewesen und hätte die ganze `width`-Deklaration gekippt –
+entfernt.
+
+`margin: auto` zentriert nur Elemente, die **schmaler** sind als ihr Container.
+Ein ausbrechendes Element wäre nach rechts gelaufen. Stattdessen
+`margin-left: 50%` plus `transform: translateX(-50%)`.
+
+Geprüft, dass kein Vorfahre den Ausbruch abschneidet: die Kette ist
+`main → .mx-auto.max-w-3xl → .prose-content`, kein `overflow: hidden`.
+
+Das `overflow-x: auto` im Fehler-Fallback (`[data-mermaid-failed]`) bleibt –
+dort steht roher Quelltext mit langen Zeilen.
+
+**Nicht verifiziert:** die tatsächliche Darstellung. Mermaid rendert im
+Browser, und die Chrome-Anbindung war in dieser Sitzung nicht verfügbar.
+Geprüft wurden Konfiguration, CSS-Gültigkeit und Container-Kette.
+
+---
+
+## 27. Dark Mode
+
+~590 Farbklassen liegen im Markup verstreut. Eine `dark:`-Variante je Klasse
+wäre unwartbar gewesen, deshalb schalten die **Tokens** um, nicht das Markup:
+`@theme` verweist auf CSS-Variablen, die in `:root` und
+`:root[data-theme="dark"]` verschieden belegt sind.
+
+Der Kniff ist die **invertierte ink-Skala**: `ink-900` heißt weiterhin
+„stärkster Textkontrast", `ink-50` weiterhin „dezenteste Fläche". Weil die
+Skala im Projekt konsequent semantisch benutzt wird, musste keine einzige
+Textklasse angefasst werden. `brand`, `emerald` und `amber` wurden aufgehellt —
+gesättigte Dunkeltöne haben auf dunklem Grund zu wenig Kontrast.
+
+Nicht über Tokens lösbar und deshalb ersetzt:
+
+| war | ist | Anzahl |
+|---|---|---|
+| `bg-white` | `bg-surface` | 61 |
+| `via-white to-white` | `via-canvas to-canvas` | 5 |
+
+`text-white` blieb bewusst: es steht ausnahmslos auf farbigem Grund und ist
+dort in beiden Schemata korrekt. Nachgeprüft — der einzige Treffer außerhalb
+eines farbigen Containers war ein Filter-Button auf `/blog/`, der gleichzeitig
+`bg-brand-700` gesetzt bekommt.
+
+Das Schema wird **inline im `<head>`** gesetzt, vor dem Body. Ein gebündeltes
+Modul käme zu spät und die Seite würde kurz im falschen Schema aufblitzen.
+`color-scheme` und zwei `theme-color`-Angaben sorgen dafür, dass auch
+Formularelemente und die Browser-Leiste mitziehen.
+
+Mermaid brennt Farben fest ins SVG. Die Diagramme werden daher bei einem
+Wechsel neu gerendert; dafür wird der Quelltext vor dem ersten Rendern
+zwischengespeichert, weil mermaid den Inhalt des Elements ersetzt.
+
+**Nicht verifiziert:** das visuelle Ergebnis. Die Chrome-Anbindung war in
+dieser Sitzung nicht verfügbar; geprüft wurden Build, Typen und dass keine
+nicht umschaltbaren Farbwerte übrig sind.

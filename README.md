@@ -132,6 +132,34 @@ Links that genuinely cannot be repaired live in the `KNOWN` list at the top of
 that script, each with a reason. One of them is deliberate: a Codenight page
 about alt texts shows a missing image on purpose.
 
+## Dark Mode
+
+Die Seite folgt der Systemeinstellung; der Knopf im Header überschreibt sie und
+merkt sich die Wahl in `localStorage`. Wer nie klickt, folgt dem System
+dauerhaft — auch wenn es später wechselt.
+
+**Wie es umgesetzt ist.** Nicht über `dark:`-Varianten im Markup: die ~590
+Farbklassen hätten je eine Zweitfassung gebraucht. Stattdessen zeigen die
+Tailwind-Tokens in `@theme` auf CSS-Variablen, die in `:root` (hell) und
+`:root[data-theme="dark"]` (dunkel) unterschiedlich belegt sind. Jede
+vorhandene Klasse zeigt damit automatisch auf den passenden Wert.
+
+Die `ink`-Skala ist im Dark Mode **invertiert**: `ink-900` bleibt „stärkster
+Textkontrast", `ink-50` bleibt „dezenteste Fläche" — nur eben dunkel. Deshalb
+musste kein einziges `text-ink-*` angefasst werden.
+
+Zwei Dinge ließen sich nicht über Tokens lösen und wurden ersetzt:
+`bg-white` → `bg-surface` (61 Stellen) und `via-white to-white` →
+`via-canvas to-canvas` (5 Gradienten). `text-white` blieb: es steht überall auf
+farbigem Grund und ist dort in beiden Schemata richtig.
+
+Das Setzen des Schemas passiert **inline im `<head>`**, vor dem Body — sonst
+blitzt beim Laden kurz das falsche Schema auf.
+
+Mermaid-Diagramme brennen ihre Farben ins SVG. Sie werden deshalb bei einem
+Themenwechsel neu gezeichnet; der Diagrammquelltext wird dafür vorher
+zwischengespeichert.
+
 ## Environment banner
 
 Preview deployments show an amber strip above the header saying they are not

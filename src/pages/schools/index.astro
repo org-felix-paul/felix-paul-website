@@ -58,7 +58,7 @@ const angebote = (await getCollection("angebote")).sort(
     title="Preise auf einen Blick"
     lead="Transparente Spannen statt Verhandlungspoker – das endgültige Honorar hängt von Umfang und Zielgruppe ab."
   >
-    <div class="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-ink-200 bg-white shadow-sm">
+    <div class="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-ink-200 bg-surface shadow-sm">
       <table class="w-full text-left text-sm">
         <thead class="bg-ink-50 text-ink-700">
           <tr>
@@ -95,21 +95,21 @@ const angebote = (await getCollection("angebote")).sort(
     lead="Pädagogik allein reicht nicht, IT-Expertise allein verfehlt die Klasse. Beides zusammen ist selten – und genau das ist mein Angebot."
   >
     <div class="grid gap-8 md:grid-cols-3">
-      <div class="rounded-2xl border border-ink-100 bg-white p-6 shadow-sm">
+      <div class="rounded-2xl border border-ink-100 bg-surface p-6 shadow-sm">
         <div class="text-4xl font-bold text-brand-700">M.Ed.</div>
         <h3 class="mt-2 text-lg font-semibold text-ink-900">Lehramt</h3>
         <p class="mt-2 text-sm leading-relaxed text-ink-600">
           Master of Education in Mathematik und Informatik. Ich weiß, wie Schule funktioniert.
         </p>
       </div>
-      <div class="rounded-2xl border border-ink-100 bg-white p-6 shadow-sm">
+      <div class="rounded-2xl border border-ink-100 bg-surface p-6 shadow-sm">
         <div class="text-4xl font-bold text-brand-700">M.Sc.</div>
         <h3 class="mt-2 text-lg font-semibold text-ink-900">Informatik</h3>
         <p class="mt-2 text-sm leading-relaxed text-ink-600">
           B.Sc. Mathematik, B.Sc. + M.Sc. Informatik. KI, Security, Cloud – ich weiß wie die Technik funktioniert.
         </p>
       </div>
-      <div class="rounded-2xl border border-ink-100 bg-white p-6 shadow-sm">
+      <div class="rounded-2xl border border-ink-100 bg-surface p-6 shadow-sm">
         <div class="text-4xl font-bold text-brand-700">Praxis</div>
         <h3 class="mt-2 text-lg font-semibold text-ink-900">Berufserfahrung</h3>
         <p class="mt-2 text-sm leading-relaxed text-ink-600">
@@ -135,7 +135,7 @@ const angebote = (await getCollection("angebote")).sort(
           "Klare, ehrliche Kommunikation",
           "Aktiv Lernen statt Frontalbeschallung",
         ].map((punkt) => (
-          <li class="flex items-start gap-3 rounded-2xl border border-ink-100 bg-white p-5 shadow-sm">
+          <li class="flex items-start gap-3 rounded-2xl border border-ink-100 bg-surface p-5 shadow-sm">
             <span class="mt-0.5 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -163,21 +163,21 @@ const angebote = (await getCollection("angebote")).sort(
     lead="Kein langer Verkaufsprozess. Sie schreiben, ich antworte, wir machen es."
   >
     <ol class="grid gap-6 md:grid-cols-3">
-      <li class="relative rounded-2xl border border-ink-200 bg-white p-6 shadow-sm">
+      <li class="relative rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
         <div class="absolute -top-4 left-6 inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white">1</div>
         <h3 class="mt-2 text-lg font-semibold text-ink-900">Anfrage</h3>
         <p class="mt-2 text-sm leading-relaxed text-ink-600">
           Sie schreiben mir kurz: Schule, Zielgruppe, mögliches Datum, Thema.
         </p>
       </li>
-      <li class="relative rounded-2xl border border-ink-200 bg-white p-6 shadow-sm">
+      <li class="relative rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
         <div class="absolute -top-4 left-6 inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white">2</div>
         <h3 class="mt-2 text-lg font-semibold text-ink-900">Abstimmung</h3>
         <p class="mt-2 text-sm leading-relaxed text-ink-600">
           Innerhalb von 48 Stunden Rückmeldung mit Terminvorschlag, Honorarangebot und – falls nötig – Datenschutz-Klärung.
         </p>
       </li>
-      <li class="relative rounded-2xl border border-ink-200 bg-white p-6 shadow-sm">
+      <li class="relative rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
         <div class="absolute -top-4 left-6 inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white">3</div>
         <h3 class="mt-2 text-lg font-semibold text-ink-900">Durchführung</h3>
         <p class="mt-2 text-sm leading-relaxed text-ink-600">
@@ -224,7 +224,7 @@ const angebote = (await getCollection("angebote")).sort(
       <div class="flex md:justify-end">
         <a
           href={EDU_PATHS.kontakt}
-          class="inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 text-sm font-medium text-brand-800 shadow-sm transition hover:bg-brand-50"
+          class="inline-flex items-center justify-center rounded-lg bg-surface px-6 py-3 text-sm font-medium text-brand-800 shadow-sm transition hover:bg-brand-50"
         >
           Jetzt anfragen
         </a>

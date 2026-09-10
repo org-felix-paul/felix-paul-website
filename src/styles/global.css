@@ -1,32 +1,169 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-50: #f0f7ff;
-  --color-brand-100: #e0effe;
-  --color-brand-200: #bae0fd;
-  --color-brand-300: #7cc7fb;
-  --color-brand-400: #36abf7;
-  --color-brand-500: #0d8fe8;
-  --color-brand-600: #0072c6;
-  --color-brand-700: #015aa0;
-  --color-brand-800: #064c84;
-  --color-brand-900: #0a406d;
-  --color-brand-950: #072849;
+  /* Die Paletten sind hier nur als Referenz auf CSS-Variablen definiert. Die
+     eigentlichen Werte stehen weiter unten in :root (hell) und werden im
+     Dark Mode überschrieben. Dadurch braucht keine der ~590 Farbklassen im
+     Markup eine dark:-Variante — sie zeigen automatisch auf den passenden Wert. */
+  --color-brand-50: var(--c-brand-50);
+  --color-brand-100: var(--c-brand-100);
+  --color-brand-200: var(--c-brand-200);
+  --color-brand-300: var(--c-brand-300);
+  --color-brand-400: var(--c-brand-400);
+  --color-brand-500: var(--c-brand-500);
+  --color-brand-600: var(--c-brand-600);
+  --color-brand-700: var(--c-brand-700);
+  --color-brand-800: var(--c-brand-800);
+  --color-brand-900: var(--c-brand-900);
+  --color-brand-950: var(--c-brand-950);
 
-  --color-ink-50: #f6f7f9;
-  --color-ink-100: #ebeef2;
-  --color-ink-200: #d3dae3;
-  --color-ink-300: #adb9c8;
-  --color-ink-400: #8092a8;
-  --color-ink-500: #61748d;
-  --color-ink-600: #4d5d75;
-  --color-ink-700: #404c5f;
-  --color-ink-800: #384151;
-  --color-ink-900: #1f2733;
-  --color-ink-950: #0f141c;
+  --color-ink-50: var(--c-ink-50);
+  --color-ink-100: var(--c-ink-100);
+  --color-ink-200: var(--c-ink-200);
+  --color-ink-300: var(--c-ink-300);
+  --color-ink-400: var(--c-ink-400);
+  --color-ink-500: var(--c-ink-500);
+  --color-ink-600: var(--c-ink-600);
+  --color-ink-700: var(--c-ink-700);
+  --color-ink-800: var(--c-ink-800);
+  --color-ink-900: var(--c-ink-900);
+  --color-ink-950: var(--c-ink-950);
+
+  --color-emerald-50: var(--c-emerald-50);
+  --color-emerald-100: var(--c-emerald-100);
+  --color-emerald-200: var(--c-emerald-200);
+  --color-emerald-300: var(--c-emerald-300);
+  --color-emerald-500: var(--c-emerald-500);
+  --color-emerald-700: var(--c-emerald-700);
+  --color-emerald-800: var(--c-emerald-800);
+  --color-emerald-900: var(--c-emerald-900);
+
+  --color-amber-50: var(--c-amber-50);
+  --color-amber-100: var(--c-amber-100);
+  --color-amber-200: var(--c-amber-200);
+  --color-amber-300: var(--c-amber-300);
+  --color-amber-400: var(--c-amber-400);
+  --color-amber-500: var(--c-amber-500);
+  --color-amber-700: var(--c-amber-700);
+  --color-amber-800: var(--c-amber-800);
+  --color-amber-900: var(--c-amber-900);
+  --color-amber-950: var(--c-amber-950);
+
+  /* Flächen. Ersetzt das frühere bg-white, das sich nicht umschalten ließ. */
+  --color-surface: var(--c-surface);
+  --color-canvas: var(--c-canvas);
 
   --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-display: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ── Helles Schema ─────────────────────────────────────────────────────── */
+:root {
+  color-scheme: light;
+
+  --c-brand-50: #f0f7ff;
+  --c-brand-100: #e0effe;
+  --c-brand-200: #bae0fd;
+  --c-brand-300: #7cc7fb;
+  --c-brand-400: #36abf7;
+  --c-brand-500: #0d8fe8;
+  --c-brand-600: #0072c6;
+  --c-brand-700: #015aa0;
+  --c-brand-800: #064c84;
+  --c-brand-900: #0a406d;
+  --c-brand-950: #072849;
+
+  --c-ink-50: #f6f7f9;
+  --c-ink-100: #ebeef2;
+  --c-ink-200: #d3dae3;
+  --c-ink-300: #adb9c8;
+  --c-ink-400: #8092a8;
+  --c-ink-500: #61748d;
+  --c-ink-600: #4d5d75;
+  --c-ink-700: #404c5f;
+  --c-ink-800: #384151;
+  --c-ink-900: #1f2733;
+  --c-ink-950: #0f141c;
+
+  --c-emerald-50: #ecfdf5;
+  --c-emerald-100: #d1fae5;
+  --c-emerald-200: #a7f3d0;
+  --c-emerald-300: #6ee7b7;
+  --c-emerald-500: #10b981;
+  --c-emerald-700: #047857;
+  --c-emerald-800: #065f46;
+  --c-emerald-900: #064e3b;
+
+  --c-amber-50: #fffbeb;
+  --c-amber-100: #fef3c7;
+  --c-amber-200: #fde68a;
+  --c-amber-300: #fcd34d;
+  --c-amber-400: #fbbf24;
+  --c-amber-500: #f59e0b;
+  --c-amber-700: #b45309;
+  --c-amber-800: #92400e;
+  --c-amber-900: #78350f;
+  --c-amber-950: #451a03;
+
+  --c-surface: #ffffff;
+  --c-canvas: #ffffff;
+}
+
+/* ── Dunkles Schema ────────────────────────────────────────────────────────
+   Die ink-Skala ist invertiert: ink-900 bleibt „stärkster Textkontrast",
+   ink-50 bleibt „dezenteste Fläche" — nur eben dunkel. Dadurch bedeutet jede
+   vorhandene Klasse weiterhin dasselbe und muss nicht angefasst werden.
+   brand/emerald/amber werden aufgehellt, weil gesättigte Dunkeltöne auf
+   dunklem Grund zu wenig Kontrast haben.                                     */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --c-brand-50: #0a2540;
+  --c-brand-100: #0d3355;
+  --c-brand-200: #14497a;
+  --c-brand-300: #1d6aad;
+  --c-brand-400: #2f8ad2;
+  --c-brand-500: #4aa8ea;
+  --c-brand-600: #6dbdf2;
+  --c-brand-700: #93cff7;
+  --c-brand-800: #b6e0fa;
+  --c-brand-900: #d5eefd;
+  --c-brand-950: #eaf6fe;
+
+  --c-ink-50: #171c25;
+  --c-ink-100: #1e242f;
+  --c-ink-200: #2b3341;
+  --c-ink-300: #3d4859;
+  --c-ink-400: #5b6b83;
+  --c-ink-500: #8093ab;
+  --c-ink-600: #a3b3c7;
+  --c-ink-700: #bcc9d8;
+  --c-ink-800: #d3dce7;
+  --c-ink-900: #eef2f7;
+  --c-ink-950: #ffffff;
+
+  --c-emerald-50: #06281d;
+  --c-emerald-100: #083a2a;
+  --c-emerald-200: #0d5540;
+  --c-emerald-300: #14855f;
+  --c-emerald-500: #2fcf95;
+  --c-emerald-700: #6ee7b7;
+  --c-emerald-800: #a7f3d0;
+  --c-emerald-900: #d1fae5;
+
+  --c-amber-50: #2a1c05;
+  --c-amber-100: #3d2907;
+  --c-amber-200: #5c3d0a;
+  --c-amber-300: #8a5c0f;
+  --c-amber-400: #c08519;
+  --c-amber-500: #e5a72c;
+  --c-amber-700: #f6c964;
+  --c-amber-800: #fbdd97;
+  --c-amber-900: #fdecc6;
+  --c-amber-950: #fef8e7;
+
+  --c-surface: #131820;
+  --c-canvas: #0d1117;
 }
 
 html {
@@ -36,7 +173,7 @@ html {
 body {
   font-family: var(--font-sans);
   color: var(--color-ink-900);
-  background-color: white;
+  background-color: var(--color-canvas);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -128,21 +265,38 @@ body {
 
 /* Mermaid-Diagramme: als zentrierte Grafik, nicht als Code-Block darstellen. */
 .prose-content .mermaid {
-  margin: 1.5rem 0 2rem;
+  /* Diagramme sind breiter als der Fließtext: die Textspalte ist auf 48rem
+     begrenzt, ein Flowchart braucht mehr. Der Block bricht deshalb seitlich
+     aus der Spalte aus – bis 64rem, und auf schmalen Geräten bis an den
+     Bildschirmrand minus Innenabstand. Mermaid skaliert das SVG dann auf
+     genau diese Breite (useMaxWidth: true).
+
+     Das ersetzt das frühere horizontale Scrollen: eine Darstellung, die man
+     erst schieben muss, um sie zu sehen, ist unbrauchbar. */
+  --diagram-width: 64rem;
+
+  /* Breiter als der Container, trotzdem mittig: margin-left schiebt die linke
+     Kante in die Mitte, transform zieht das Element um die halbe eigene Breite
+     zurück. margin:auto könnte das nicht – es zentriert nur Elemente, die
+     schmaler sind als ihr Container.
+     Die 2rem Abzug decken die Scrollbar ab, die 100vw mitzählt. */
+  width: min(var(--diagram-width), calc(100vw - 2rem));
+  max-width: none;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  margin-top: 2rem;
+  margin-bottom: 2.5rem;
   padding: 0;
   border: 0;
   background: transparent;
   text-align: center;
-  /* Breite Diagramme scrollen hier statt auf Spaltenbreite geschrumpft zu
-     werden – geschrumpft sind sie auf dem Handy nicht mehr lesbar. */
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
 }
 
 .prose-content .mermaid svg {
-  /* mermaid setzt selbst kein max-width mehr (useMaxWidth:false), das hier
-     verhindert nur, dass eine fremde Regel doch noch skaliert. */
-  max-width: none;
+  /* mermaid setzt selbst eine Breite; hier wird nur sichergestellt, dass das
+     SVG den Container ausfüllt und die Höhe proportional folgt. */
+  width: 100%;
+  max-width: 100%;
   height: auto;
 }
 

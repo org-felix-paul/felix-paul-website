@@ -55,7 +55,7 @@ const gruppen = [
   <ul class={`grid gap-4 sm:grid-cols-3 ${compact ? "" : "mt-4"}`}>
     {
       gruppen.map((g) => (
-        <li class="relative flex flex-col overflow-hidden rounded-2xl border border-ink-200 bg-white p-5 shadow-sm">
+        <li class="relative flex flex-col overflow-hidden rounded-2xl border border-ink-200 bg-surface p-5 shadow-sm">
           <span class={`absolute inset-x-0 top-0 h-1 ${g.bar}`} aria-hidden="true" />
           <span class={`inline-flex w-fit rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider ${g.chip}`}>
             {g.label}
