@@ -1,5 +1,5 @@
 // "Aktuelles" — a running log of talks, workshops, releases and publications.
-// Own folder so it follows the same shape as the blog and education sections:
+// Own folder so it follows the same shape as the blog and schools sections:
 // content next to its schema, aggregated by src/content.config.ts.
 import { defineCollection } from "astro:content";
 import { z } from "astro/zod";

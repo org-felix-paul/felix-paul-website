@@ -1,8 +1,8 @@
 ---
 import { getCollection, render } from "astro:content";
-import Layout from "../../../education/EduLayout.astro";
+import Layout from "../../../schools/SchoolsLayout.astro";
 import { SITE } from "../../../consts";
-import { EDU_PATHS } from "../../../education/consts";
+import { SCHOOLS_PATHS } from "../../../schools/consts";
 
 export async function getStaticPaths() {
   // Preview-Angebote bekommen keine Detailseite.
@@ -73,7 +73,7 @@ const schema = [
         </p>
         <div class="mt-5 flex flex-wrap gap-3">
           <a
-            href={EDU_PATHS.kontakt}
+            href={SCHOOLS_PATHS.kontakt}
             class="rounded-lg bg-brand-700 px-5 py-3 text-sm font-medium text-on-accent shadow-sm transition hover:bg-brand-800"
           >
             Anfrage senden
@@ -88,10 +88,10 @@ const schema = [
       </div>
 
       <div class="mt-12 flex flex-wrap items-center justify-between gap-4">
-        <a href={EDU_PATHS.angebotAnchor} class="text-sm font-medium text-brand-700 hover:text-brand-900">
+        <a href={SCHOOLS_PATHS.angebotAnchor} class="text-sm font-medium text-brand-700 hover:text-brand-900">
           ← Alle Angebote
         </a>
-        <a href={EDU_PATHS.insights} class="text-sm font-medium text-brand-700 hover:text-brand-900">
+        <a href={SCHOOLS_PATHS.insights} class="text-sm font-medium text-brand-700 hover:text-brand-900">
           Einblicke aus durchgeführten Workshops →
         </a>
       </div>

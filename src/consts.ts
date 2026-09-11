@@ -49,7 +49,7 @@ export const PATHS = {
   impressum: "/impressum/",
   datenschutz: "/datenschutz/",
   /** The one contact form on the domain: the #kontakt block on the home page.
-   *  The education section used to carry a second copy at /schools/kontakt/. */
+   *  The schools section used to carry a second copy at /schools/kontakt/. */
   kontakt: "/#kontakt",
   /** Home-page anchors that the rest of the site links back to. */
   speaking: "/#speaking",

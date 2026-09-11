@@ -14,7 +14,7 @@ import Hero from "../../components/Hero.astro";
 import Section from "../../components/Section.astro";
 import ContactForm from "../../components/ContactForm.astro";
 import { SITE, PATHS, PORTRAIT } from "../../consts";
-import { EDU_PATHS, angebotPath } from "../../education/consts";
+import { SCHOOLS_PATHS, workshopPath } from "../../schools/consts";
 import ZielgruppenHinweis from "../../components/ZielgruppenHinweis.astro";
 import { postPath } from "../../blog/consts";
 
@@ -282,7 +282,7 @@ const weitereThemen = [
       {
         angebote.map((a) => (
           <a
-            href={angebotPath(a.id)}
+            href={workshopPath(a.id)}
             lang="de"
             class="group flex h-full flex-col rounded-2xl border border-ink-200 bg-surface p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
           >
@@ -320,7 +320,7 @@ const weitereThemen = [
         See all school workshops
       </a>
       <a
-        href={EDU_PATHS.insights}
+        href={SCHOOLS_PATHS.insights}
         class="rounded-lg border border-ink-200 bg-surface px-5 py-3 text-sm font-medium text-ink-800 shadow-sm transition hover:border-emerald-300 hover:text-emerald-700"
       >
         Past workshops & materials
