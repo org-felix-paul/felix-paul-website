@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
+import tailwindcss from "@tailwindcss/vite";
 import { unified } from "@astrojs/markdown-remark";
 import rehypeSlug from "rehype-slug";
 import rehypeTableScroll from "./src/blog/plugins/rehype-table-scroll.mjs";
@@ -60,6 +61,14 @@ export default defineConfig({
       rehypePlugins: [rehypeSlug, rehypeTableScroll],
     }),
   },
+  // Tailwind läuft seit Astro 7 (Vite 8) über das Vite-Plugin statt über
+  // PostCSS. Der PostCSS-Weg löste `@import "tailwindcss"` unter Vite 8 nicht
+  // mehr auf und suchte die Datei im Projektwurzelverzeichnis. Das Vite-Plugin
+  // ist für Vite-Projekte ohnehin der von Tailwind empfohlene Weg.
+  vite: {
+    plugins: [tailwindcss()],
+  },
+
   build: {
     // Kleines CSS-Bundle direkt ins HTML inlinen -> kein render-blockierender Request
     inlineStylesheets: "always",
