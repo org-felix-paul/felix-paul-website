@@ -33,7 +33,13 @@
   --color-emerald-100: var(--c-emerald-100);
   --color-emerald-200: var(--c-emerald-200);
   --color-emerald-300: var(--c-emerald-300);
+  /* 400 und 600 fehlten hier. Beide werden im Markup benutzt
+     (hover:border-emerald-400, bg-emerald-600) und fielen deshalb still auf
+     Tailwinds eingebautes Emerald zurück — die einzigen Farben der Seite, die
+     nicht mit dem Schema umschalteten. */
+  --color-emerald-400: var(--c-emerald-400);
   --color-emerald-500: var(--c-emerald-500);
+  --color-emerald-600: var(--c-emerald-600);
   --color-emerald-700: var(--c-emerald-700);
   --color-emerald-800: var(--c-emerald-800);
   --color-emerald-900: var(--c-emerald-900);
@@ -52,6 +58,21 @@
   /* Flächen. Ersetzt das frühere bg-white, das sich nicht umschalten ließ. */
   --color-surface: var(--c-surface);
   --color-canvas: var(--c-canvas);
+
+  /* Schrift auf einer gefüllten Akzentfläche (bg-brand-*, bg-emerald-600,
+     der brand-Verlauf). Vorher stand dort `text-white` — im Dunkelmodus kippt
+     die Marken-Skala aber mit, brand-700 ist dann ein HELLER Ton, und weiß
+     darauf kam auf 1,68:1: jeder Button der Seite war im Dunkeln unlesbar.
+     Eine andere Blauwahl repariert das nicht, denn brand-700 ist gleichzeitig
+     Linkfarbe (muss hell sein) und Buttonfläche (muss dunkel sein) — das
+     schließt sich aus. Deshalb eine eigene Rolle statt einer Farbe. */
+  --color-on-accent: var(--c-on-accent);
+
+  /* Linien, die Struktur tragen statt zu schmücken: Formularfelder, die
+     Filter-Buttons im Blog und das Tabellengitter. Die brauchen nach
+     WCAG 1.4.11 3:1 — ink-200 liegt bei 1,41:1 und ist praktisch unsichtbar.
+     Rein dekorative Kartenränder bleiben bewusst auf ink-200. */
+  --color-rule: var(--c-rule);
 
   --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-display: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -78,7 +99,10 @@
   --c-ink-200: #d3dae3;
   --c-ink-300: #adb9c8;
   --c-ink-400: #8092a8;
-  --c-ink-500: #61748d;
+  /* Minimal abgedunkelt von #61748d: auf der gedämpften Fläche ink-50 (u. a.
+     der ganze Footer) kam der alte Wert nur auf 4,46:1 und verfehlte AA knapp.
+     Jetzt 4,67:1 dort und 5,00:1 auf weiß. */
+  --c-ink-500: #5e7189;
   --c-ink-600: #4d5d75;
   --c-ink-700: #404c5f;
   --c-ink-800: #384151;
@@ -89,7 +113,12 @@
   --c-emerald-100: #d1fae5;
   --c-emerald-200: #a7f3d0;
   --c-emerald-300: #6ee7b7;
+  --c-emerald-400: #34d399;
   --c-emerald-500: #10b981;
+  /* Bewusst dunkler als Tailwinds #059669: auf dem grünen CTA steht weiße
+     Schrift, und #059669 kam damit nur auf 3,77:1. #058257 liegt bei 4,84:1
+     und bleibt trotzdem zwischen 500 und 700 in der Skala. */
+  --c-emerald-600: #058257;
   --c-emerald-700: #047857;
   --c-emerald-800: #065f46;
   --c-emerald-900: #064e3b;
@@ -107,6 +136,9 @@
 
   --c-surface: #ffffff;
   --c-canvas: #ffffff;
+
+  --c-on-accent: #ffffff;
+  --c-rule: #78899f;
 }
 
 /* ── Dunkles Schema ────────────────────────────────────────────────────────
@@ -146,7 +178,9 @@
   --c-emerald-100: #083a2a;
   --c-emerald-200: #0d5540;
   --c-emerald-300: #14855f;
+  --c-emerald-400: #22aa7a;
   --c-emerald-500: #2fcf95;
+  --c-emerald-600: #4fdba6;
   --c-emerald-700: #6ee7b7;
   --c-emerald-800: #a7f3d0;
   --c-emerald-900: #d1fae5;
@@ -155,7 +189,10 @@
   --c-amber-100: #3d2907;
   --c-amber-200: #5c3d0a;
   --c-amber-300: #8a5c0f;
-  --c-amber-400: #c08519;
+  /* Dunkler als die Skala es nahelegt, weil amber-400 ausschließlich die
+     Fläche des Umgebungsbanners ist und amber-950 darauf im Dunkeln zu
+     Fast-Weiß kippt: auf #c08519 waren das 2,99:1. Jetzt 4,71:1. */
+  --c-amber-400: #96660d;
   --c-amber-500: #e5a72c;
   --c-amber-700: #f6c964;
   --c-amber-800: #fbdd97;
@@ -164,6 +201,11 @@
 
   --c-surface: #131820;
   --c-canvas: #0d1117;
+
+  /* Im Dunkeln sind die Akzentflächen hell, die Schrift darauf also dunkel.
+     Erreicht 8,98:1 auf brand-600 bis 15,37:1 auf brand-900. */
+  --c-on-accent: #0f141c;
+  --c-rule: #64748e;
 }
 
 html {
@@ -292,7 +334,10 @@ body {
 
 .prose-content th,
 .prose-content td {
-  border: 1px solid var(--color-ink-200);
+  /* Das Gitter trägt hier Bedeutung — es ordnet Zellen Zeilen und Spalten zu —
+     und fällt damit unter WCAG 1.4.11 (3:1). Auf ink-200 war es mit 1,31:1
+     gegen die Kopfzeilenfläche praktisch nicht zu sehen. */
+  border: 1px solid var(--color-rule);
   padding: 0.5rem 0.75rem;
   text-align: left;
 }

@@ -76,7 +76,7 @@ const posts = allPosts.map((post) => ({
           placeholder="Beiträge durchsuchen…"
           autocomplete="off"
           data-search-input
-          class="w-full rounded-xl border border-ink-200 bg-surface px-4 py-3 text-base text-ink-900 shadow-sm outline-none transition placeholder:text-ink-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+          class="w-full rounded-xl border border-rule bg-surface px-4 py-3 text-base text-ink-900 shadow-sm outline-none transition placeholder:text-ink-500 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
         />
       </label>
 
@@ -87,7 +87,7 @@ const posts = allPosts.map((post) => ({
             type="button"
             data-value=""
             aria-pressed="true"
-            class="rounded-full border border-brand-700 bg-brand-700 px-3 py-1 text-sm font-medium text-white transition"
+            class="rounded-full border border-brand-700 bg-brand-700 px-3 py-1 text-sm font-medium text-on-accent transition"
           >
             Alle
           </button>
@@ -97,7 +97,7 @@ const posts = allPosts.map((post) => ({
                 type="button"
                 data-value={value}
                 aria-pressed="false"
-                class="rounded-full border border-ink-200 bg-surface px-3 py-1 text-sm font-medium text-ink-700 transition hover:border-brand-300 hover:text-brand-700"
+                class="rounded-full border border-rule bg-surface px-3 py-1 text-sm font-medium text-ink-700 transition hover:border-brand-300 hover:text-brand-700"
               >
                 {AUDIENCE_LABELS[value]}
               </button>
@@ -111,7 +111,7 @@ const posts = allPosts.map((post) => ({
             type="button"
             data-value=""
             aria-pressed="true"
-            class="rounded-full border border-brand-700 bg-brand-700 px-3 py-1 text-sm font-medium text-white transition"
+            class="rounded-full border border-brand-700 bg-brand-700 px-3 py-1 text-sm font-medium text-on-accent transition"
           >
             Alle
           </button>
@@ -121,7 +121,7 @@ const posts = allPosts.map((post) => ({
                 type="button"
                 data-value={value}
                 aria-pressed="false"
-                class="rounded-full border border-ink-200 bg-surface px-3 py-1 text-sm font-medium text-ink-700 transition hover:border-brand-300 hover:text-brand-700"
+                class="rounded-full border border-rule bg-surface px-3 py-1 text-sm font-medium text-ink-700 transition hover:border-brand-300 hover:text-brand-700"
               >
                 {TOPIC_LABELS[value]}
               </button>
@@ -135,7 +135,7 @@ const posts = allPosts.map((post) => ({
             type="button"
             data-value=""
             aria-pressed="true"
-            class="rounded-full border border-brand-700 bg-brand-700 px-3 py-1 text-sm font-medium text-white transition"
+            class="rounded-full border border-brand-700 bg-brand-700 px-3 py-1 text-sm font-medium text-on-accent transition"
           >
             Alle
           </button>
@@ -145,7 +145,7 @@ const posts = allPosts.map((post) => ({
                 type="button"
                 data-value={value}
                 aria-pressed="false"
-                class="rounded-full border border-ink-200 bg-surface px-3 py-1 text-sm font-medium text-ink-700 transition hover:border-brand-300 hover:text-brand-700"
+                class="rounded-full border border-rule bg-surface px-3 py-1 text-sm font-medium text-ink-700 transition hover:border-brand-300 hover:text-brand-700"
               >
                 {STATUS_LABELS[value]}
               </button>
@@ -186,7 +186,7 @@ const posts = allPosts.map((post) => ({
                   ))}
                 </div>
                 <h2 class="text-xl font-semibold text-ink-700">{post.title}</h2>
-                <p class="text-sm font-medium italic leading-relaxed text-ink-400">{post.description}</p>
+                <p class="text-sm font-medium italic leading-relaxed text-ink-500">{post.description}</p>
               </div>
             </li>
           ) : (
@@ -215,7 +215,7 @@ const posts = allPosts.map((post) => ({
                 </div>
                 <h2 class="text-xl font-semibold text-ink-900 group-hover:text-brand-700">{post.title}</h2>
                 <p class="text-sm leading-relaxed text-ink-600">{post.description}</p>
-                <time datetime={post.pubDate.toISOString()} class="text-xs font-medium uppercase tracking-wider text-ink-400">
+                <time datetime={post.pubDate.toISOString()} class="text-xs font-medium uppercase tracking-wider text-ink-500">
                   {dateFmt.format(post.pubDate)}
                 </time>
               </a>
@@ -289,11 +289,11 @@ const posts = allPosts.map((post) => ({
           const active = b === btn;
           b.setAttribute("aria-pressed", active ? "true" : "false");
           b.classList.toggle("bg-brand-700", active);
-          b.classList.toggle("text-white", active);
+          b.classList.toggle("text-on-accent", active);
           b.classList.toggle("border-brand-700", active);
           b.classList.toggle("bg-surface", !active);
           b.classList.toggle("text-ink-700", !active);
-          b.classList.toggle("border-ink-200", !active);
+          b.classList.toggle("border-rule", !active);
         });
         apply();
       });

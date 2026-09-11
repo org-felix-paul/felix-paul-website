@@ -78,7 +78,7 @@ const schema = [
           }
         </div>
 
-        <time datetime={post.data.pubDate.toISOString()} class="mt-4 block text-xs font-medium uppercase tracking-wider text-ink-400">
+        <time datetime={post.data.pubDate.toISOString()} class="mt-4 block text-xs font-medium uppercase tracking-wider text-ink-500">
           {dateFmt.format(post.data.pubDate)}
         </time>
       </div>
@@ -98,7 +98,7 @@ const schema = [
         <div class="mt-5 flex flex-wrap gap-3">
           <a
             href="/#kontakt"
-            class="rounded-lg bg-brand-700 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-brand-800"
+            class="rounded-lg bg-brand-700 px-5 py-3 text-sm font-medium text-on-accent shadow-sm transition hover:bg-brand-800"
           >
             Kontakt aufnehmen
           </a>
