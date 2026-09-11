@@ -419,3 +419,241 @@ body {
   color: var(--color-ink-700);
   white-space: pre;
 }
+
+/* ── Protokoll-Steckbriefe und Übersichtsgrafiken in Blogposts ──────────────
+   Kleine, themefähige HTML-Bausteine für Beiträge, die mehr Struktur brauchen
+   als Fließtext und Tabelle hergeben: Steckbrief-Karten je Protokoll, ein
+   Schichtenmodell und eine Reifegrad-Skala. Sie werden im Markdown als rohes
+   HTML geschrieben und nutzen ausschließlich die Tokens oben, damit sie im
+   Dunkelmodus ohne zweite Fassung mitschalten. Mermaid übernimmt weiterhin
+   die Ablauf- und Entscheidungsdiagramme; diese Bausteine ergänzen es dort,
+   wo ein Diagramm nur Kästchen mit Text wäre.                               */
+
+/* Breite Blöcke brechen wie Diagramme und Tabellen bis 64rem aus der
+   Textspalte aus — dieselbe Zentrier-Technik wie bei .mermaid. */
+.prose-content .wide {
+  width: min(64rem, calc(100% + 8rem), calc(100vw - 2rem));
+  margin-left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 1.5rem;
+}
+
+.prose-content .proto-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  margin-top: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.prose-content .proto-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  border: 1px solid var(--color-ink-200);
+  border-radius: 1rem;
+  background: var(--color-surface);
+  padding: 1.1rem 1.2rem;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+.prose-content .proto-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: var(--color-brand-500);
+}
+.prose-content .proto-card.is-etabliert::before { background: var(--color-emerald-500); }
+.prose-content .proto-card.is-neu::before { background: var(--color-brand-500); }
+.prose-content .proto-card.is-experimentell::before { background: var(--color-amber-500); }
+
+.prose-content .proto-card .proto-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem 0.75rem;
+}
+.prose-content .proto-card .proto-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-ink-900);
+  line-height: 1.2;
+}
+.prose-content .proto-card .proto-sub {
+  font-size: 0.85rem;
+  color: var(--color-ink-500);
+}
+.prose-content .proto-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.prose-content .proto-card dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.2rem 0.75rem;
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+.prose-content .proto-card dt {
+  color: var(--color-ink-500);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+  padding-top: 0.15rem;
+}
+.prose-content .proto-card dd {
+  margin: 0;
+  color: var(--color-ink-800);
+}
+.prose-content .proto-card ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.9rem;
+}
+.prose-content .proto-card li { margin-bottom: 0.15rem; }
+
+/* Status-Plakette: dieselben drei Stufen wie die Kartenkante. */
+.prose-content .status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.prose-content .status::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: currentColor;
+}
+.prose-content .status.is-etabliert { background: var(--color-emerald-50); color: var(--color-emerald-800); }
+.prose-content .status.is-neu { background: var(--color-brand-50); color: var(--color-brand-800); }
+.prose-content .status.is-experimentell { background: var(--color-amber-50); color: var(--color-amber-800); }
+
+/* Schichtenmodell: gestapelte Ebenen, unten die Leitung, oben die Fachlogik. */
+.prose-content .stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 1.25rem 0 1.5rem;
+}
+.prose-content .stack .layer {
+  display: grid;
+  grid-template-columns: minmax(7rem, 11rem) 1fr;
+  gap: 0.25rem 1rem;
+  align-items: center;
+  border: 1px solid var(--color-ink-200);
+  border-left: 5px solid var(--color-brand-300);
+  border-radius: 0.6rem;
+  background: var(--color-surface);
+  padding: 0.6rem 0.9rem;
+}
+.prose-content .stack .layer.is-agentic { border-left-color: var(--color-brand-600); background: var(--color-brand-50); }
+.prose-content .stack .layer.is-classic { border-left-color: var(--color-emerald-500); }
+.prose-content .stack .layer.is-base { border-left-color: var(--color-ink-400); background: var(--color-ink-50); }
+.prose-content .stack .layer-name {
+  font-weight: 700;
+  color: var(--color-ink-900);
+  font-size: 0.95rem;
+}
+.prose-content .stack .layer-name small {
+  display: block;
+  font-weight: 500;
+  color: var(--color-ink-500);
+  font-size: 0.75rem;
+}
+.prose-content .stack .layer-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.prose-content .stack .chip {
+  border: 1px solid var(--color-ink-200);
+  border-radius: 999px;
+  background: var(--color-surface);
+  padding: 0.1rem 0.6rem;
+  font-size: 0.8rem;
+  color: var(--color-ink-800);
+  white-space: nowrap;
+}
+.prose-content .stack .chip.is-agentic { border-color: var(--color-brand-300); background: var(--color-brand-100); color: var(--color-brand-900); }
+.prose-content .stack .chip.is-classic { border-color: var(--color-emerald-300); background: var(--color-emerald-50); color: var(--color-emerald-900); }
+@media (max-width: 40rem) {
+  .prose-content .stack .layer { grid-template-columns: 1fr; }
+}
+
+/* Reifegrad-Skala: drei Spalten, von „seit Jahrzehnten" bis „experimentell". */
+.prose-content .maturity {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0 1.5rem;
+}
+.prose-content .maturity .tier {
+  border: 1px solid var(--color-ink-200);
+  border-radius: 0.9rem;
+  background: var(--color-surface);
+  padding: 0.9rem 1rem;
+}
+.prose-content .maturity .tier h4 {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-ink-900);
+}
+.prose-content .maturity .tier .hint {
+  font-size: 0.8rem;
+  color: var(--color-ink-500);
+  margin-bottom: 0.6rem;
+}
+.prose-content .maturity .tier ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.9rem;
+}
+.prose-content .maturity .tier.is-etabliert { border-top: 4px solid var(--color-emerald-500); }
+.prose-content .maturity .tier.is-neu { border-top: 4px solid var(--color-brand-500); }
+.prose-content .maturity .tier.is-experimentell { border-top: 4px solid var(--color-amber-500); }
+
+/* Hinweiskästen: Markdown-Blockquotes hatten bisher nur den Preflight-Reset
+   und sahen aus wie normale Absätze. Ein zurückhaltender Rahmen macht sie als
+   Einschub erkennbar, ohne die bestehenden Beiträge umzubauen. */
+.prose-content blockquote {
+  border-left: 4px solid var(--color-brand-300);
+  background: var(--color-brand-50);
+  border-radius: 0 0.6rem 0.6rem 0;
+  padding: 0.75rem 1rem;
+  margin: 1.25rem 0 1.5rem;
+}
+.prose-content blockquote p:last-child { margin-bottom: 0; }
+
+/* Inline-Code und Code-Blöcke in Beiträgen. */
+.prose-content :not(pre) > code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875em;
+  background: var(--color-ink-100);
+  border-radius: 0.3rem;
+  padding: 0.1rem 0.35rem;
+}
+.prose-content pre:not(.mermaid) {
+  overflow-x: auto;
+  border: 1px solid var(--color-ink-200);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin: 1rem 0 1.5rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
