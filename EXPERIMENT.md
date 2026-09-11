@@ -77,6 +77,30 @@ dieselbe Liste gepflegt werden müsste.
 
 ---
 
+## Ein echter Fehler, der dabei aufgefallen ist: Weiß auf Markenfläche
+
+Die `brand`-Skala ist im Dunkelschema **invertiert** — `brand-700` ist dort
+kein dunkles Blau, sondern eine *helle* Blaufläche (`#93cff7`). Das Markup
+setzte darauf überall `text-white`. Gemessen sind das **1,7:1**; jeder
+Knopf („Jetzt anfragen", „Kontakt", „Alle Schulworkshops ansehen", der
+Filterschalter im Blog, der Praxiserfahrungs-Block) war im Dunkelmodus
+praktisch unbeschriftet. Das bestand schon vorher; dieses Layout macht Knöpfe
+flächiger und hätte es weiter verstärkt.
+
+Behoben über ein weiteres semantisches Token statt über 32 Einzelklassen:
+
+```
+--color-on-brand  →  hell: #ffffff · dunkel: var(--c-brand-50)
+```
+
+Kein neuer Farbwert — im Dunkelschema ist `brand-50` das dunkelste Blau
+derselben invertierten Skala und damit exakt die Rolle, die Weiß im hellen
+Schema spielt. Gemessen jetzt ≥ 4,5:1 auf jeder Markenfläche in beiden
+Schemata. Ersetzt wurde `text-white` **nur** dort, wo im selben Klassenstring
+auch eine Markenfläche steht.
+
+---
+
 ## Das Haarlinien-Token
 
 Ein Layout, dessen Struktur von Linien getragen wird, steht und fällt damit,
@@ -231,17 +255,53 @@ Hinzufügungen, und zwar ausschließlich:
 
 ---
 
-## Bekannt offen (Stand dieses ersten Commits)
+## Wie geprüft wurde
 
-Der Zweig ist gebaut, geprüft und lauffähig; die folgenden Punkte waren als
-zweiter Durchgang eingeplant und stehen hier, damit sie nicht untergehen:
+Nicht am Markup, sondern im Browser: ein Chrome im Headless-Betrieb wird über
+das DevTools-Protokoll gesteuert, misst und fotografiert. Drei Durchläufe:
 
-1. **Wortmarke bei 380px.** „Felix Paul persönlich" bricht in der Kopfzeile um
-   und die erste Zeile wird von der festen Kopfhöhe abgeschnitten. Braucht eine
-   kleinere Schriftgröße unterhalb `sm` und `whitespace-nowrap`.
-2. **Formularrahmen.** Die Eingabefelder tragen noch `border-ink-200` und wirken
-   neben dem übrigen Raster blass — sie gehören auf `border-rule`.
-3. **Screenshots** unter `screenshots/`.
+**Waagerechter Überlauf** — 13 Seiten × 5 Breiten (380, 768, 1023, 1024, 1440)
+× beide Schemata = **130 Messungen, 0 Überläufe.** Verglichen wird
+`documentElement.scrollWidth` gegen `innerWidth`, nicht der Augenschein.
+
+**Zugänglichkeit** — 13 Seiten × 380px und 1440px:
+
+- Sprunglink ist auf jeder Seite das erste fokussierbare Element und wird bei
+  Fokus **167 × 44 px sichtbar** (gemessen, mit Fokusemulation — ohne die gilt
+  ein Headless-Dokument als unfokussiert und jede `:focus`-Messung wäre wertlos).
+- Genau eine `h1` je Seite, **kein** Sprung in der Überschriftenfolge, keine
+  zwei Navigations-Landmarken mit gleichem Namen.
+- Abschnittsverzeichnis: `NAV`-Landmarke mit 9 Einträgen, in beiden
+  Erscheinungsformen sichtbar und vollständig per Tabulator erreichbar.
+- Mobiles Menü: per Tastatur fokussierbar, `aria-expanded` wechselt,
+  `aria-controls` zeigt auf ein existierendes Ziel, alle 11 Links tabbar,
+  schließt wieder.
+- Fokusring: 2px durchgezogen, per echtem Tabulator-Tastendruck geprüft.
+- `prefers-reduced-motion: reduce` → `scroll-behavior: auto`, Übergänge ~0s.
+- Berührungsziele ≥ 44px, bis auf zwei begründete Ausnahmen: den Sprunglink im
+  Ruhezustand (der soll unsichtbar sein) und das Ankreuzfeld im Formular, dessen
+  Beschriftung daneben es mitschaltet (WCAG 2.5.8).
+
+**Kontrast** — alle ausgelieferten Paare in beiden Schemata nachgerechnet.
+Rasterlinie 3,27–3,53:1 (hell) und 3,66–4,45:1 (dunkel) auf jeder Fläche, auf
+der sie vorkommt. Fließtext überall ≥ 4,5:1; ein Mikro-Label lag mit 4,46:1
+knapp darunter und wurde auf `ink-600` gehoben (6,24:1).
+
+**Bilder** — 24 Aufnahmen unter `screenshots/`, aus dem Produktions-Build
+(kein Entwicklungs-Banner), beide Schemata, einschließlich des Bruchpunkts
+1023 ↔ 1024 px.
+
+---
+
+## Bekannt offen
+
+1. **`/schools/insights/`: Bilder ohne Maßangaben.** Drei `<img>` dort haben
+   kein `width`/`height`; vor dem Laden sind sie 0 Pixel hoch, der Link darum
+   ist kurzzeitig ein 2px-Ziel und beim Laden springt das Layout. Bestand schon
+   vorher, ist kein Layoutfehler dieses Zweigs, gehört aber behoben.
+2. **`--c-rule-soft` ist bewusst schwach** (1,5–1,6:1). Das ist zulässig, weil
+   der Trenner zweiter Ordnung nie allein steht — neben ihm läuft immer eine
+   Linie erster Ordnung. Wer ihn als tragend einsetzt, muss ihn anheben.
 
 ---
 
@@ -259,6 +319,29 @@ zweiter Durchgang eingeplant und stehen hier, damit sie nicht untergehen:
 - **Die Chipleiste ist ein zweites klebendes Element.** Kopfzeile plus Leiste
   belegen auf dem Handy rund 116px Höhe. Vertretbar, aber es ist der teuerste
   Teil des Entwurfs.
+- **Die Kopfzeile ist bei genau 1024px eng.** Dort erscheint die vollständige
+  Hauptnavigation zum ersten Mal, gleichzeitig mit der Seitenspalte. Sie passt
+  jetzt (Abstände wachsen erst ab `xl`, Einträge brechen nicht mehr um), aber
+  ein einziger zusätzlicher Menüpunkt kippt sie wieder. Wer die Navigation
+  erweitert, muss diese Breite nachmessen.
 - **Die Dichte ist eine Haltung.** Wer die alte, freundlich-luftige Seite mochte,
   wird das hier als streng empfinden. Das ist der Punkt des Experiments — aber
   es ist eine Entscheidung, keine Verbesserung.
+
+---
+
+## Was ich mit mehr Zeit noch machen würde
+
+1. **Die leere Kopfspalte nutzen.** Bei kurzen Abschnitten steht links viel
+   Weißraum. Dort gehörte eine Marginalie hin — ein Querverweis, eine Kennzahl,
+   ein Datum. Dafür bräuchte es allerdings neuen Text, und der war hier
+   ausdrücklich tabu.
+2. **Den Bruchpunkt der Seitenspalte auf Containerbreite umstellen.** Er hängt
+   noch an der Fensterbreite (1024px), während die Innenspalten schon per
+   Container-Query umbrechen. Einheitlich wäre besser.
+3. **Die Chipleiste beim Abwärtsscrollen einfahren lassen.** Sie kostet auf dem
+   Handy dauerhaft 48px; ein Einfahren beim Lesen und Ausfahren beim
+   Zurückscrollen gäbe sie frei, ohne die Orientierung zu verlieren.
+4. **Die Zellraster auf `auto-fit` umstellen.** Dann bräuchte es das Füllfeld in
+   der Qualifikationstabelle nicht mehr und die Spaltenzahl ergäbe sich aus dem
+   Platz statt aus einer Breakpoint-Kette.

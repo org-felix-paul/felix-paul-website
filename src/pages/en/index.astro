@@ -156,7 +156,7 @@ const buchVorschauen = [
 ];
 
 const knopfPrimaer =
-  "inline-flex min-h-11 items-center justify-center bg-brand-700 px-5 text-sm font-semibold text-white transition hover:bg-brand-800";
+  "inline-flex min-h-11 items-center justify-center bg-brand-700 px-5 text-sm font-semibold text-on-brand transition hover:bg-brand-800";
 const knopfSekundaer =
   "inline-flex min-h-11 items-center justify-center border border-rule bg-surface px-5 text-sm font-semibold text-ink-800 transition hover:border-brand-700 hover:text-brand-700";
 ---
@@ -247,7 +247,7 @@ const knopfSekundaer =
           <div class="grid gap-3 border-b border-rule py-4 sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-6">
             <dt class="label pt-1 text-ink-500">Actually building it</dt>
             <dd>
-              <span class="flex min-h-14 items-center justify-center bg-brand-700 px-4 py-2 text-center text-sm font-semibold tracking-wider text-white uppercase">
+              <span class="flex min-h-14 items-center justify-center bg-brand-700 px-4 py-2 text-center text-sm font-semibold tracking-wider text-on-brand uppercase">
                 Hands-on experience
               </span>
             </dd>
@@ -283,7 +283,7 @@ const knopfSekundaer =
         }
 
         <div class="bg-ink-50 p-5">
-          <h3 class="label text-ink-500">More topics</h3>
+          <h3 class="label text-ink-600">More topics</h3>
           <ul class="mt-3 space-y-1.5 text-[0.9375rem] text-ink-600">
             {
               weitereThemen.map((t) => (
@@ -362,7 +362,7 @@ const knopfSekundaer =
       <div class="mt-8 flex flex-wrap gap-3 border-t border-rule pt-6">
         <a
           href={PATHS.schools}
-          class="inline-flex min-h-11 items-center justify-center bg-emerald-700 px-5 text-sm font-semibold text-white transition hover:bg-emerald-800"
+          class="inline-flex min-h-11 items-center justify-center bg-emerald-700 px-5 text-sm font-semibold text-on-brand transition hover:bg-emerald-800"
         >
           See all school workshops
         </a>

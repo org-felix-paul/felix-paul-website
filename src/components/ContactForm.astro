@@ -32,7 +32,7 @@ const T = {
 <form
   action={`https://formsubmit.co/${SITE.email}`}
   method="POST"
-  class="space-y-5 border border-ink-200 bg-surface p-6 md:p-8"
+  class="space-y-5 border border-rule bg-surface p-6 md:p-8"
 >
   <input type="hidden" name="_subject" value={T.betreff} />
   <input type="hidden" name="_template" value="table" />
@@ -54,7 +54,7 @@ const T = {
       placeholder={T.namePlatzhalter}
       required
       autocomplete="name"
-      class="mt-1 w-full border border-ink-200 bg-surface px-3 py-2 text-sm transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 focus:outline-none"
+      class="mt-1 w-full min-h-11 border border-rule bg-surface px-3 py-2.5 text-sm transition focus:border-brand-700 focus:ring-2 focus:ring-brand-200 focus:outline-none"
     />
   </div>
 
@@ -67,7 +67,7 @@ const T = {
       required
       autocomplete="email"
       placeholder={T.emailPlatzhalter}
-      class="mt-1 w-full border border-ink-200 bg-surface px-3 py-2 text-sm transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 focus:outline-none"
+      class="mt-1 w-full min-h-11 border border-rule bg-surface px-3 py-2.5 text-sm transition focus:border-brand-700 focus:ring-2 focus:ring-brand-200 focus:outline-none"
     />
   </div>
 
@@ -79,7 +79,7 @@ const T = {
       rows="5"
       required
       placeholder={T.nachrichtPlatzhalter}
-      class="mt-1 w-full border border-ink-200 bg-surface px-3 py-2 text-sm transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 focus:outline-none"
+      class="mt-1 w-full min-h-11 border border-rule bg-surface px-3 py-2.5 text-sm transition focus:border-brand-700 focus:ring-2 focus:ring-brand-200 focus:outline-none"
     ></textarea>
   </div>
 
@@ -90,7 +90,7 @@ const T = {
       name="privacy"
       value="yes"
       required
-      class="mt-1 h-4 w-4 border-ink-300 text-brand-700 focus:ring-brand-500"
+      class="mt-0.5 h-5 w-5 shrink-0 border-rule text-brand-700 focus:ring-brand-500"
     />
     <label for="privacy">
       {
@@ -117,7 +117,7 @@ const T = {
 
   <button
     type="submit"
-    class="inline-flex w-full items-center justify-center bg-brand-700 px-5 py-3 text-sm font-medium text-white transition hover:bg-brand-800 sm:w-auto"
+    class="inline-flex w-full items-center justify-center bg-brand-700 px-5 py-3 text-sm font-medium text-on-brand transition hover:bg-brand-800 sm:w-auto"
   >
     {T.senden}
   </button>

@@ -60,6 +60,14 @@
      Kastenkante genügt das, als Rasterlinie nicht.
      Gemessen: hell 3,5:1 auf surface / 3,3:1 auf ink-50;
                dunkel 4,2:1 auf surface / 4,0:1 auf ink-50. */
+  /* Textfarbe AUF einer Markenfläche. Eigenes Token, weil „weiß" dafür nur im
+     hellen Schema stimmt: die brand-Skala ist im Dunkelschema invertiert,
+     brand-700 ist dort eine HELLE Blaufläche. Weiß darauf ergibt gemessene
+     1,7:1 — die Beschriftung jedes Knopfes war im Dunkelmodus praktisch
+     unlesbar. Mit brand-50 als Gegenfarbe sind es 4,5:1 und mehr, in BEIDEN
+     Schemata, ohne einen einzigen neuen Farbwert. */
+  --color-on-brand: var(--c-on-brand);
+
   --color-rule: var(--c-rule);
   /* Zweite Ordnung: Zeilentrenner innerhalb eines Blocks. Darf leiser sein,
      weil daneben immer schon eine Rasterlinie erster Ordnung steht. */
@@ -127,6 +135,8 @@
 
   --c-rule: #7a8a9e;
   --c-rule-soft: #c3ccd8;
+
+  --c-on-brand: #ffffff;
 }
 
 /* ── Dunkles Schema ────────────────────────────────────────────────────────
@@ -187,6 +197,10 @@
 
   --c-rule: #6b7c95;
   --c-rule-soft: #333d4d;
+
+  /* Das dunkelste Blau der invertierten Skala — dieselbe Rolle wie Weiß im
+     hellen Schema: der größtmögliche Abstand zur Markenfläche. */
+  --c-on-brand: var(--c-brand-50);
 }
 
 /* ── Maße, die mehrere Bausteine teilen ───────────────────────────────────

@@ -107,7 +107,7 @@ const zielAttribute = (e: { external?: boolean }) =>
 // Unterkante der Kopfzeile sitzt — dieselbe Sprache wie die Markierung im
 // Abschnittsverzeichnis der Seitenspalte.
 const linkClass =
-  "inline-flex h-full min-h-11 items-center border-b-2 border-transparent transition-colors hover:text-brand-700 aria-[current]:border-brand-700 aria-[current]:text-brand-700";
+  "inline-flex h-full min-h-11 items-center whitespace-nowrap border-b-2 border-transparent transition-colors hover:text-brand-700 aria-[current]:border-brand-700 aria-[current]:text-brand-700";
 import ThemeToggle from "./ThemeToggle.astro";
 import { uebersetzer } from "../i18n/ui";
 import LanguageLink from "./LanguageLink.astro";
@@ -121,21 +121,21 @@ const t = uebersetzer(lang);
       an die Unterkante der Kopfzeile, und seine 2px-Markierung liegt AUF der
       Rasterlinie statt einen Zentimeter darüber. Die Höhe steht als
       --header-h in global.css, weil Anker und Chipleiste sie kennen müssen. */}
-  <div class={`mx-auto flex ${width} h-[var(--header-h)] items-stretch justify-between gap-6 px-6`}>
-    <a href={toHref(home)} class="flex items-center gap-2.5 font-display font-semibold tracking-tight">
+  <div class={`mx-auto flex ${width} h-[var(--header-h)] items-stretch justify-between gap-3 px-6 sm:gap-6 lg:gap-4 xl:gap-6`}>
+    <a href={toHref(home)} class="flex min-w-0 items-center gap-2 font-display font-semibold tracking-tight sm:gap-2.5 xl:shrink-0">
       {
         logo ? (
-          <img src={logo} alt={logoAlt} width="36" height="36" class="h-9 w-9" />
+          <img src={logo} alt={logoAlt} width="36" height="36" class="h-8 w-8 shrink-0 sm:h-9 sm:w-9" />
         ) : (
           <span
-            class="inline-flex h-9 w-9 items-center justify-center bg-brand-700 font-mono text-sm font-bold tracking-tight text-white"
+            class="inline-flex h-8 w-8 shrink-0 items-center justify-center bg-brand-700 font-mono text-xs font-bold tracking-tight text-on-brand sm:h-9 sm:w-9 sm:text-sm"
             aria-hidden="true"
           >
             {initials}
           </span>
         )
       }
-      <span class="text-[1.0625rem] text-ink-900" set:html={
+      <span class="truncate text-[0.8125rem] whitespace-nowrap text-ink-900 sm:text-[1.0625rem]" set:html={
         wordmarkAccent
           ? `${wordmark} <span class="text-brand-700">${wordmarkAccent}</span>`
           : wordmark
@@ -145,7 +145,7 @@ const t = uebersetzer(lang);
     {
       nav.length > 0 && (
         <nav aria-label="Hauptnavigation" class="hidden lg:block">
-          <ul class="flex h-full items-stretch gap-7 text-sm font-medium text-ink-700">
+          <ul class="flex h-full items-stretch gap-4 text-sm font-medium text-ink-700 xl:gap-7">
             {nav.map((entry) =>
               isGroup(entry) ? (
                 <li class="flex">
@@ -211,7 +211,7 @@ const t = uebersetzer(lang);
         cta && (
           <a
             href={toHref(cta.href)}
-            class="inline-flex min-h-11 items-center bg-brand-700 px-4 text-sm font-semibold text-white transition hover:bg-brand-800"
+            class="inline-flex min-h-11 items-center bg-brand-700 px-4 text-sm font-semibold text-on-brand transition hover:bg-brand-800"
           >
             {cta.label}
           </a>
@@ -219,7 +219,7 @@ const t = uebersetzer(lang);
       }
     </div>
 
-    <div class="flex items-center gap-1 lg:hidden">
+    <div class="flex shrink-0 items-center lg:hidden">
       <LanguageLink />
       <ThemeToggle />
     <button
@@ -304,7 +304,7 @@ const t = uebersetzer(lang);
             <a
               href={toHref(cta.href)}
               data-mobile-link
-              class="flex min-h-12 items-center justify-center bg-brand-700 px-4 font-semibold text-white transition hover:bg-brand-800"
+              class="flex min-h-12 items-center justify-center bg-brand-700 px-4 font-semibold text-on-brand transition hover:bg-brand-800"
             >
               {cta.label}
             </a>

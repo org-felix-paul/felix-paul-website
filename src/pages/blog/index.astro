@@ -91,7 +91,7 @@ const posts = allPosts.map((post) => ({
             type="button"
             data-value=""
             aria-pressed="true"
-            class="inline-flex min-h-11 items-center border border-brand-700 bg-brand-700 px-3 text-sm font-semibold text-white transition"
+            class="inline-flex min-h-11 items-center border border-brand-700 bg-brand-700 px-3 text-sm font-semibold text-on-brand transition"
           >
             Alle
           </button>
@@ -115,7 +115,7 @@ const posts = allPosts.map((post) => ({
             type="button"
             data-value=""
             aria-pressed="true"
-            class="inline-flex min-h-11 items-center border border-brand-700 bg-brand-700 px-3 text-sm font-semibold text-white transition"
+            class="inline-flex min-h-11 items-center border border-brand-700 bg-brand-700 px-3 text-sm font-semibold text-on-brand transition"
           >
             Alle
           </button>
@@ -139,7 +139,7 @@ const posts = allPosts.map((post) => ({
             type="button"
             data-value=""
             aria-pressed="true"
-            class="inline-flex min-h-11 items-center border border-brand-700 bg-brand-700 px-3 text-sm font-semibold text-white transition"
+            class="inline-flex min-h-11 items-center border border-brand-700 bg-brand-700 px-3 text-sm font-semibold text-on-brand transition"
           >
             Alle
           </button>
@@ -297,7 +297,7 @@ const posts = allPosts.map((post) => ({
           const active = b === btn;
           b.setAttribute("aria-pressed", active ? "true" : "false");
           b.classList.toggle("bg-brand-700", active);
-          b.classList.toggle("text-white", active);
+          b.classList.toggle("text-on-brand", active);
           b.classList.toggle("border-brand-700", active);
           b.classList.toggle("bg-surface", !active);
           b.classList.toggle("text-ink-700", !active);

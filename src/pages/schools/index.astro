@@ -90,7 +90,7 @@ const nr = nummernGeber(OUTLINE);
             angebote.filter((a) => !a.data.preview).map((angebot) => (
               <tr class="border-b border-rule-soft last:border-b-0">
                 <td class="px-4 py-3">
-                  <a href={angebotPath(angebot.id)} class="font-medium hover:text-brand-700">{angebot.data.title}</a>
+                  <a href={angebotPath(angebot.id)} class="inline-flex min-h-11 items-center font-medium hover:text-brand-700">{angebot.data.title}</a>
                 </td>
                 <td class="px-4 py-3 text-ink-600">{angebot.data.dauer}</td>
                 <td class="px-4 py-3 text-right whitespace-nowrap font-semibold tabular-nums">{angebot.data.preis}</td>
@@ -235,7 +235,7 @@ const nr = nummernGeber(OUTLINE);
   </Section>
 
   <Section>
-    <div class="grid items-center gap-8 bg-brand-800 p-8 text-white md:grid-cols-[2fr_auto] md:p-12">
+    <div class="grid items-center gap-8 bg-brand-800 p-8 text-on-brand md:grid-cols-[2fr_auto] md:p-12">
       <div>
         <h2 class="font-display text-2xl font-bold leading-tight md:text-4xl">
           Sie wollen einen Termin oder ein Angebot?
