@@ -74,5 +74,7 @@ section, otherwise into that section's `components/` folder. Declare its
 props in an `interface Props` at the top; that is what makes wrong usage a
 build error.
 
-Tailwind only picks up class names that appear literally in a file. Do not
-build class names from pieces (`bg-${colour}-100`); write the full name.
+Tailwind only picks up class names that appear literally in a file under
+`src/` (`@import "tailwindcss" source("../")` in `global.css` limits the
+scan; without it, words in the README and `docs/` ended up as CSS rules). Do
+not build class names from pieces (`bg-${colour}-100`); write the full name.
