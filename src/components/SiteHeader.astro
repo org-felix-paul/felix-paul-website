@@ -371,7 +371,15 @@ const t = uebersetzer(lang);
 
   const sections = ids
     .map((id) => document.getElementById(id))
-    .filter((el): el is HTMLElement => el !== null);
+    .filter((el): el is HTMLElement => el !== null)
+    // `ids` entsteht aus der Navigation: erst die einzelnen Links, dann die
+    // Abschnitte aus den Gruppen ("Mehr"). Das ist die Reihenfolge des Menüs,
+    // nicht die der Seite — und sobald beide auseinanderlaufen, wählte die
+    // Regel unten nicht den obersten sichtbaren Abschnitt, sondern den, der
+    // im Menü zuerst steht. Erst diese Sortierung macht den Kommentar wahr.
+    .sort((a, b) =>
+      a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1,
+    );
 
   if (sections.length) {
     // Document order, so the topmost visible section wins when two overlap.
