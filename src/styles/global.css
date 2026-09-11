@@ -29,11 +29,17 @@
   --color-ink-900: var(--c-ink-900);
   --color-ink-950: var(--c-ink-950);
 
+  /* 400 und 600 standen früher nicht hier — `hover:border-emerald-400` und der
+     Knopf `bg-emerald-600` fielen deshalb auf Tailwinds eingebautes Smaragd
+     zurück und schalteten im Dark Mode gar nicht um. Mit der gedämpften
+     Moos-Skala wäre dieser Ausrutscher sofort sichtbar gewesen. */
   --color-emerald-50: var(--c-emerald-50);
   --color-emerald-100: var(--c-emerald-100);
   --color-emerald-200: var(--c-emerald-200);
   --color-emerald-300: var(--c-emerald-300);
+  --color-emerald-400: var(--c-emerald-400);
   --color-emerald-500: var(--c-emerald-500);
+  --color-emerald-600: var(--c-emerald-600);
   --color-emerald-700: var(--c-emerald-700);
   --color-emerald-800: var(--c-emerald-800);
   --color-emerald-900: var(--c-emerald-900);
@@ -49,7 +55,10 @@
   --color-amber-900: var(--c-amber-900);
   --color-amber-950: var(--c-amber-950);
 
-  /* Flächen. Ersetzt das frühere bg-white, das sich nicht umschalten ließ. */
+  /* Flächen. Ersetzt das frühere bg-white, das sich nicht umschalten ließ.
+     canvas = der Papiergrund der Seite, surface = die Lage darüber
+     (Abschnitte, Karten, Kopfzeile). surface ist heller als canvas; eine Karte
+     hebt sich dadurch schon durch den Ton ab, nicht erst durch den Schatten. */
   --color-surface: var(--c-surface);
   --color-canvas: var(--c-canvas);
 
@@ -57,56 +66,81 @@
   --font-display: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
-/* ── Helles Schema ─────────────────────────────────────────────────────── */
+/* ── Helles Schema · „Petrol & Sand" ───────────────────────────────────────
+   Alle vier Skalen sind in OKLCH mit gleichmäßigen Helligkeitsschritten
+   konstruiert und erst danach nach sRGB umgerechnet. Ein bloßes Drehen der
+   alten Hex-Werte hätte matschige Mitteltöne ergeben, weil sRGB-Hue-Rotation
+   die wahrgenommene Helligkeit nicht erhält.
+
+   Die Rollen der vier Skalen:
+   - brand   Petrol/Teal (OKLCH-Ton 178→197) – oxidiertes Kupfer, kein Cyan.
+   - ink     warme Graustufen (Ton ~85→62, Chroma ≤ 0.015). Ein Hauch Braun
+             im Grau ist der Grund, warum die Seite nach Papier aussieht und
+             nicht nach Software.
+   - emerald Moos/Salbei (Ton 124→151). Deutlich geringeres Chroma als brand.
+             Beide Skalen liegen im Farbton jetzt nur noch ~55° auseinander –
+             sie müssen sich über Sättigung und Helligkeit unterscheiden, und
+             die hellen Stufen ziehen deshalb zusätzlich ins Gelbgrüne, damit
+             `bg-emerald-100` nicht wie ein blasses `bg-brand-100` aussieht.
+   - amber   Terrakotta/Ton (Ton ~58→34) statt Gold.                        */
 :root {
   color-scheme: light;
 
-  --c-brand-50: #f0f7ff;
-  --c-brand-100: #e0effe;
-  --c-brand-200: #bae0fd;
-  --c-brand-300: #7cc7fb;
-  --c-brand-400: #36abf7;
-  --c-brand-500: #0d8fe8;
-  --c-brand-600: #0072c6;
-  --c-brand-700: #015aa0;
-  --c-brand-800: #064c84;
-  --c-brand-900: #0a406d;
-  --c-brand-950: #072849;
+  --c-brand-50: #f0f9f7;
+  --c-brand-100: #def2ed;
+  --c-brand-200: #c0e5dd;
+  --c-brand-300: #9ad0c7;
+  --c-brand-400: #6eb6ac;
+  --c-brand-500: #42968e;
+  --c-brand-600: #277f7a;
+  --c-brand-700: #0c6865;
+  --c-brand-800: #085655;
+  --c-brand-900: #054444;
+  --c-brand-950: #032829;
 
-  --c-ink-50: #f6f7f9;
-  --c-ink-100: #ebeef2;
-  --c-ink-200: #d3dae3;
-  --c-ink-300: #adb9c8;
-  --c-ink-400: #8092a8;
-  --c-ink-500: #61748d;
-  --c-ink-600: #4d5d75;
-  --c-ink-700: #404c5f;
-  --c-ink-800: #384151;
-  --c-ink-900: #1f2733;
-  --c-ink-950: #0f141c;
+  --c-ink-50: #eeece8;
+  --c-ink-100: #e6e4de;
+  --c-ink-200: #d5d1ca;
+  --c-ink-300: #ada9a2;
+  --c-ink-400: #848078;
+  --c-ink-500: #68645d;
+  --c-ink-600: #58534d;
+  --c-ink-700: #4b453f;
+  --c-ink-800: #3e3831;
+  --c-ink-900: #2a241e;
+  --c-ink-950: #130e09;
 
-  --c-emerald-50: #ecfdf5;
-  --c-emerald-100: #d1fae5;
-  --c-emerald-200: #a7f3d0;
-  --c-emerald-300: #6ee7b7;
-  --c-emerald-500: #10b981;
-  --c-emerald-700: #047857;
-  --c-emerald-800: #065f46;
-  --c-emerald-900: #064e3b;
+  --c-emerald-50: #f2f6eb;
+  --c-emerald-100: #e4edd9;
+  --c-emerald-200: #cfdfc1;
+  --c-emerald-300: #b2c8a5;
+  --c-emerald-400: #92ad89;
+  --c-emerald-500: #779572;
+  --c-emerald-600: #597758;
+  --c-emerald-700: #466349;
+  --c-emerald-800: #37513c;
+  --c-emerald-900: #29402f;
 
-  --c-amber-50: #fffbeb;
-  --c-amber-100: #fef3c7;
-  --c-amber-200: #fde68a;
-  --c-amber-300: #fcd34d;
-  --c-amber-400: #fbbf24;
-  --c-amber-500: #f59e0b;
-  --c-amber-700: #b45309;
-  --c-amber-800: #92400e;
-  --c-amber-900: #78350f;
-  --c-amber-950: #451a03;
+  --c-amber-50: #fcf4ee;
+  --c-amber-100: #fbe8da;
+  --c-amber-200: #f6d2bc;
+  --c-amber-300: #e7b499;
+  --c-amber-400: #d4987a;
+  --c-amber-500: #c18063;
+  --c-amber-700: #89543f;
+  --c-amber-800: #704233;
+  --c-amber-900: #5a3429;
+  --c-amber-950: #321a15;
 
-  --c-surface: #ffffff;
-  --c-canvas: #ffffff;
+  /* Kein reines Weiß mehr. surface liegt eine Spur über canvas, ink-50 eine
+     Spur darunter – daraus entsteht die Schichtung Fußzeile/Band < Seite <
+     Karte, ganz ohne zusätzliche Schatten. */
+  --c-surface: #fcfbf6;
+  --c-canvas: #f7f3ec;
+
+  /* Schrift auf einer vollflächig eingefärbten Marken-/Akzentfläche. Im
+     hellen Schema ist das schlicht Weiß – siehe die Erklärung im dunklen. */
+  --c-on-fill: #ffffff;
 }
 
 /* ── Dunkles Schema ────────────────────────────────────────────────────────
@@ -118,52 +152,80 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --c-brand-50: #0a2540;
-  --c-brand-100: #0d3355;
-  --c-brand-200: #14497a;
-  --c-brand-300: #1d6aad;
-  --c-brand-400: #2f8ad2;
-  --c-brand-500: #4aa8ea;
-  --c-brand-600: #6dbdf2;
-  --c-brand-700: #93cff7;
-  --c-brand-800: #b6e0fa;
-  --c-brand-900: #d5eefd;
-  --c-brand-950: #eaf6fe;
+  --c-brand-50: #142c2d;
+  --c-brand-100: #173c3c;
+  --c-brand-200: #1b5150;
+  --c-brand-300: #266d6a;
+  --c-brand-400: #3a8d87;
+  --c-brand-500: #56a9a1;
+  --c-brand-600: #74beb4;
+  --c-brand-700: #90cfc5;
+  --c-brand-800: #b0e0d6;
+  --c-brand-900: #ccede5;
+  --c-brand-950: #e3f7f2;
 
-  --c-ink-50: #171c25;
-  --c-ink-100: #1e242f;
-  --c-ink-200: #2b3341;
-  --c-ink-300: #3d4859;
-  --c-ink-400: #5b6b83;
-  --c-ink-500: #8093ab;
-  --c-ink-600: #a3b3c7;
-  --c-ink-700: #bcc9d8;
-  --c-ink-800: #d3dce7;
-  --c-ink-900: #eef2f7;
+  /* Die dunkle ink-Skala dreht dabei auch den Farbton: die unteren Stufen
+     (Flächen, Linien) tragen den grünblauen Unterton des Grundes, die oberen
+     (Schrift) bleiben warm. Warmes Papierweiß auf kühler Tinte – dieselbe
+     Spannung wie im hellen Schema, nur andersherum. Um die Stufe 500 herum
+     ist das Chroma fast null, deshalb fällt der Tonwechsel nicht auf. */
+  --c-ink-50: #1f292a;
+  --c-ink-100: #273132;
+  --c-ink-200: #343e3e;
+  --c-ink-300: #495252;
+  --c-ink-400: #6b7271;
+  --c-ink-500: #8f918f;
+  --c-ink-600: #adaca8;
+  --c-ink-700: #c6c4be;
+  --c-ink-800: #dcd9d1;
+  --c-ink-900: #f1ece3;
   --c-ink-950: #ffffff;
 
-  --c-emerald-50: #06281d;
-  --c-emerald-100: #083a2a;
-  --c-emerald-200: #0d5540;
-  --c-emerald-300: #14855f;
-  --c-emerald-500: #2fcf95;
-  --c-emerald-700: #6ee7b7;
-  --c-emerald-800: #a7f3d0;
-  --c-emerald-900: #d1fae5;
+  --c-emerald-50: #1b2b1f;
+  --c-emerald-100: #253a29;
+  --c-emerald-200: #344e35;
+  --c-emerald-300: #4a6848;
+  --c-emerald-400: #65855e;
+  --c-emerald-500: #829f76;
+  --c-emerald-600: #9cb48c;
+  --c-emerald-700: #b3c5a0;
+  --c-emerald-800: #cbd8b9;
+  --c-emerald-900: #e0e9d2;
 
-  --c-amber-50: #2a1c05;
-  --c-amber-100: #3d2907;
-  --c-amber-200: #5c3d0a;
-  --c-amber-300: #8a5c0f;
-  --c-amber-400: #c08519;
-  --c-amber-500: #e5a72c;
-  --c-amber-700: #f6c964;
-  --c-amber-800: #fbdd97;
-  --c-amber-900: #fdecc6;
-  --c-amber-950: #fef8e7;
+  --c-amber-50: #32201b;
+  --c-amber-100: #472b22;
+  --c-amber-200: #61392b;
+  --c-amber-300: #834e38;
+  --c-amber-400: #9e5f43;
+  --c-amber-500: #c58566;
+  --c-amber-700: #e4b196;
+  --c-amber-800: #efcab4;
+  --c-amber-900: #f7dfd0;
+  --c-amber-950: #fdf1e8;
 
-  --c-surface: #131820;
-  --c-canvas: #0d1117;
+  --c-surface: #182121;
+  --c-canvas: #101818;
+
+  /* Im dunklen Schema kippt jede Markenfläche ins Helle: bg-brand-700 wird
+     zu einem hellen Petrol. Das Markup schreibt darauf aber `text-white`
+     (31 Knöpfe, die Sprungmarke, die beiden CTA-Kästen) – Weiß auf Hellpetrol
+     sind 1,6:1 und damit unlesbar. Dieser Fehler steckt schon in der
+     bisherigen Fassung; er ist nicht durch die Farbwahl zu beheben, weil
+     brand-700 gleichzeitig Linkfarbe auf dunklem Grund ist und diese beiden
+     Rollen sich rechnerisch ausschließen. Deshalb bekommt „Schrift auf
+     Markenfläche" hier eine eigene Rolle: das dunkelste Petrol. */
+  --c-on-fill: #071516;
+}
+
+/* Genau die Kombinationen, in denen das Markup Weiß auf eine gefüllte
+   Marken- oder Akzentfläche setzt. Bewusst eine kurze, vollständige Liste
+   statt einer Regel auf `.text-white` – Weiß auf einem Foto oder auf dunklem
+   Grund soll Weiß bleiben. Die Regel steht außerhalb jeder @layer und
+   gewinnt dadurch gegen die Utility-Klasse. */
+:root[data-theme="dark"] :is(.bg-brand-600, .bg-brand-700, .bg-brand-800, .bg-emerald-600, .from-brand-700).text-white,
+:root[data-theme="dark"] :is(.bg-brand-600, .bg-brand-700, .bg-brand-800, .bg-emerald-600, .from-brand-700) .text-white,
+:root[data-theme="dark"] .focus\:bg-brand-700:focus {
+  color: var(--c-on-fill);
 }
 
 html {

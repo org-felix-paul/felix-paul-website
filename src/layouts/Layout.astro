@@ -216,8 +216,9 @@ const structuredData = {
     <meta name="twitter:image:alt" content={`${SITE.name} – ${SITE.tagline}`} />
 
     <meta name="author" content={SITE.author} />
-    <meta name="theme-color" content="#015aa0" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)" />
+    {/* Entsprechen --c-brand-700 (hell) und --c-canvas (dunkel) aus global.css. */}
+    <meta name="theme-color" content="#0c6865" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#101818" media="(prefers-color-scheme: dark)" />
 
     {/* Muss inline und vor dem Body laufen, sonst blitzt beim Laden kurz das
         falsche Schema auf ("flash of unstyled theme"). Deshalb bewusst kein

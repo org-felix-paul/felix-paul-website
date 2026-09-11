@@ -142,28 +142,32 @@ const schema = [
         fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
         themeVariables: istDunkel()
           ? {
-              primaryColor: "#14497a",
-              primaryBorderColor: "#4aa8ea",
-              primaryTextColor: "#eef2f7",
-              secondaryColor: "#1e242f",
-              tertiaryColor: "#0d3355",
-              lineColor: "#6dbdf2",
-              clusterBkg: "#131820",
-              clusterBorder: "#2b3341",
-              edgeLabelBackground: "#131820",
-              xyChart: { plotColorPalette: "#4aa8ea" },
+              // Spiegelt die Token aus global.css; mermaid nimmt nur Literale.
+              primaryColor: "#1b5150", // brand-200
+              primaryBorderColor: "#56a9a1", // brand-500
+              primaryTextColor: "#f1ece3", // ink-900
+              secondaryColor: "#273132", // ink-100
+              tertiaryColor: "#173c3c", // brand-100
+              lineColor: "#74beb4", // brand-600
+              clusterBkg: "#182121", // surface
+              clusterBorder: "#343e3e", // ink-200
+              edgeLabelBackground: "#182121", // surface
+              xyChart: { plotColorPalette: "#56a9a1" }, // brand-500
             }
           : {
-              primaryColor: "#e0effe",
-              primaryBorderColor: "#0072c6",
-              primaryTextColor: "#1f2733",
-              secondaryColor: "#f6f7f9",
-              tertiaryColor: "#f0f7ff",
-              lineColor: "#36abf7",
-              clusterBkg: "#f0f7ff",
-              clusterBorder: "#bae0fd",
-              edgeLabelBackground: "#ffffff",
-              xyChart: { plotColorPalette: "#0d8fe8" },
+              primaryColor: "#def2ed", // brand-100
+              primaryBorderColor: "#277f7a", // brand-600
+              primaryTextColor: "#2a241e", // ink-900
+              secondaryColor: "#eeece8", // ink-50
+              tertiaryColor: "#f0f9f7", // brand-50
+              // Bewusst brand-600 statt der früheren 400er-Stufe: das gedämpfte
+              // Petrol trägt auf warmem Papier weniger als das alte Azur, eine
+              // Kante muss aber sichtbar bleiben.
+              lineColor: "#277f7a", // brand-600
+              clusterBkg: "#f0f9f7", // brand-50
+              clusterBorder: "#c0e5dd", // brand-200
+              edgeLabelBackground: "#fcfbf6", // surface
+              xyChart: { plotColorPalette: "#277f7a" }, // brand-600
             },
         flowchart: { curve: "basis", useMaxWidth: true },
         sequence: { useMaxWidth: true },
