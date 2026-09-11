@@ -286,14 +286,6 @@ body {
   color: var(--color-brand-900);
 }
 
-/* Der Rahmen, den rehype-table-scroll um jede Tabelle legt. Er nimmt den
-   Überlauf auf, damit nicht das ganze Dokument seitlich scrollt, wenn eine
-   vierspaltige Tabelle auf ein Handy trifft.
-
-   Wie bei den Diagrammen darf er dafür seitlich aus der Textspalte
-   ausbrechen: bis 64rem breit und mittig. Auf dem Desktop passen die
-   Tabellen damit vollständig hinein und scrollen gar nicht erst – gescrollt
-   wird nur dort, wo es keine Alternative gibt. */
 /* Nackte Quell-URLs in den Literaturlisten sind ein einziges langes „Wort".
    Ohne diese Regel brechen sie nicht um, ragen aus dem Dokument heraus und
    lassen die ganze Seite seitlich scrollen – gemessen 185px Überlauf auf
@@ -305,31 +297,44 @@ body {
   overflow-wrap: anywhere;
 }
 
-.prose-content .table-scroll {
+/* Der Rahmen, den rehype-table-wrap um jede Tabelle legt.
+
+   Wie bei den Diagrammen darf er seitlich aus der Textspalte ausbrechen:
+   bis 64rem breit und mittig. Auf dem Handy holt er sich damit die 1,5rem
+   Innenabstand der Textspalte zurück – jeder Pixel zählt, wenn eine
+   vierspaltige Tabelle vollständig hineinpassen soll.
+
+   overflow-x bleibt nur als letzte Sicherung stehen: für unteilbare Inhalte
+   (ein Bild in einer Zelle) scrollt dann dieser Rahmen, statt das ganze
+   Dokument seitlich zu verschieben. Für Text greift sie nicht mehr – die
+   Zellen weiter unten brechen an jeder Stelle um, die Tabelle kann also gar
+   nicht mehr breiter werden als ihr Rahmen. */
+.prose-content .table-wrap {
   width: min(64rem, calc(100% + 8rem), calc(100vw - 2rem));
   margin-left: 50%;
   transform: translateX(-50%);
   margin-bottom: 1.5rem;
   overflow-x: auto;
-  /* Ein per Tastatur fokussierbarer Bereich braucht einen sichtbaren Fokus. */
   border-radius: 0.5rem;
-}
-.prose-content .table-scroll:focus-visible {
-  outline: 2px solid var(--color-brand-700);
-  outline-offset: 2px;
 }
 
 .prose-content table {
   width: 100%;
-  /* Untergrenze, damit Spalten auf dem Handy nicht zu senkrechten
-     Buchstabenketten zusammenfallen. Bewusst NICHT `max-content`: das würde
-     die Tabelle auf ihre natürliche Breite (hier 1155px) zwingen und damit
-     auch auf dem Desktop scrollen lassen – der Rahmen ist 1024px breit. So
-     scrollt sie nur unterhalb von rund 450px Platz. */
-  min-width: 28rem;
+  /* Die frühere feste Untergrenze von 28rem (448px) war auf jedem Handy
+     breiter als der Platz im Rahmen und erzwang damit genau das seitliche
+     Scrollen, das hier niemand will. min() nimmt die 28rem nur noch, solange
+     sie auch da sind: darunter ist die Tabelle exakt so breit wie ihr Rahmen.
+     Eine enge Tabelle, in die man hineinzoomt, ist besser als eine, die man
+     erst schieben muss, um ihre letzte Spalte zu sehen. */
+  min-width: min(28rem, 100%);
   border-collapse: collapse;
   margin-bottom: 0;
-  font-size: 0.95rem;
+  /* Mitwachsende Schrift statt fester 0.95rem: ab rund 50rem Bildschirmbreite
+     die alte Größe, auf einem 360px-Handy 0.75rem. Das verschafft vier Spalten
+     nebeneinander den Platz, den sie zum Umbrechen brauchen. Kleiner wird es
+     nicht – wer mehr Details braucht, zoomt hinein, der Viewport erlaubt es
+     (kein maximum-scale, kein user-scalable=no). */
+  font-size: clamp(0.75rem, 0.55rem + 0.9vw, 0.95rem);
 }
 
 .prose-content th,
@@ -338,8 +343,19 @@ body {
      und fällt damit unter WCAG 1.4.11 (3:1). Auf ink-200 war es mit 1,31:1
      gegen die Kopfzeilenfläche praktisch nicht zu sehen. */
   border: 1px solid var(--color-rule);
-  padding: 0.5rem 0.75rem;
+  /* Seitlicher Abstand schrumpft mit dem Bildschirm mit: auf dem Desktop die
+     gewohnten 0.75rem, auf dem Handy 0.3rem. Bei vier Spalten sind das acht
+     Innenabstände, die sonst vom Text abgehen. */
+  padding: 0.5rem clamp(0.3rem, 0.1rem + 0.9vw, 0.75rem);
   text-align: left;
+  /* `anywhere` und nicht `break-word`: nur `anywhere` zählt bei der
+     Mindestbreite der Zelle mit. Ein langer Codeschnipsel wie
+     `position:absolute; left:-9999px` kann die Tabelle damit nicht mehr über
+     den Bildschirmrand hinaus aufspannen. */
+  overflow-wrap: anywhere;
+  /* Trennstriche vor harten Umbrüchen – <html lang> ist gesetzt, also weiß
+     der Browser, nach welchen Regeln er trennt. */
+  hyphens: auto;
 }
 
 .prose-content th {
