@@ -1,0 +1,58 @@
+---
+// Kontakt: das eine Formular der Domain (#kontakt) plus die direkten Wege.
+import Section from "../components/Section.astro";
+import ContactForm from "../components/ContactForm.astro";
+import { SITE } from "../consts";
+import type { Sprache } from "../i18n/ui";
+
+interface Props {
+  lang?: Sprache;
+}
+const { lang = "de" } = Astro.props;
+
+const de = {
+  eyebrow: "Kontakt",
+  title: "Lassen Sie uns sprechen",
+  lead: "Ein Vortrag, ein Workshop, eine Zusammenarbeit oder einfach eine Frage – eine kurze Nachricht genügt. Ich melde mich werktags innerhalb von 48 Stunden.",
+  direkt: "Direkter Kontakt",
+  email: "E-Mail",
+  profil: "Profil ansehen",
+};
+
+const en: typeof de = {
+  eyebrow: "Contact",
+  title: "Let's talk",
+  lead: "A talk, a workshop, working together, or simply a question – a short message is enough. I reply within 48 hours on working days.",
+  direkt: "Direct contact",
+  email: "Email",
+  profil: "View profile",
+};
+
+const T = lang === "en" ? en : de;
+---
+
+<Section id="kontakt" eyebrow={T.eyebrow} title={T.title} lead={T.lead}>
+  <div class="grid gap-10 md:grid-cols-[1.2fr_1fr]">
+    <ContactForm lang={lang} />
+
+    <aside class="space-y-6">
+      <div class="rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
+        <h2 class="font-display text-lg font-semibold text-ink-900">{T.direkt}</h2>
+        <ul class="mt-4 space-y-3 text-sm">
+          <li>
+            <div class="font-medium text-ink-500">{T.email}</div>
+            <a class="text-brand-700 underline" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+          </li>
+          <li>
+            <div class="font-medium text-ink-500">LinkedIn</div>
+            <a class="text-brand-700 underline" href={SITE.linkedin} target="_blank" rel="noopener noreferrer">{T.profil}</a>
+          </li>
+          <li>
+            <div class="font-medium text-ink-500">GitHub</div>
+            <a class="text-brand-700 underline" href={SITE.github} target="_blank" rel="noopener noreferrer">{T.profil}</a>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</Section>
