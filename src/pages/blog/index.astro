@@ -78,18 +78,18 @@ const posts = allPosts.map((post) => ({
           placeholder="Beiträge durchsuchen…"
           autocomplete="off"
           data-search-input
-          class="min-h-12 w-full border-b border-ink-300 bg-transparent px-0 py-3 text-lg text-ink-900 outline-none transition placeholder:text-ink-400 focus:border-brand-500"
+          class="min-h-12 w-full border-b border-ink-300 bg-transparent px-0 py-3 text-lg text-ink-900 outline-none transition placeholder:text-ink-500 focus:border-brand-500"
         />
       </label>
 
       <div class="flex flex-col gap-4 md:flex-row md:items-start md:gap-10">
         <div class="flex flex-wrap items-center gap-2" data-filter-group="audience">
-          <span class="u-eyebrow mr-1 text-ink-400">Zielgruppe</span>
+          <span class="u-eyebrow mr-1 text-ink-500">Zielgruppe</span>
           <button
             type="button"
             data-value=""
             aria-pressed="true"
-            class="inline-flex min-h-9 items-center rounded-full border border-brand-700 bg-brand-700 px-3.5 text-[0.8125rem] font-medium text-white transition"
+            class="inline-flex min-h-9 items-center rounded-full border border-brand-700 bg-brand-700 px-3.5 text-[0.8125rem] font-medium text-brand-50 transition"
           >
             Alle
           </button>
@@ -108,12 +108,12 @@ const posts = allPosts.map((post) => ({
         </div>
 
         <div class="flex flex-wrap items-center gap-2" data-filter-group="topic">
-          <span class="u-eyebrow mr-1 text-ink-400">Thema</span>
+          <span class="u-eyebrow mr-1 text-ink-500">Thema</span>
           <button
             type="button"
             data-value=""
             aria-pressed="true"
-            class="inline-flex min-h-9 items-center rounded-full border border-brand-700 bg-brand-700 px-3.5 text-[0.8125rem] font-medium text-white transition"
+            class="inline-flex min-h-9 items-center rounded-full border border-brand-700 bg-brand-700 px-3.5 text-[0.8125rem] font-medium text-brand-50 transition"
           >
             Alle
           </button>
@@ -132,12 +132,12 @@ const posts = allPosts.map((post) => ({
         </div>
 
         <div class="flex flex-wrap items-center gap-2" data-filter-group="status">
-          <span class="u-eyebrow mr-1 text-ink-400">Status</span>
+          <span class="u-eyebrow mr-1 text-ink-500">Status</span>
           <button
             type="button"
             data-value=""
             aria-pressed="true"
-            class="inline-flex min-h-9 items-center rounded-full border border-brand-700 bg-brand-700 px-3.5 text-[0.8125rem] font-medium text-white transition"
+            class="inline-flex min-h-9 items-center rounded-full border border-brand-700 bg-brand-700 px-3.5 text-[0.8125rem] font-medium text-brand-50 transition"
           >
             Alle
           </button>
@@ -156,7 +156,7 @@ const posts = allPosts.map((post) => ({
         </div>
       </div>
 
-      <p id="ergebnisse" class="u-eyebrow scroll-mt-28 text-ink-400" data-count>{posts.length} {posts.length === 1 ? "Beitrag" : "Beiträge"}</p>
+      <p id="ergebnisse" class="u-eyebrow scroll-mt-28 text-ink-500" data-count>{posts.length} {posts.length === 1 ? "Beitrag" : "Beiträge"}</p>
     </div>
 
     <!-- Post list -->
@@ -182,13 +182,13 @@ const posts = allPosts.map((post) => ({
                     </span>
                   ))}
                   {post.audience.map((a) => (
-                    <span class="u-eyebrow text-ink-400">
+                    <span class="u-eyebrow text-ink-500">
                       {AUDIENCE_LABELS[a]}
                     </span>
                   ))}
                 </div>
                 <h2 class="u-subtitle text-balance text-ink-700">{post.title}</h2>
-                <p class="u-measure text-[0.9375rem] italic leading-relaxed text-ink-400">{post.description}</p>
+                <p class="u-measure text-[0.9375rem] italic leading-relaxed text-ink-500">{post.description}</p>
               </div>
             </li>
           ) : (
@@ -210,14 +210,14 @@ const posts = allPosts.map((post) => ({
                     </span>
                   ))}
                   {post.audience.map((a) => (
-                    <span class="u-eyebrow text-ink-400">
+                    <span class="u-eyebrow text-ink-500">
                       {AUDIENCE_LABELS[a]}
                     </span>
                   ))}
                 </div>
                 <h2 class="u-subtitle text-balance text-ink-900 transition-colors group-hover:text-brand-700">{post.title}</h2>
                 <p class="u-measure text-[0.9375rem] leading-relaxed text-ink-600">{post.description}</p>
-                <time datetime={post.pubDate.toISOString()} class="u-eyebrow text-ink-400">
+                <time datetime={post.pubDate.toISOString()} class="u-eyebrow text-ink-500">
                   {dateFmt.format(post.pubDate)}
                 </time>
               </a>

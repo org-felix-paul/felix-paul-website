@@ -71,12 +71,12 @@ const schema = [
           }
           {
             post.data.audience.map((a) => (
-              <span class="u-eyebrow text-ink-400">
+              <span class="u-eyebrow text-ink-500">
                 {AUDIENCE_LABELS[a]}
               </span>
             ))
           }
-          <time datetime={post.data.pubDate.toISOString()} class="u-eyebrow ml-auto text-ink-400">
+          <time datetime={post.data.pubDate.toISOString()} class="u-eyebrow ml-auto text-ink-500">
             {dateFmt.format(post.data.pubDate)}
           </time>
         </div>
@@ -97,7 +97,7 @@ const schema = [
         <div class="mt-7 flex flex-wrap gap-3">
           <a
             href="/#kontakt"
-            class="inline-flex min-h-11 items-center rounded-full bg-brand-700 px-6 text-[0.9375rem] font-medium text-white transition hover:bg-brand-800"
+            class="inline-flex min-h-11 items-center rounded-full bg-brand-700 px-6 text-[0.9375rem] font-medium text-brand-50 transition hover:bg-brand-800"
           >
             Kontakt aufnehmen
           </a>

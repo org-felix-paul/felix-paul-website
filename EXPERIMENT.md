@@ -111,6 +111,31 @@ Leiste), ein globaler `:focus-visible`-Ring auf allem Fokussierbaren, und ein
 `prefers-reduced-motion`-Block, der sämtliche Übergänge stilllegt. Die
 Prose-Tabellen haben nur noch waagerechte Haarlinien statt Gitternetz.
 
+## Ein Fund nebenbei: `text-white` kippt nicht mit
+
+Beim Nachmessen der Kontraste ist ein Fehler aufgefallen, den dieser Zweig
+**geerbt** und nicht verursacht hat — er steckt genauso in `7dbc216`:
+
+Die `brand`-, `emerald`- und `ink`-Skalen sind im dunklen Schema invertiert.
+`bg-brand-700` ist dort **hell** (`#93cff7`), `bg-emerald-700` ebenfalls
+(`#6ee7b7`). Ein fest verdrahtetes `text-white` kippt aber nicht mit — es
+bleibt weiß. Gemessen standen dadurch im dunklen Schema:
+
+- der „Kontakt"-Knopf in der Leiste bei **1,68 : 1**,
+- „Jetzt anfragen" im Hero bei **1,68 : 1**,
+- „Alle Schulworkshops ansehen" bei **1,52 : 1**,
+- die Abschluss-CTA-Überschriften bei **1,40 : 1**.
+
+Die Behebung ändert **keinen einzigen Palettenwert**: `text-white` wird auf
+farbigen Flächen durch `text-brand-50` bzw. `text-emerald-50` ersetzt. Diese
+Token invertieren mit — im hellen Schema praktisch weiß, im dunklen fast
+schwarzblau. Dazu wurden ein paar `text-ink-400`, die echten Text trugen
+(Daten, Dateitypen, „in German"-Marken), auf `ink-500`/`ink-600` gehoben.
+
+Ergebnis: **15 Seiten × beide Schemata, 0 Paare unter der WCAG-AA-Schwelle**
+(4,5 : 1 für Fließtext, 3 : 1 für große Schrift), gegen 17 Verstöße vorher.
+Wer diesen Zweig nicht übernimmt, sollte diesen Teil trotzdem mitnehmen.
+
 ## Der Text ist unverändert
 
 Kein deutscher und kein englischer Satz wurde angefasst — keine Überschrift,
@@ -156,6 +181,18 @@ Umgruppierung vorhandener Blöcke, kein Eingriff in die Formulierung.
   **keine neuen Sprünge** in der Überschriftenreihenfolge, Sprunglink auf
   jeder Astro-Seite der erste Link im Body, **null verbliebene
   `shadow-*`-Klassen** im gesamten erzeugten Markup.
+- **Kontrast gemessen** (nicht geschätzt): 15 Seiten in beiden Schemata,
+  Vordergrund über den Elternbaum bis zur ersten deckenden Fläche verfolgt.
+  0 Paare unter der Schwelle.
+- **Tastatur und Fokus im echten Browser** durchgespielt: der Sprunglink ist
+  der erste Tab-Stopp und wird 173 × 44 px sichtbar; die ersten 25
+  Tab-Stopps der Startseite haben alle einen Fokusring und alle
+  Bedienelemente sind ≥ 44 px hoch; das Handy-Menü öffnet mit Enter
+  (`aria-expanded` folgt), Tab landet darin, Escape schließt es und gibt den
+  Fokus an den Knopf zurück; die Aufklappgruppe öffnet mit Enter und
+  schließt mit Escape; bei `prefers-reduced-motion: reduce` sind alle
+  Übergänge auf 0 und `scroll-behavior` steht auf `auto`; die Leiste schaltet
+  beim Scrollen von 73 auf 57 px und setzt ihre Haarlinie.
 
 ## Wo es am schwächsten ist
 
@@ -173,7 +210,10 @@ Umgruppierung vorhandener Blöcke, kein Eingriff in die Formulierung.
    zart; auf einem schlecht kalibrierten Schirm verschwinden die Trenner
    zwischen den Zeilen fast. Ein eigenes `--rule`-Wertepaar (statt der
    Ableitung aus `ink-100`/`ink-200`) wäre der richtige nächste Schritt —
-   das ginge auch, ohne die Marke neu einzufärben.
+   das ginge auch, ohne die Marke neu einzufärben. Die Variablen `--rule`
+   und `--rule-soft` stehen in `global.css` schon bereit, werden aber
+   bisher nur von den Prose-Tabellen benutzt; das Markup greift noch direkt
+   auf `border-ink-100`/`border-ink-200` zu.
 4. **Die Buchvorschauen.** Drei Scans weißer Buchseiten hinter einer
    Haarlinie sehen im dunklen Schema aus wie drei leere Kästen. Sie brauchten
    vorher den Rahmen als Hilfe; jetzt bräuchten sie eher einen eigenen

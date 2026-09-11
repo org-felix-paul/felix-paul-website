@@ -40,7 +40,7 @@ const year = new Date().getFullYear();
       <div class="md:col-span-4 lg:col-span-3">
         <a href={ziel(PATHS.home)} class="flex w-fit items-center gap-2.5">
           <span
-            class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-brand-700 text-[0.8125rem] font-bold text-white"
+            class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-brand-700 text-[0.8125rem] font-bold text-brand-50"
             aria-hidden="true"
           >
             FP
@@ -69,7 +69,7 @@ const year = new Date().getFullYear();
                   class="font-medium text-ink-900 hover:text-brand-700"
                 >
                   {beschriftung(a)}
-                  {deutschesZiel(a.href) && <span class="ml-1.5 text-[0.65rem] uppercase tracking-wider text-ink-400">in German</span>}
+                  {deutschesZiel(a.href) && <span class="ml-1.5 text-[0.65rem] uppercase tracking-wider text-ink-500">in German</span>}
                 </a>
                 <span class="mt-0.5 block text-xs leading-relaxed text-ink-500">{notiz(a)}</span>
                 {a.items && (
@@ -78,7 +78,7 @@ const year = new Date().getFullYear();
                       <li>
                         <a href={ziel(i.href)} class="text-ink-600 hover:text-brand-700">
                           {beschriftung(i)}
-                          {deutschesZiel(i.href) && <span class="ml-1.5 uppercase tracking-wider text-ink-400">in German</span>}
+                          {deutschesZiel(i.href) && <span class="ml-1.5 uppercase tracking-wider text-ink-500">in German</span>}
                         </a>
                       </li>
                     ))}

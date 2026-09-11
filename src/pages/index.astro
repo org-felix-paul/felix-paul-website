@@ -168,7 +168,7 @@ const buchVorschauen = [
 const zeile =
   "group grid items-baseline gap-x-10 gap-y-2 py-7 lg:grid-cols-12 lg:py-8";
 const knopfPrimaer =
-  "inline-flex min-h-11 items-center justify-center rounded-full bg-brand-700 px-6 text-[0.9375rem] font-medium text-white transition hover:bg-brand-800";
+  "inline-flex min-h-11 items-center justify-center rounded-full bg-brand-700 px-6 text-[0.9375rem] font-medium text-brand-50 transition hover:bg-brand-800";
 const knopfSekundaer =
   "inline-flex min-h-11 items-center justify-center rounded-full border border-ink-300 px-6 text-[0.9375rem] font-medium text-ink-800 transition hover:border-ink-400 hover:text-brand-700";
 ---
@@ -199,7 +199,7 @@ const knopfSekundaer =
                 class={zeile}
               >
                 <span class="lg:col-span-1">
-                  <span class="u-eyebrow block text-ink-400" aria-hidden="true">
+                  <span class="u-eyebrow block text-ink-500" aria-hidden="true">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span class={`mt-2 block h-0.5 w-6 rounded-full ${o.bar}`} aria-hidden="true" />
@@ -208,7 +208,7 @@ const knopfSekundaer =
                   {o.label}
                 </span>
                 <span class="u-measure text-ink-600 lg:col-span-5">{o.line}</span>
-                <span class="hidden justify-self-end text-ink-300 transition group-hover:translate-x-1 group-hover:text-brand-700 lg:col-span-1 lg:block">
+                <span class="hidden justify-self-end text-ink-400 transition group-hover:translate-x-1 group-hover:text-brand-700 lg:col-span-1 lg:block">
                   <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
@@ -434,7 +434,7 @@ const knopfSekundaer =
     <div class="mt-12 flex flex-wrap gap-4 border-t border-ink-200 pt-10">
       <a
         href={PATHS.schools}
-        class="inline-flex min-h-11 items-center justify-center rounded-full bg-emerald-700 px-6 text-[0.9375rem] font-medium text-white transition hover:bg-emerald-800"
+        class="inline-flex min-h-11 items-center justify-center rounded-full bg-emerald-700 px-6 text-[0.9375rem] font-medium text-emerald-50 transition hover:bg-emerald-800"
       >
         Alle Schulworkshops ansehen
       </a>
@@ -461,7 +461,7 @@ const knopfSekundaer =
       <div class="grid gap-x-12 gap-y-6 lg:grid-cols-12">
         <div class="lg:col-span-4">
           <p class="u-eyebrow text-amber-800">Software</p>
-          <p class="u-eyebrow mt-3 text-ink-400">dSolve</p>
+          <p class="u-eyebrow mt-3 text-ink-500">dSolve</p>
         </div>
         <div class="lg:col-span-8">
           <h2 class="u-title text-balance text-ink-900">Was ich gebaut habe</h2>
@@ -634,7 +634,7 @@ const knopfSekundaer =
         latestPosts.map((post) => (
           <li class="border-b border-ink-100">
             <a href={postPath(post.id)} class="group grid items-baseline gap-x-10 gap-y-1 py-6 md:grid-cols-12">
-              <time datetime={post.data.pubDate.toISOString()} class="u-eyebrow text-ink-400 md:col-span-3">
+              <time datetime={post.data.pubDate.toISOString()} class="u-eyebrow text-ink-500 md:col-span-3">
                 {postFmt.format(post.data.pubDate)}
               </time>
               <span class="u-heading text-ink-900 transition-colors group-hover:text-brand-700 md:col-span-9">
@@ -723,13 +723,13 @@ const knopfSekundaer =
           <li>
             <a href="/pdf/rednerprofil.pdf" download class="flex min-h-11 items-center justify-between gap-4 border-b border-ink-100 py-4 text-[0.9375rem] font-medium text-ink-800 transition hover:text-brand-700">
               Rednerprofil (PDF)
-              <span class="u-eyebrow text-ink-400">PDF</span>
+              <span class="u-eyebrow text-ink-500">PDF</span>
             </a>
           </li>
           <li>
             <a href={PORTRAIT.press} download class="flex min-h-11 items-center justify-between gap-4 border-b border-ink-100 py-4 text-[0.9375rem] font-medium text-ink-800 transition hover:text-brand-700">
               Pressefoto (Porträt)
-              <span class="u-eyebrow text-ink-400">PNG</span>
+              <span class="u-eyebrow text-ink-500">PNG</span>
             </a>
           </li>
         </ul>
