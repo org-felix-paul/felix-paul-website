@@ -1,15 +1,14 @@
 #!/usr/bin/env node
 /**
  * Prüft alle internen Links im Build-Ergebnis so, wie ein statischer Host sie
- * auflöst — inklusive der Referenzprojekte unter /projects/.
+ * auflöst.
  *
  *   npm run check:links              # gegen dist/ (schnell, offline)
- *   npm run check:links -- --live    # zusätzlich gegen die deployte Seite
+ *   npm run check:links:live         # zusätzlich gegen die deployte Seite
  *
  * Warum eigenes Skript und nicht "existiert die Datei?": ein Ordner ohne
- * index.html existiert im Dateisystem, wird aber als 404 ausgeliefert. Genau
- * daran sind Links wie /projects/neck/css gescheitert, während eine naive
- * Prüfung sie für gültig hielt.
+ * index.html existiert im Dateisystem, wird aber als 404 ausgeliefert. Eine
+ * naive Prüfung hielt solche Links für gültig.
  *
  * Auflösungsregeln (Cloudflare Pages):
  *   /a/b/      -> dist/a/b/index.html
@@ -53,17 +52,13 @@ const servedFile = (urlPath) => {
 const IGNORED = /^(https?:|mailto:|tel:|data:|javascript:|#|\/\/)/i;
 
 /**
- * Bekannte tote Links in den Referenzprojekten. Sie stehen hier einzeln mit
- * Begründung, damit die Prüfung grün sein kann und trotzdem niemand vergisst,
- * warum. Neue Einträge nur, wenn der Link wirklich nicht zu reparieren ist.
+ * Bewusst offene Links, die der Checker nicht melden soll. Jeder Eintrag
+ * braucht eine Begründung, damit die Prüfung grün sein kann und trotzdem
+ * niemand vergisst, warum. Neue Einträge nur, wenn der Link wirklich nicht
+ * zu reparieren ist.
+ *
+ *   { from: "/blog/", link: "/gibt-es-nicht/", why: "…" }
  */
-// Bewusst offene Links, die der Checker nicht melden soll.
-//
-// Bis September 2026 standen hier sechs Einträge aus den Referenzprojekten
-// (Schülerarbeiten mit kaputten Bildpfaden, ein Kapitel, das nie
-// veröffentlicht wurde). Die Projekte liegen jetzt als GitHub Pages in
-// eigenen Repositories, also prüft dieser Checker sie nicht mehr — und die
-// Ausnahmen sind mit ihnen weggefallen.
 const KNOWN = [];
 const isKnown = (from, link) => KNOWN.some((k) => k.from === from && k.link === link);
 
@@ -117,7 +112,7 @@ for (const file of files) {
 
 console.log(`\n  ${files.length} Seiten, ${checked} interne Links geprüft`);
 if (known.length) {
-  console.log(`  ${known.length} bekannte, bewusst offene Link(s) in den Referenzprojekten (siehe KNOWN in diesem Skript)`);
+  console.log(`  ${known.length} bekannte, bewusst offene Link(s) (siehe KNOWN in diesem Skript)`);
 }
 if (problems.length === 0) {
   console.log("  ✓ keine gebrochenen internen Links\n");

@@ -7,11 +7,11 @@ import rehypeTableWrap from "./src/blog/plugins/rehype-table-wrap.mjs";
 import remarkMermaid from "./src/blog/plugins/remark-mermaid.mjs";
 import { echteEnglischeRouten } from "./src/i18n/pages.mjs";
 
-// One origin for everything: the main site at "/", the blog at "/blog/"
-// and the education section at "/education/". Die Referenzprojekte liegen
-// seit September 2026 nicht mehr hier, sondern als GitHub Pages unter
-// github.felix-paul.de — siehe PROJECTS in src/consts.ts.
-// Ein Satz aus /en/-Routen, hinter denen wirklich Englisch steht.
+// Ein Origin für alles: Hauptseite unter "/", Blog unter "/blog/", Schul-
+// angebote unter "/schools/". Die Referenzprojekte liegen als GitHub Pages
+// unter github.felix-paul.de — siehe PROJECTS in src/consts.ts.
+
+// Die /en/-Routen, hinter denen wirklich Englisch steht.
 const uebersetzt = echteEnglischeRouten();
 
 export default defineConfig({
@@ -40,7 +40,6 @@ export default defineConfig({
       // only dilute the crawl budget.
       filter: (page) =>
         !page.endsWith("/thank-you/") &&
-        !page.endsWith("/education/danke/") &&
         // Rückfall-Seiten unter /en/ zeigen deutschen Text und kanonisieren
         // auf die deutsche URL. Sie in die Sitemap zu schreiben, wäre
         // widersprüchlich: sie sagen selbst, sie seien nicht das Original.
@@ -50,21 +49,20 @@ export default defineConfig({
     }),
   ],
   markdown: {
-    // Astro 6 configures the markdown pipeline through unified(); the top-level
-    // remarkPlugins/rehypePlugins keys are deprecated. Astro's defaults (GFM,
-    // smartypants, Shiki) stay active, these two are added on top and now apply
-    // to both sections' markdown.
+    // Seit Astro 6 läuft die Markdown-Pipeline über unified(); die früheren
+    // Schlüssel remarkPlugins/rehypePlugins sind veraltet. Astros Standards
+    // (GFM, SmartyPants, Shiki) bleiben aktiv, die Plugins kommen obendrauf
+    // und gelten für alle Markdown-Collections.
     processor: unified({
       remarkPlugins: [remarkMermaid],
-      // rehype-slug gives every heading a GitHub-style anchor id so the tables
-      // of contents can jump to a section.
+      // rehype-slug gibt jeder Überschrift eine GitHub-artige Anker-ID, damit
+      // Inhaltsverzeichnisse auf Abschnitte springen können.
       rehypePlugins: [rehypeSlug, rehypeTableWrap],
     }),
   },
-  // Tailwind läuft seit Astro 7 (Vite 8) über das Vite-Plugin statt über
-  // PostCSS. Der PostCSS-Weg löste `@import "tailwindcss"` unter Vite 8 nicht
-  // mehr auf und suchte die Datei im Projektwurzelverzeichnis. Das Vite-Plugin
-  // ist für Vite-Projekte ohnehin der von Tailwind empfohlene Weg.
+  // Tailwind über das Vite-Plugin (der von Tailwind empfohlene Weg für
+  // Vite-Projekte). Der PostCSS-Weg löste `@import "tailwindcss"` unter
+  // Vite 8 nicht mehr auf.
   vite: {
     plugins: [tailwindcss()],
   },

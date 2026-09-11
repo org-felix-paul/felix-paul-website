@@ -1,5 +1,6 @@
 // Content collection definition for the education section.
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 
 export const angebote = defineCollection({

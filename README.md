@@ -17,7 +17,7 @@ npm run build     # -> dist/
 npm run preview   # serve dist/ locally
 npm run check       # astro check (types + diagnostics)
 npm run check:links # broken internal links, resolved the way the host does
-npm run check:links -- --live   # additionally fetch every page from the live site
+npm run check:links:live fetch every page from the live site
 npm run verify      # check + build + link check, all three
 npm run slug -- "Ein Titel"   # slug helper for new blog posts
 ```

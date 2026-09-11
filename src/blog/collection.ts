@@ -1,7 +1,8 @@
 // Content collection definition for the blog. Kept inside the section folder
 // so src/content.config.ts stays a thin aggregator and the section can be
 // lifted out in one piece.
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 import { AUDIENCES, TOPICS } from "./consts";
 
