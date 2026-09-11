@@ -53,70 +53,79 @@ const schema = [
   schema={schema}
 >
   <article>
-    <section class="border-b border-ink-100 bg-gradient-to-br from-brand-50 via-canvas to-canvas">
-      <div class="mx-auto max-w-3xl px-6 py-16">
-        <a href={BLOG.base} class="text-sm font-medium text-brand-700 hover:text-brand-900">← Alle Beiträge</a>
-        <h1 class="mt-4 font-display text-3xl font-bold tracking-tight text-ink-900 md:text-4xl">
+    <section class="post-hero">
+      <div class="mx-auto max-w-3xl px-5 pt-14 pb-12 sm:px-8 md:pt-20">
+        <a href={BLOG.base} class="inline-flex min-h-11 items-center text-sm font-medium text-brand-700 hover:text-brand-900">← Alle Beiträge</a>
+        <h1 class="u-title mt-4 text-balance text-ink-900">
           {post.data.title}
         </h1>
-        <p class="mt-4 max-w-2xl text-lg leading-relaxed text-ink-700">{post.data.description}</p>
+        <p class="u-lede u-measure mt-6 text-ink-700">{post.data.description}</p>
 
-        <div class="mt-6 flex flex-wrap items-center gap-2">
+        <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-1.5 border-t border-ink-200 pt-5">
           {
             post.data.topics.map((t) => (
-              <span class="rounded-full border border-brand-200 bg-surface px-3 py-1 text-xs font-medium text-brand-700">
+              <span class="u-eyebrow text-brand-700">
                 {TOPIC_LABELS[t]}
               </span>
             ))
           }
           {
             post.data.audience.map((a) => (
-              <span class="rounded-full border border-ink-200 bg-surface px-3 py-1 text-xs font-medium text-ink-600">
+              <span class="u-eyebrow text-ink-400">
                 {AUDIENCE_LABELS[a]}
               </span>
             ))
           }
+          <time datetime={post.data.pubDate.toISOString()} class="u-eyebrow ml-auto text-ink-400">
+            {dateFmt.format(post.data.pubDate)}
+          </time>
         </div>
-
-        <time datetime={post.data.pubDate.toISOString()} class="mt-4 block text-xs font-medium uppercase tracking-wider text-ink-400">
-          {dateFmt.format(post.data.pubDate)}
-        </time>
       </div>
     </section>
 
-    <div class="mx-auto max-w-3xl px-6 py-16">
+    <div class="mx-auto max-w-3xl px-5 pt-12 pb-20 sm:px-8">
       <div class="prose-content">
         <Content />
       </div>
 
-      <div class="mt-12 rounded-2xl bg-brand-50 p-6 md:p-8">
-        <h2 class="font-display text-2xl font-bold text-ink-900">Lust auf einen Workshop dazu?</h2>
-        <p class="mt-2 text-ink-700">
+      <div class="mt-20 rounded-3xl bg-brand-50 px-7 py-9 md:px-10 md:py-11">
+        <h2 class="u-subtitle text-balance text-brand-900">Lust auf einen Workshop dazu?</h2>
+        <p class="u-measure mt-4 leading-relaxed text-brand-900/85">
           Ich gebe praxisnahe Workshops zu KI und IT-Sicherheit an Schulen – für Schüler:innen, Eltern und Lehrkräfte.
           Erzähl mir von deiner Schule oder Veranstaltung und ich melde mich.
         </p>
-        <div class="mt-5 flex flex-wrap gap-3">
+        <div class="mt-7 flex flex-wrap gap-3">
           <a
             href="/#kontakt"
-            class="rounded-lg bg-brand-700 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-brand-800"
+            class="inline-flex min-h-11 items-center rounded-full bg-brand-700 px-6 text-[0.9375rem] font-medium text-white transition hover:bg-brand-800"
           >
             Kontakt aufnehmen
           </a>
           <a
             href={PATHS.schools}
-            class="rounded-lg border border-ink-200 bg-surface px-5 py-3 text-sm font-medium text-ink-800 shadow-sm transition hover:border-brand-300 hover:text-brand-700"
+            class="inline-flex min-h-11 items-center rounded-full border border-brand-300 px-6 text-[0.9375rem] font-medium text-brand-900 transition hover:border-brand-400"
           >
             Bildungsangebote
           </a>
         </div>
       </div>
 
-      <div class="mt-12">
-        <a href={BLOG.base} class="text-sm font-medium text-brand-700 hover:text-brand-900">← Alle Beiträge</a>
+      <div class="mt-14 border-t border-ink-200 pt-6">
+        <a href={BLOG.base} class="inline-flex min-h-11 items-center text-sm font-medium text-brand-700 hover:text-brand-900">← Alle Beiträge</a>
       </div>
     </div>
   </article>
 </Layout>
+
+<style>
+  .post-hero {
+    background-image: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-brand-50) 85%, transparent),
+      var(--color-canvas) 80%
+    );
+  }
+</style>
 
 <script>
   // Mermaid-Diagramme client-seitig rendern. Der Import erfolgt nur, wenn die

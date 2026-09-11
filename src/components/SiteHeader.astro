@@ -65,7 +65,7 @@ const {
   wordmarkAccent,
   nav = [],
   cta,
-  width = "max-w-6xl",
+  width = "max-w-[88rem]",
 } = Astro.props;
 
 const current = Astro.url.pathname.replace(/\/$/, "") || "/";
@@ -98,37 +98,46 @@ const fremd = (e: { fremdsprachig?: boolean }) => lang === "en" && e.fremdsprach
 const fremdKlasse =
   "ml-2 rounded-sm bg-ink-100 px-1.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-ink-500";
 
+// Ein Kopf, der sich zurücknimmt: durchscheinend, weichgezeichnet, ohne
+// eigene Kante — solange die Seite oben steht. Erst beim Scrollen zieht er
+// sich zusammen und setzt eine Haarlinie, damit der Inhalt nicht unter einer
+// unsichtbaren Kante hindurchläuft.
+
 // Externe Ziele öffnen in einem neuen Tab. rel="noopener" ist dabei Pflicht:
 // ohne das bekommt die Zielseite über window.opener Zugriff auf diese hier.
 const zielAttribute = (e: { external?: boolean }) =>
   e.external ? { target: "_blank", rel: "noopener noreferrer" } : {};
 
+// Der aktive Eintrag wird durch eine Haarlinie markiert, die aus dem Nichts
+// aufzieht — nicht durch einen 2px-Balken, der auch im Ruhezustand Platz
+// beansprucht und die Leiste unruhig macht.
 const linkClass =
-  "border-b-2 border-transparent pb-0.5 transition-colors hover:text-brand-700 aria-[current]:border-brand-600 aria-[current]:text-brand-700";
+  "relative inline-flex items-center py-1 transition-colors hover:text-ink-900 aria-[current]:text-brand-700 after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-px after:h-px after:origin-left after:scale-x-0 after:bg-brand-600 after:transition-transform after:duration-300 hover:after:scale-x-100 aria-[current]:after:scale-x-100";
 import ThemeToggle from "./ThemeToggle.astro";
 import { uebersetzer } from "../i18n/ui";
 import LanguageLink from "./LanguageLink.astro";
 const t = uebersetzer(lang);
 ---
 
-<header
-  class="sticky top-0 z-40 border-b border-ink-100 bg-surface/80 backdrop-blur supports-[backdrop-filter]:bg-surface/70"
->
-  <div class={`mx-auto flex ${width} items-center justify-between gap-6 px-6 py-4`}>
-    <a href={toHref(home)} class="flex items-center gap-2 font-display font-semibold tracking-tight">
+<header class="site-header sticky top-0 z-40" data-site-header>
+  <div class={`site-header__inner mx-auto flex ${width} items-center justify-between gap-6 px-5 sm:px-8`}>
+    <a
+      href={toHref(home)}
+      class="group flex shrink-0 items-center gap-2.5 font-display font-semibold tracking-tight"
+    >
       {
         logo ? (
-          <img src={logo} alt={logoAlt} width="36" height="36" class="h-9 w-9 rounded-lg" />
+          <img src={logo} alt={logoAlt} width="36" height="36" class="site-header__mark rounded-lg" />
         ) : (
           <span
-            class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-brand-700 font-bold text-white"
+            class="site-header__mark inline-flex items-center justify-center rounded-lg bg-brand-700 text-[0.8125rem] font-bold text-white"
             aria-hidden="true"
           >
             {initials}
           </span>
         )
       }
-      <span class="text-lg text-ink-900" set:html={
+      <span class="text-[0.9375rem] text-ink-900 sm:text-base" set:html={
         wordmarkAccent
           ? `${wordmark} <span class="text-brand-700">${wordmarkAccent}</span>`
           : wordmark
@@ -138,7 +147,7 @@ const t = uebersetzer(lang);
     {
       nav.length > 0 && (
         <nav aria-label="Hauptnavigation" class="hidden lg:block">
-          <ul class="flex items-center gap-7 text-sm font-medium text-ink-700">
+          <ul class="flex items-center gap-8 text-[0.8125rem] font-medium text-ink-600">
             {nav.map((entry) =>
               isGroup(entry) ? (
                 <li>
@@ -159,7 +168,7 @@ const t = uebersetzer(lang);
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                       </svg>
                     </summary>
-                    <ul class="absolute right-0 z-50 mt-3 w-64 overflow-hidden rounded-xl border border-ink-200 bg-surface p-1 shadow-lg">
+                    <ul class="site-header__menu absolute right-0 z-50 mt-4 w-72 overflow-hidden rounded-2xl border border-ink-200 p-1.5">
                       {entry.items.map((item) => (
                         <li>
                           <a
@@ -167,7 +176,7 @@ const t = uebersetzer(lang);
                             {...zielAttribute(item)}
                             data-spy={item.spy}
                             data-nav-close
-                            class="block rounded-lg px-3 py-2 text-ink-700 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
+                            class="flex min-h-11 items-center rounded-lg px-3 py-2.5 text-ink-700 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
                           >
                             {beschriftung(item)}
                             {fremd(item) && <span class={fremdKlasse}>in German</span>}
@@ -197,14 +206,14 @@ const t = uebersetzer(lang);
       )
     }
 
-    <div class="hidden items-center gap-2 lg:flex">
+    <div class="hidden shrink-0 items-center gap-1 lg:flex">
       <LanguageLink />
       <ThemeToggle />
       {
         cta && (
           <a
             href={toHref(cta.href)}
-            class="rounded-lg bg-brand-700 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-800"
+            class="ml-2 inline-flex min-h-9 items-center rounded-full bg-brand-700 px-4 text-[0.8125rem] font-medium text-white transition hover:bg-brand-800"
           >
             {cta.label}
           </a>
@@ -212,26 +221,26 @@ const t = uebersetzer(lang);
       }
     </div>
 
-    <div class="flex items-center gap-1 lg:hidden">
+    <div class="flex shrink-0 items-center gap-0.5 lg:hidden">
       <LanguageLink />
       <ThemeToggle />
     <button
       type="button"
-      class="rounded-lg p-2 text-ink-700 hover:bg-ink-50"
+      class="inline-flex h-11 w-11 items-center justify-center rounded-lg text-ink-700 transition hover:bg-ink-50 hover:text-ink-900"
       aria-controls="mobile-nav"
       aria-expanded="false"
       data-mobile-menu-button
     >
       <span class="sr-only">{t("menueOeffnen")}</span>
-      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5"></path>
       </svg>
     </button>
     </div>
   </div>
 
-  <nav id="mobile-nav" aria-label="Mobile Navigation" class="hidden border-t border-ink-100 lg:hidden" data-mobile-menu>
-    <ul class="space-y-1 px-6 py-4 text-base font-medium text-ink-800">
+  <nav id="mobile-nav" aria-label="Mobile Navigation" class="site-header__panel hidden border-t border-ink-200 lg:hidden" data-mobile-menu>
+    <ul class="space-y-0.5 px-5 py-4 text-base font-medium text-ink-800 sm:px-8">
       {
         nav.map((entry) =>
           isGroup(entry) ? (
@@ -243,7 +252,7 @@ const t = uebersetzer(lang);
              */
             <li>
               <details class="group/mobile">
-                <summary class="flex cursor-pointer list-none items-center justify-between rounded-md px-3 py-2 transition hover:bg-ink-50 hover:text-brand-700">
+                <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between rounded-lg px-3 py-2.5 transition hover:bg-ink-50 hover:text-brand-700">
                   {beschriftung(entry)}
                   <svg
                     class="h-4 w-4 text-ink-400 transition group-open/mobile:rotate-180"
@@ -256,7 +265,7 @@ const t = uebersetzer(lang);
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </summary>
-                <ul class="mt-1 ml-3 space-y-1 border-l border-ink-200 pl-3 text-sm font-normal">
+                <ul class="mt-0.5 ml-3 space-y-0.5 border-l border-ink-200 pl-3 text-[0.9375rem] font-normal">
                   {entry.items.map((item) => (
                     <li>
                       <a
@@ -264,7 +273,7 @@ const t = uebersetzer(lang);
                         {...zielAttribute(item)}
                         data-mobile-link
                         data-spy={item.spy}
-                        class="block rounded-md px-3 py-1.5 text-ink-600 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
+                        class="flex min-h-11 items-center rounded-lg px-3 py-2 text-ink-600 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
                       >
                         {beschriftung(item)}
                         {fremd(item) && <span class={fremdKlasse}>in German</span>}
@@ -282,7 +291,7 @@ const t = uebersetzer(lang);
                 data-mobile-link
                 data-spy={entry.spy}
                 aria-current={isActive(entry.href) ? "page" : undefined}
-                class="block rounded-md px-3 py-2 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
+                class="flex min-h-11 items-center rounded-lg px-3 py-2.5 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
               >
                 {beschriftung(entry)}
                 {fremd(entry) && <span class={fremdKlasse}>in German</span>}
@@ -297,7 +306,7 @@ const t = uebersetzer(lang);
             <a
               href={toHref(cta.href)}
               data-mobile-link
-              class="block rounded-lg bg-brand-700 px-4 py-2 text-center text-white transition hover:bg-brand-800"
+              class="flex min-h-11 items-center justify-center rounded-full bg-brand-700 px-4 text-center text-[0.9375rem] text-white transition hover:bg-brand-800"
             >
               {cta.label}
             </a>
@@ -309,19 +318,49 @@ const t = uebersetzer(lang);
 </header>
 
 <script>
+  // ── condense on scroll ───────────────────────────────────────────────────
+  // Oben auf der Seite hat der Kopf keine Kante und darf Platz nehmen. Sobald
+  // Inhalt darunter durchläuft, zieht er sich zusammen und setzt eine
+  // Haarlinie — das ist die einzige Stelle, an der die Leiste sich meldet.
+  const siteHeader = document.querySelector<HTMLElement>("[data-site-header]");
+  if (siteHeader) {
+    let ticking = false;
+    const sync = () => {
+      ticking = false;
+      siteHeader.toggleAttribute("data-scrolled", window.scrollY > 8);
+    };
+    sync();
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(sync);
+      },
+      { passive: true },
+    );
+  }
+
   // ── mobile menu ──────────────────────────────────────────────────────────
   const btn = document.querySelector<HTMLButtonElement>("[data-mobile-menu-button]");
   const menu = document.querySelector<HTMLElement>("[data-mobile-menu]");
   if (btn && menu) {
+    const closeMenu = (refocus = false) => {
+      menu.classList.add("hidden");
+      btn.setAttribute("aria-expanded", "false");
+      if (refocus) btn.focus();
+    };
     btn.addEventListener("click", () => {
       const open = menu.classList.toggle("hidden") === false;
       btn.setAttribute("aria-expanded", open ? "true" : "false");
     });
     menu.querySelectorAll("[data-mobile-link]").forEach((link) => {
-      link.addEventListener("click", () => {
-        menu.classList.add("hidden");
-        btn.setAttribute("aria-expanded", "false");
-      });
+      link.addEventListener("click", () => closeMenu());
+    });
+    // Escape schließt das Menü und gibt den Fokus zurück an den Knopf —
+    // sonst landet man beim Weitertabben im geschlossenen Menü.
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !menu.classList.contains("hidden")) closeMenu(true);
     });
   }
 
@@ -396,5 +435,69 @@ const t = uebersetzer(lang);
   /* Safari still paints a disclosure triangle on summary without this. */
   summary::-webkit-details-marker {
     display: none;
+  }
+
+  /* Durchscheinend statt deckend: der Inhalt bleibt unter der Leiste sichtbar
+     und schiebt sich nicht hinter eine zweite weiße Wand. Der Weichzeichner
+     hält den Text trotzdem lesbar. */
+  .site-header {
+    background-color: color-mix(in srgb, var(--color-surface) 78%, transparent);
+    border-bottom: 1px solid transparent;
+    transition:
+      border-color 0.3s ease,
+      background-color 0.3s ease;
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    .site-header {
+      background-color: color-mix(in srgb, var(--color-surface) 62%, transparent);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      backdrop-filter: saturate(180%) blur(20px);
+    }
+  }
+
+  .site-header[data-scrolled] {
+    border-bottom-color: var(--color-ink-200);
+  }
+
+  /* Die Höhe ist die eigentliche Geste: 4.5rem oben, 3.5rem beim Scrollen.
+     Padding statt height, damit ein umbrechendes Wortzeichen nicht abgeschnitten
+     wird. */
+  .site-header__inner {
+    padding-block: 1.0625rem;
+    transition: padding-block 0.3s ease;
+  }
+
+  .site-header[data-scrolled] .site-header__inner {
+    padding-block: 0.5625rem;
+  }
+
+  .site-header__mark {
+    height: 2.25rem;
+    width: 2.25rem;
+    transition:
+      height 0.3s ease,
+      width 0.3s ease;
+  }
+
+  .site-header[data-scrolled] .site-header__mark {
+    height: 2rem;
+    width: 2rem;
+  }
+
+  /* Aufklappmenü und Handy-Menü liegen über dem Inhalt und brauchen deshalb
+     mehr Deckkraft als die Leiste selbst — sonst liest man zwei Ebenen
+     übereinander. */
+  .site-header__menu,
+  .site-header__panel {
+    background-color: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    .site-header__menu,
+    .site-header__panel {
+      -webkit-backdrop-filter: saturate(180%) blur(24px);
+      backdrop-filter: saturate(180%) blur(24px);
+    }
   }
 </style>

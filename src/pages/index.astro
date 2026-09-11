@@ -98,6 +98,79 @@ const weitereThemen = [
   "Skalierungsprobleme bei Enterprise-IT",
   "..."
 ];
+
+// Der Hintergrund als Aufstellung statt als Kachelgrafik: drei Gruppen,
+// jede mit ihrer Bildunterschrift und ihren Abschlüssen. Die Wörter sind
+// dieselben wie vorher, sie stehen nur nicht mehr in farbigen Kästchen.
+const hintergrund = [
+  {
+    gruppe: "Fachstudium",
+    abschluesse: ["M.Sc. Informatik", "B.Sc. Informatik", "B.Sc. Mathematik"],
+    akzent: "bg-brand-500",
+  },
+  {
+    gruppe: "Lehramtsstudium",
+    abschluesse: ["M.Ed. Mathematik & Informatik", "B.Ed. Mathematik & Informatik"],
+    akzent: "bg-emerald-500",
+  },
+  {
+    gruppe: "Konkrete Umsetzung",
+    abschluesse: ["Praxiserfahrung"],
+    akzent: "bg-amber-500",
+  },
+];
+
+// Ein gemeinsamer Typ für beide Einträge, damit der zweite sein <em> behalten
+// kann, ohne dass der erste eine leere Auszeichnung braucht.
+const publikationen: {
+  kicker: string;
+  titel: string;
+  text?: string;
+  textVorEm?: string;
+  em?: string;
+  textNachEm?: string;
+  links: { href: string; label: string; primaer?: boolean; extern?: boolean }[];
+}[] = [
+  {
+    kicker: "Fachbeitrag · Kryptographie",
+    titel: "Fully Homomorphic Encryption and its Use Cases",
+    text: "Survey-Paper darüber, wie FHE Berechnungen auf verschlüsselten Daten ermöglicht – inklusive Vortrag und Folien.",
+    links: [
+      { href: "/pdf/fhe-survey.pdf", label: "Paper (PDF)", primaer: true },
+      { href: "/pdf/slides-fhe-use-cases-without-notes.pdf", label: "Folien (PDF)" },
+    ],
+  },
+  {
+    kicker: "Fachbeitrag · KI",
+    titel: "Science-Gym: a simple testbed for AI-driven scientific discovery",
+    textVorEm: "Eine einfache Testumgebung, um zu untersuchen, wie KI selbstständig wissenschaftliche Zusammenhänge entdecken kann – erschienen in ",
+    em: "Machine Learning",
+    textNachEm: " (Springer).",
+    links: [
+      {
+        href: "https://link.springer.com/article/10.1007/s10994-025-06914-x",
+        label: "Artikel ansehen",
+        primaer: true,
+        extern: true,
+      },
+    ],
+  },
+];
+
+const buchVorschauen = [
+  { href: "/pdf/goppa-book/uebersicht.pdf", src: "/img/goppa-book/uebersicht.png", alt: "Kapitelübersicht des Buches" },
+  { href: "/pdf/goppa-book/leseprobe.pdf", src: "/img/goppa-book/leseprobe.png", alt: "Leseprobe aus dem Buch" },
+  { href: "/pdf/goppa-book/literaturverzeichnis.pdf", src: "/img/goppa-book/literaturverzeichnis.png", alt: "Literaturverzeichnis des Buches" },
+];
+
+// Zwei wiederkehrende Formen auf dieser Seite, damit „Zeile in einer Liste"
+// und „Schaltfläche" überall dasselbe bedeuten.
+const zeile =
+  "group grid items-baseline gap-x-10 gap-y-2 py-7 lg:grid-cols-12 lg:py-8";
+const knopfPrimaer =
+  "inline-flex min-h-11 items-center justify-center rounded-full bg-brand-700 px-6 text-[0.9375rem] font-medium text-white transition hover:bg-brand-800";
+const knopfSekundaer =
+  "inline-flex min-h-11 items-center justify-center rounded-full border border-ink-300 px-6 text-[0.9375rem] font-medium text-ink-800 transition hover:border-ink-400 hover:text-brand-700";
 ---
 
 <Layout>
@@ -106,38 +179,40 @@ const weitereThemen = [
   <!-- ORIENTIERUNG -->
   <!-- Bewusst knapp: eine Zeile pro Bereich, damit klar wird, was es gibt und
        wo es weitergeht. Die eigentlichen Inhalte stehen weiter unten
-       (#speaking, #bildung) — hier wird nicht verkauft, hier wird sortiert. -->
-  <Section
-    id="saeulen"
-    eyebrow="Überblick"
-    title="Was ich mache"
-    lead=""
-  >
-    <ul class="mx-auto max-w-3xl divide-y divide-ink-100 overflow-hidden rounded-2xl border border-ink-200 bg-surface shadow-sm">
+       (#speaking, #bildung) — hier wird nicht verkauft, hier wird sortiert.
+
+       Als Register über die volle Satzbreite statt als umrandete Kartenliste:
+       vier Zeilen, durch Haarlinien getrennt, mit laufender Nummer. So liest
+       es sich als Inhaltsverzeichnis der Seite und nicht als vierte Kachel-
+       sammlung. -->
+  <Section id="saeulen" eyebrow="Überblick" title="Was ich mache" tone="minor">
+    <ul class="border-t border-ink-200">
       {
-        orientation.map((o) => {
+        orientation.map((o, i) => {
           const external = o.href.startsWith("http");
           return (
-            <li>
+            <li class="border-b border-ink-100">
               <a
                 href={o.href}
                 target={external ? "_blank" : undefined}
                 rel={external ? "noopener noreferrer" : undefined}
-                class="group flex items-center gap-4 px-5 py-4 transition hover:bg-ink-50 sm:px-6"
+                class={zeile}
               >
-                <span class={`h-8 w-1 shrink-0 rounded-full ${o.bar}`} aria-hidden="true" />
-                <span class="flex-1">
-                  <span class="block font-semibold text-ink-900">{o.label}</span>
-                  <span class="block text-sm leading-relaxed text-ink-600">{o.line}</span>
+                <span class="lg:col-span-1">
+                  <span class="u-eyebrow block text-ink-400" aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span class={`mt-2 block h-0.5 w-6 rounded-full ${o.bar}`} aria-hidden="true" />
                 </span>
-                <svg
-                  class="h-4 w-4 shrink-0 text-ink-400 transition group-hover:translate-x-0.5 group-hover:text-brand-700"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
+                <span class="u-subtitle text-ink-900 transition-colors group-hover:text-brand-700 lg:col-span-5">
+                  {o.label}
+                </span>
+                <span class="u-measure text-ink-600 lg:col-span-5">{o.line}</span>
+                <span class="hidden justify-self-end text-ink-300 transition group-hover:translate-x-1 group-hover:text-brand-700 lg:col-span-1 lg:block">
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </span>
               </a>
             </li>
           );
@@ -147,141 +222,125 @@ const weitereThemen = [
   </Section>
 
   <!-- ÜBER MICH -->
-  <Section id="ueber-mich"
-    background="muted" eyebrow="Über mich" title="Kurz zu mir">
-    <div class="mx-auto max-w-5xl">
-      <div class="grid items-start gap-10 md:grid-cols-[auto_1fr]">
-        <figure class="mx-auto w-full max-w-xs">
-          <img
-            src={PORTRAIT.image}
-            alt={`${SITE.author} – persönliches Foto`}
-            width="640"
-            height="800"
-            class="aspect-[4/5] w-full rounded-2xl object-cover shadow-md ring-1 ring-ink-200"
-            loading="lazy"
-          />
-        </figure>
+  <!-- Schmale Kolumne statt Raster: das ist der persönlichste Abschnitt der
+       Seite, und er liest sich am besten als Text mit einem Bild daneben. Die
+       Studienabschlüsse stehen darunter als Aufstellung — dieselben Wörter,
+       aber ohne die farbigen Kästchen, die vorher wie eine Infografik wirkten
+       und den Text übertönten. -->
+  <Section id="ueber-mich" background="muted" eyebrow="Über mich" title="Kurz zu mir">
+    <div class="grid gap-x-12 gap-y-10 md:grid-cols-12">
+      <figure class="md:col-span-4 lg:col-span-3">
+        <img
+          src={PORTRAIT.image}
+          alt={`${SITE.author} – persönliches Foto`}
+          width="640"
+          height="800"
+          class="aspect-[4/5] w-full max-w-xs rounded-2xl object-cover object-[50%_18%]"
+          loading="lazy"
+        />
+      </figure>
 
-        <div>
-          <div class="prose-content">
-            <p>
-              Was mich antreibt: Neues lernen, Zusammenhänge verstehen, selbst nachprüfen & umsetzen, Wissen teilen.
-            </p>
-            <p>  
-              Den ausführlichen Lebenslauf gibt es auf <a href={SITE.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>.
-            </p>
-          </div>
-
-          <figure class="mt-8">
-            <figcaption class="text-sm font-semibold uppercase tracking-widest text-brand-700">
-              Mein Hintergrund
-            </figcaption>
-            <div class="mt-6">
-              <!-- Drei Gruppen nebeneinander, Unterkanten der Blöcke bündig:
-                   die beiden Studienstränge und daneben die Praxiserfahrung,
-                   die über die volle Höhe beider Reihen läuft. Jede Gruppe hat
-                   eine dünne Bildunterschrift, damit klar ist, wofür M.Ed.
-                   steht. Auf Mobil bricht die Praxis in eine eigene Zeile. -->
-              <div class="flex flex-col gap-4">
-                <div class="flex flex-wrap items-end gap-4 sm:gap-6">
-                  <!-- Fachstudium: Informatik (B.Sc. + M.Sc.) und Mathematik (B.Sc.) -->
-                  <div>
-                    <div class="flex items-end gap-2 sm:gap-3">
-                      <div class="flex flex-col gap-2">
-                        <div class="flex h-14 w-20 items-center justify-center rounded-xl bg-brand-100 px-1.5 text-center text-[0.6rem] font-semibold leading-tight text-brand-900 ring-1 ring-brand-200 sm:h-16 sm:w-28 sm:px-2 sm:text-xs">M.Sc. Informatik</div>
-                        <div class="flex h-14 w-20 items-center justify-center rounded-xl bg-brand-100 px-1.5 text-center text-[0.6rem] font-semibold leading-tight text-brand-900 ring-1 ring-brand-200 sm:h-16 sm:w-28 sm:px-2 sm:text-xs">B.Sc. Informatik</div>
-                      </div>
-                      <div class="flex flex-col gap-2">
-                        <div class="flex h-14 w-20 items-center justify-center rounded-xl bg-brand-100 px-1.5 text-center text-[0.6rem] font-semibold leading-tight text-brand-900 ring-1 ring-brand-200 sm:h-16 sm:w-28 sm:px-2 sm:text-xs">B.Sc. Mathematik</div>
-                      </div>
-                    </div>
-                    <p class="mt-2 text-center text-[0.65rem] font-medium uppercase tracking-wider text-ink-500 sm:text-xs">
-                      Fachstudium
-                    </p>
-                  </div>
-
-                  <!-- Lehramtsstudium: B.Ed. + M.Ed. -->
-                  <div>
-                    <div class="flex flex-col gap-2">
-                      <div class="flex h-14 w-20 items-center justify-center rounded-xl bg-emerald-100 px-1.5 text-center text-[0.6rem] font-semibold leading-tight text-emerald-900 ring-1 ring-emerald-200 sm:h-16 sm:w-28 sm:px-2 sm:text-xs">M.Ed. Mathematik &amp; Informatik</div>
-                      <div class="flex h-14 w-20 items-center justify-center rounded-xl bg-emerald-100 px-1.5 text-center text-[0.6rem] font-semibold leading-tight text-emerald-900 ring-1 ring-emerald-200 sm:h-16 sm:w-28 sm:px-2 sm:text-xs">B.Ed. Mathematik &amp; Informatik</div>
-                    </div>
-                    <p class="mt-2 text-center text-[0.65rem] font-medium uppercase tracking-wider text-ink-500 sm:text-xs">
-                      Lehramtsstudium
-                    </p>
-                  </div>
-
-                  <!-- Praxiserfahrung: gleiche Höhe wie beide Block-Reihen
-                       zusammen, breiter und farblich dominant. -->
-                  <div class="w-full sm:w-auto sm:flex-1">
-                    <div class="flex h-16 w-full items-center justify-center rounded-xl bg-brand-600 px-4 text-white shadow-sm ring-1 ring-brand-700 sm:h-[8.5rem] sm:min-w-[12rem]">
-                      <span class="text-center text-sm font-semibold uppercase tracking-wider sm:text-base">
-                        Praxiserfahrung
-                      </span>
-                    </div>
-                    <p class="mt-2 text-center text-[0.65rem] font-medium uppercase tracking-wider text-ink-500 sm:text-xs">
-                      Konkrete Umsetzung
-                    </p>
-                  </div>
-                </div>
-
-                <p class="text-xs leading-relaxed text-ink-500">
-                  Drei vollständige Studiengänge nebeneinander: Informatik und Mathematik fachlich,
-                  Lehramt didaktisch. Dazu die tägliche Praxis als Solution Architekt in der
-                  Finanzbranche – deshalb bleiben Vorträge und Workshops nah an dem, was wirklich
-                  passiert.
-                </p>
-              </div>
-          </figure>
+      <div class="md:col-span-8 lg:col-span-7 lg:col-start-5">
+        <div class="prose-content u-measure">
+          <p>
+            Was mich antreibt: Neues lernen, Zusammenhänge verstehen, selbst nachprüfen & umsetzen, Wissen teilen.
+          </p>
+          <p>
+            Den ausführlichen Lebenslauf gibt es auf <a href={SITE.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>.
+          </p>
         </div>
+
+        <figure class="mt-14">
+          <figcaption class="u-eyebrow text-brand-700">
+            Mein Hintergrund
+          </figcaption>
+
+          <!-- Drei Gruppen untereinander, jede mit einer Haarlinie darüber und
+               einem kurzen Farbstrich als Marke. Die Abschlüsse stehen als
+               Wortliste in einer Zeile: dieselbe Information, aber lesbar
+               statt in Kacheln zerlegt. -->
+          <dl class="mt-8 border-t border-ink-200">
+            {
+              hintergrund.map((h) => (
+                <div class="grid gap-x-10 gap-y-2 border-b border-ink-100 py-5 sm:grid-cols-12">
+                  <dt class="sm:col-span-4">
+                    <span class={`mb-2 block h-0.5 w-6 rounded-full ${h.akzent}`} aria-hidden="true" />
+                    <span class="u-eyebrow text-ink-500">{h.gruppe}</span>
+                  </dt>
+                  <dd class="flex flex-wrap gap-x-6 gap-y-1 sm:col-span-8">
+                    {h.abschluesse.map((a) => (
+                      <span class="text-[0.9375rem] font-medium text-ink-900">{a}</span>
+                    ))}
+                  </dd>
+                </div>
+              ))
+            }
+          </dl>
+
+          <p class="u-measure mt-6 text-sm leading-relaxed text-ink-500">
+            Drei vollständige Studiengänge nebeneinander: Informatik und Mathematik fachlich,
+            Lehramt didaktisch. Dazu die tägliche Praxis als Solution Architekt in der
+            Finanzbranche – deshalb bleiben Vorträge und Workshops nah an dem, was wirklich
+            passiert.
+          </p>
+        </figure>
       </div>
     </div>
   </Section>
 
   <!-- SPEAKING -->
+  <!-- Der wichtigste Abschnitt der Seite und deshalb der luftigste. Die
+       Themen stehen als Werkverzeichnis: Titel links, Beschreibung rechts,
+       getrennt durch Haarlinien. Vorher waren es sechs gleich große Karten mit
+       Rahmen und Schatten — sechs Kästen, in denen nichts wichtiger war als
+       der Rest. -->
   <Section
     id="speaking"
     eyebrow="Speaking & Consulting"
     title="Keynotes & Fachvorträge"
     lead="Ich spreche und berate auf Konferenzen, an Universitäten und in Unternehmen über die folgenden Themen."
   >
-    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <ul class="border-t border-ink-200">
       {
         topics.map((t) => (
-          <div class="rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
-            <h3 class="text-lg font-semibold text-ink-900">{t.title}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-ink-600">{t.text}</p>
-          </div>
+          <li class="grid items-baseline gap-x-10 gap-y-2 border-b border-ink-100 py-7 lg:grid-cols-12 lg:py-9">
+            <h3 class="u-subtitle text-ink-900 lg:col-span-5">{t.title}</h3>
+            <p class="u-measure leading-relaxed text-ink-600 lg:col-span-7">{t.text}</p>
+          </li>
         ))
       }
 
-      <!-- Sechste Kachel: weitere Themen als Stichwortliste. Gleiche Größe wie
-           die anderen, aber zurückgenommen (grauer Rahmen, kleinere Schrift). -->
-      <div class="rounded-2xl border border-dashed border-ink-300 bg-ink-50 p-6">
-        <h3 class="text-sm font-semibold uppercase tracking-wider text-ink-500">Weitere Themen</h3>
-        <ul class="mt-3 space-y-1.5 text-sm text-ink-600">
+      <!-- Weitere Themen: dieselbe Zeilenform, aber sichtbar zurückgenommen —
+           kleinere Schrift, graue Marke. Kein gestrichelter Rahmen mehr. -->
+      <li class="grid items-baseline gap-x-10 gap-y-2 border-b border-ink-100 py-7 lg:grid-cols-12">
+        <h3 class="u-eyebrow text-ink-500 lg:col-span-5">Weitere Themen</h3>
+        <ul class="flex flex-wrap gap-x-6 gap-y-1.5 text-[0.9375rem] text-ink-500 lg:col-span-7">
           {
             weitereThemen.map((t) => (
-              <li class="flex items-start gap-2">
-                <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-400" aria-hidden="true" />
+              <li class="flex items-baseline gap-2">
+                <span class="h-1 w-1 shrink-0 rounded-full bg-ink-300" aria-hidden="true" />
                 <span>{t}</span>
               </li>
             ))
           }
         </ul>
-      </div>
-    </div>
+      </li>
+    </ul>
 
-    <div class="mt-6 rounded-2xl border border-brand-200 bg-brand-50 p-6 text-center shadow-sm">
-      <h3 class="text-lg font-semibold text-ink-900">Consulting</h3>
-      <p class="mt-2 text-sm leading-relaxed text-ink-600">Beratung zu diesen Themen ist  natürlich auch möglich. Egal, ob Konzeption, Architektur-Review oder Hands-On Umsetzung.</p>
+    <!-- Consulting: eigene Fläche, weil es ein anderes Angebot ist als ein
+         Vortrag. Große Fläche, großer Radius, keine Kante. -->
+    <div class="mt-12 rounded-3xl bg-brand-50 px-7 py-9 md:px-12 md:py-11">
+      <div class="grid gap-x-12 gap-y-4 lg:grid-cols-12">
+        <h3 class="u-subtitle text-brand-900 lg:col-span-4">Consulting</h3>
+        <p class="u-measure leading-relaxed text-brand-900/85 lg:col-span-8">Beratung zu diesen Themen ist  natürlich auch möglich. Egal, ob Konzeption, Architektur-Review oder Hands-On Umsetzung.</p>
+      </div>
     </div>
 
     {/* YouTube-Vorträge vorübergehend ausgeblendet – zum Reaktivieren die umschließenden {/​* *​/}-Marker entfernen. Siehe README. */}
     {/*
     <div class="mt-12 grid gap-8 md:grid-cols-2">
       <div>
-        <div class="aspect-video w-full overflow-hidden rounded-2xl border border-ink-200 shadow-sm">
+        <div class="aspect-video w-full overflow-hidden rounded-2xl border border-ink-200">
           <iframe
             class="h-full w-full"
             src="https://www.youtube.com/embed/4JBXO_SQuJM"
@@ -294,7 +353,7 @@ const weitereThemen = [
         <p class="mt-3 text-sm text-ink-600">Englisch – „Fully Homomorphic Encryption and its Use Cases".</p>
       </div>
       <div>
-        <div class="aspect-video w-full overflow-hidden rounded-2xl border border-ink-200 shadow-sm">
+        <div class="aspect-video w-full overflow-hidden rounded-2xl border border-ink-200">
           <iframe
             class="h-full w-full"
             src="https://www.youtube.com/embed/awbrW_Rl2nU"
@@ -309,11 +368,11 @@ const weitereThemen = [
     </div>
     */}
 
-    <div class="mt-10 text-center">
-      <a href="#kontakt" class="rounded-lg bg-brand-700 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-brand-800">
+    <div class="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4">
+      <a href="#kontakt" class={knopfPrimaer}>
         Jetzt anfragen
       </a>
-      <p class="mx-auto mt-4 max-w-xl text-sm text-ink-500">
+      <p class="u-measure-tight text-sm text-ink-500">
         Ihr Thema ist nicht dabei? Sprechen Sie mich gerne an.
       </p>
     </div>
@@ -334,56 +393,52 @@ const weitereThemen = [
   >
     <ZielgruppenHinweis compact />
 
-    <p class="mt-8 text-sm font-semibold uppercase tracking-wider text-ink-500">
+    <p class="u-eyebrow mt-16 text-ink-500">
       Einblick in unsere Workshops für Schulen
     </p>
 
-    <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <ul class="mt-6 grid gap-x-10 border-y border-ink-200 lg:grid-cols-3">
       {
         angebote.map((a) => (
-          <a
-            href={angebotPath(a.id)}
-            class="group flex h-full flex-col rounded-2xl border border-ink-200 bg-surface p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
-          >
-            <h3 class="text-base font-semibold text-ink-900">{a.data.title}</h3>
-            <p class="mt-1 text-sm text-emerald-700">{a.data.subtitle}</p>
-            <p class="mt-3 flex-1 text-sm leading-relaxed text-ink-600">{a.data.teaser}</p>
-          </a>
+          <li class="border-b border-ink-100 last:border-b-0 lg:border-b-0">
+            <a href={angebotPath(a.id)} class="group flex h-full flex-col py-7 lg:py-8">
+              <span class="u-eyebrow text-emerald-700">{a.data.subtitle}</span>
+              <h3 class="u-heading mt-3 text-ink-900 transition-colors group-hover:text-brand-700">
+                {a.data.title}
+              </h3>
+              <p class="mt-3 flex-1 text-[0.9375rem] leading-relaxed text-ink-600">{a.data.teaser}</p>
+            </a>
+          </li>
         ))
       }
 
-      <!-- Dritte Kachel: der Rest des Katalogs, sichtbar als eigener Weg statt
-           als Link unter den Karten. -->
-      <a
-        href={PATHS.schools}
-        class="group flex h-full flex-col justify-center rounded-2xl border border-dashed border-emerald-300 bg-emerald-50/60 p-5 text-center transition hover:border-emerald-400 hover:bg-emerald-50"
-      >
-        <span class="font-display text-3xl font-bold text-emerald-700">+{weitereAngebote}</span>
-        <span class="mt-1 text-sm font-semibold text-emerald-900">weitere Schulworkshops</span>
-        <span class="mt-2 text-xs leading-relaxed text-emerald-900">
-          Elternabende, Cybersicherheit, Cybermobbing, AGs zu Vibe Coding und
-          Zehnfingersystem – mit Zielgruppen, Dauer und Preisen.
-        </span>
-        <span class="mt-3 inline-flex items-center justify-center gap-1 text-sm font-medium text-emerald-800">
-          Alle ansehen
-          <svg class="h-4 w-4 transition group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
-        </span>
-      </a>
-    </div>
+      <!-- Der Rest des Katalogs, als dritte Spalte im selben Register statt
+           als gestrichelte Sonderkachel. -->
+      <li class="last:border-b-0">
+        <a href={PATHS.schools} class="group flex h-full flex-col py-7 lg:py-8">
+          <span class="u-eyebrow text-emerald-700"><span class="text-emerald-800">+{weitereAngebote}</span> weitere Schulworkshops</span>
+          <p class="mt-3 flex-1 text-[0.9375rem] leading-relaxed text-ink-600">
+            Elternabende, Cybersicherheit, Cybermobbing, AGs zu Vibe Coding und
+            Zehnfingersystem – mit Zielgruppen, Dauer und Preisen.
+          </p>
+          <span class="mt-4 inline-flex items-center gap-1.5 text-[0.9375rem] font-medium text-emerald-700">
+            Alle ansehen
+            <svg class="h-4 w-4 transition group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </span>
+        </a>
+      </li>
+    </ul>
 
-    <div class="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+    <div class="mt-12 flex flex-wrap gap-4 border-t border-ink-200 pt-10">
       <a
         href={PATHS.schools}
-        class="rounded-lg bg-emerald-600 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-700"
+        class="inline-flex min-h-11 items-center justify-center rounded-full bg-emerald-700 px-6 text-[0.9375rem] font-medium text-white transition hover:bg-emerald-800"
       >
         Alle Schulworkshops ansehen
       </a>
-      <a
-        href={EDU_PATHS.insights}
-        class="rounded-lg border border-ink-200 bg-surface px-5 py-3 text-sm font-medium text-ink-800 shadow-sm transition hover:border-emerald-300 hover:text-emerald-700"
-      >
+      <a href={EDU_PATHS.insights} class={knopfSekundaer}>
         Vergangene Workshops & Materialien
       </a>
     </div>
@@ -392,37 +447,39 @@ const weitereThemen = [
   <!-- SOFTWARE -->
   <!-- dSolve ist der Bereich; NECK steht nur als eine anfassbare Referenz
        daneben, nicht als gleichwertiger zweiter Block. Ohne irgendein
-       konkretes Beispiel wäre der Abschnitt nur ein Link nach außen. -->
-  <Section
-    id="software"
-    eyebrow="Software"
-    title="Was ich gebaut habe"
-  >
-    <div class="mx-auto max-w-4xl">
-      <a
-        href={SITE.dSolveSite}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="group relative flex flex-col overflow-hidden rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md md:p-8"
-      >
-        <span class="absolute inset-x-0 top-0 h-1 bg-amber-500" aria-hidden="true" />
-        <span class="inline-flex w-fit rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-amber-800">
-          dSolve
-        </span>
-        <h3 class="mt-3 font-display text-2xl font-bold text-ink-900">
-          Professionelle Softwareprodukte
-        </h3>
-        <p class="mt-3 max-w-2xl leading-relaxed text-ink-600">
-          Über dSolve entwickle und vertreibe ich Software. Von kleinen Automationen bis Enterprise Ready Anwendungen.
-        </p>
-        <span class="mt-5 inline-flex items-center gap-2 text-sm font-medium text-amber-800">
-          d-solve.de
-          <svg class="h-4 w-4 transition group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
-        </span>
-      </a>
-    </div>
+       konkretes Beispiel wäre der Abschnitt nur ein Link nach außen.
+
+       Kurzer Abschnitt, deshalb weniger Luft und kein zweispaltiger Kopf:
+       eine einzige große Aussage über die volle Breite. -->
+  <Section id="software" tone="minor">
+    <a
+      href={SITE.dSolveSite}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="group block border-t-2 border-amber-500 pt-10"
+    >
+      <div class="grid gap-x-12 gap-y-6 lg:grid-cols-12">
+        <div class="lg:col-span-4">
+          <p class="u-eyebrow text-amber-800">Software</p>
+          <p class="u-eyebrow mt-3 text-ink-400">dSolve</p>
+        </div>
+        <div class="lg:col-span-8">
+          <h2 class="u-title text-balance text-ink-900">Was ich gebaut habe</h2>
+          <h3 class="u-subtitle mt-5 font-normal text-ink-700">
+            Professionelle Softwareprodukte
+          </h3>
+          <p class="u-measure mt-4 leading-relaxed text-ink-600">
+            Über dSolve entwickle und vertreibe ich Software. Von kleinen Automationen bis Enterprise Ready Anwendungen.
+          </p>
+          <span class="mt-7 inline-flex items-center gap-2 text-[0.9375rem] font-medium text-amber-800">
+            d-solve.de
+            <svg class="h-4 w-4 transition group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </a>
   </Section>
 
   <!-- PUBLIKATIONEN -->
@@ -433,74 +490,81 @@ const weitereThemen = [
     title="Buch & Paper"
     lead="Forschung zu Kryptographie und KI – als Buch bei Springer und als Fachbeiträge."
   >
-    <!-- Buch -->
-    <article class="rounded-3xl border border-ink-200 bg-surface p-6 shadow-sm md:p-10">
-      <div class="grid gap-8 md:grid-cols-[auto_1fr] md:items-start">
-        <img
-          src="/img/goppa-book/cover.avif"
-          alt="Buchcover: Goppa Codes and the McEliece Cryptosystem (Springer BestMasters)"
-          width="500"
-          height="709"
-          class="mx-auto w-44 rounded-xl shadow-lg ring-1 ring-ink-200 sm:w-52"
-          loading="lazy"
-        />
-        <div>
-          <h3 class="font-display text-2xl font-bold text-ink-900">Goppa Codes and the McEliece Cryptosystem</h3>
-          <p class="mt-3 leading-relaxed text-ink-600">
-            Eine fundierte Einführung in das McEliece-Kryptosystem – von den mathematischen Basics bis zur konkreten
-            Implementierung.
-          </p>
-          <div class="mt-5 grid grid-cols-3 gap-3">
-            <a href="/pdf/goppa-book/uebersicht.pdf" class="group block overflow-hidden rounded-lg border border-ink-200">
-              <img src="/img/goppa-book/uebersicht.png" alt="Kapitelübersicht des Buches" class="h-28 w-full object-cover object-top transition group-hover:scale-[1.02]" loading="lazy" />
-            </a>
-            <a href="/pdf/goppa-book/leseprobe.pdf" class="group block overflow-hidden rounded-lg border border-ink-200">
-              <img src="/img/goppa-book/leseprobe.png" alt="Leseprobe aus dem Buch" class="h-28 w-full object-cover object-top transition group-hover:scale-[1.02]" loading="lazy" />
-            </a>
-            <a href="/pdf/goppa-book/literaturverzeichnis.pdf" class="group block overflow-hidden rounded-lg border border-ink-200">
-              <img src="/img/goppa-book/literaturverzeichnis.png" alt="Literaturverzeichnis des Buches" class="h-28 w-full object-cover object-top transition group-hover:scale-[1.02]" loading="lazy" />
-            </a>
-          </div>
-          <p class="mt-3 text-xs text-ink-500">Klicken Sie auf eine Vorschau, um Kapitelübersicht, Leseprobe oder Literaturverzeichnis als PDF zu öffnen.</p>
-          <div class="mt-5 flex flex-wrap gap-2 text-sm font-medium">
-            <a
-              href="https://link.springer.com/book/10.1007/978-3-658-46743-2"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="rounded-lg bg-brand-700 px-4 py-2 text-white shadow-sm transition hover:bg-brand-800"
-            >
-              Bei Springer ansehen &amp; kaufen
-            </a>
-          </div>
+    <!-- Buch: das Cover ist das Objekt, es braucht keinen Kasten drumherum.
+         Nur eine Haarlinie am Bild, damit der weiße Rand des Covers nicht in
+         der Fläche verschwindet. -->
+    <article class="grid gap-x-12 gap-y-8 md:grid-cols-12">
+      <img
+        src="/img/goppa-book/cover.avif"
+        alt="Buchcover: Goppa Codes and the McEliece Cryptosystem (Springer BestMasters)"
+        width="500"
+        height="709"
+        class="w-40 rounded-lg ring-1 ring-ink-200 sm:w-48 md:col-span-4 md:w-full md:max-w-[15rem]"
+        loading="lazy"
+      />
+      <div class="md:col-span-8">
+        <h3 class="u-subtitle text-balance text-ink-900">Goppa Codes and the McEliece Cryptosystem</h3>
+        <p class="u-measure mt-4 leading-relaxed text-ink-600">
+          Eine fundierte Einführung in das McEliece-Kryptosystem – von den mathematischen Basics bis zur konkreten
+          Implementierung.
+        </p>
+        <div class="mt-7 grid max-w-lg grid-cols-3 gap-3">
+          {
+            buchVorschauen.map((v) => (
+              <a href={v.href} class="group block overflow-hidden rounded-md ring-1 ring-ink-200 transition hover:ring-brand-400">
+                <img src={v.src} alt={v.alt} class="h-24 w-full object-cover object-top transition group-hover:scale-[1.03]" loading="lazy" />
+              </a>
+            ))
+          }
+        </div>
+        <p class="mt-3 text-xs text-ink-500">Klicken Sie auf eine Vorschau, um Kapitelübersicht, Leseprobe oder Literaturverzeichnis als PDF zu öffnen.</p>
+        <div class="mt-7">
+          <a
+            href="https://link.springer.com/book/10.1007/978-3-658-46743-2"
+            target="_blank"
+            rel="noopener noreferrer"
+            class={knopfPrimaer}
+          >
+            Bei Springer ansehen &amp; kaufen
+          </a>
         </div>
       </div>
     </article>
 
-    <!-- Paper -->
-    <div class="mt-8 grid gap-6 md:grid-cols-2">
-      <div class="flex h-full flex-col rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
-        <div class="text-xs font-semibold uppercase tracking-widest text-brand-700">Fachbeitrag · Kryptographie</div>
-        <h3 class="mt-2 text-lg font-semibold text-ink-900">Fully Homomorphic Encryption and its Use Cases</h3>
-        <p class="mt-2 flex-1 text-sm leading-relaxed text-ink-600">
-          Survey-Paper darüber, wie FHE Berechnungen auf verschlüsselten Daten ermöglicht – inklusive Vortrag und Folien.
-        </p>
-        <div class="mt-4 flex flex-wrap gap-2 text-sm font-medium">
-          <a href="/pdf/fhe-survey.pdf" class="rounded-lg bg-brand-700 px-4 py-2 text-white shadow-sm transition hover:bg-brand-800">Paper (PDF)</a>
-          <a href="/pdf/slides-fhe-use-cases-without-notes.pdf" class="rounded-lg border border-ink-200 px-4 py-2 text-ink-800 transition hover:border-brand-300 hover:text-brand-700">Folien (PDF)</a>
-        </div>
-      </div>
-
-      <div class="flex h-full flex-col rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
-        <div class="text-xs font-semibold uppercase tracking-widest text-brand-700">Fachbeitrag · KI</div>
-        <h3 class="mt-2 text-lg font-semibold text-ink-900">Science-Gym: a simple testbed for AI-driven scientific discovery</h3>
-        <p class="mt-2 flex-1 text-sm leading-relaxed text-ink-600">
-          Eine einfache Testumgebung, um zu untersuchen, wie KI selbstständig wissenschaftliche Zusammenhänge entdecken kann – erschienen in <em>Machine Learning</em> (Springer).
-        </p>
-        <div class="mt-4 flex flex-wrap gap-2 text-sm font-medium">
-          <a href="https://link.springer.com/article/10.1007/s10994-025-06914-x" target="_blank" rel="noopener noreferrer" class="rounded-lg bg-brand-700 px-4 py-2 text-white shadow-sm transition hover:bg-brand-800">Artikel ansehen</a>
-        </div>
-      </div>
-    </div>
+    <!-- Paper: dieselbe Zeilenform wie die Vortragsthemen, damit die Seite
+         eine Sprache spricht. -->
+    <ul class="mt-16 border-t border-ink-200">
+      {
+        publikationen.map((p) => (
+          <li class="grid gap-x-10 gap-y-3 border-b border-ink-100 py-8 md:grid-cols-12">
+            <div class="md:col-span-4">
+              <p class="u-eyebrow text-brand-700">{p.kicker}</p>
+            </div>
+            <div class="md:col-span-8">
+              <h3 class="u-heading text-ink-900">{p.titel}</h3>
+              <p class="u-measure mt-2 text-[0.9375rem] leading-relaxed text-ink-600">
+                {p.text}
+                {p.textVorEm}
+                {p.em && <em>{p.em}</em>}
+                {p.textNachEm}
+              </p>
+              <div class="mt-5 flex flex-wrap gap-3">
+                {p.links.map((l) => (
+                  <a
+                    href={l.href}
+                    target={l.extern ? "_blank" : undefined}
+                    rel={l.extern ? "noopener noreferrer" : undefined}
+                    class={l.primaer ? knopfPrimaer : knopfSekundaer}
+                  >
+                    {l.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
   </Section>
 
   <!-- AKTUELLES -->
@@ -514,31 +578,33 @@ const weitereThemen = [
         title="Zuletzt gemacht"
         lead="Gehaltene Workshops und Vorträge, Veröffentlichungen und Releases – in umgekehrter Reihenfolge."
       >
-        <ol class="mx-auto max-w-3xl space-y-3">
+        <ol class="border-t border-ink-200">
           {newsItems.map((n) => (
-            <li class="rounded-2xl border border-ink-200 bg-surface p-5 shadow-sm">
-              <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <span class="inline-flex rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-brand-700">
-                  {NEWS_KIND_LABELS[n.data.kind]}
-                </span>
-                <time datetime={n.data.date.toISOString()} class="text-xs text-ink-500">
-                  {newsFmt.format(n.data.date)}
-                </time>
-                {n.data.location && <span class="text-xs text-ink-500">· {n.data.location}</span>}
+            <li class="grid gap-x-10 gap-y-2 border-b border-ink-100 py-7 md:grid-cols-12">
+              <div class="md:col-span-4">
+                <span class="u-eyebrow text-brand-700">{NEWS_KIND_LABELS[n.data.kind]}</span>
+                <div class="mt-2 flex flex-wrap items-center gap-x-2">
+                  <time datetime={n.data.date.toISOString()} class="text-xs text-ink-500">
+                    {newsFmt.format(n.data.date)}
+                  </time>
+                  {n.data.location && <span class="text-xs text-ink-500">· {n.data.location}</span>}
+                </div>
               </div>
-              <h3 class="mt-2 text-base font-semibold text-ink-900">{n.data.title}</h3>
-              <p class="mt-1 text-sm leading-relaxed text-ink-600">{n.data.summary}</p>
-              {n.data.url && (
-                <a
-                  href={n.data.url}
-                  class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-brand-700 hover:text-brand-900"
-                >
-                  {n.data.urlLabel ?? "Mehr dazu"}
-                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </a>
-              )}
+              <div class="md:col-span-8">
+                <h3 class="u-heading text-ink-900">{n.data.title}</h3>
+                <p class="u-measure mt-1 text-[0.9375rem] leading-relaxed text-ink-600">{n.data.summary}</p>
+                {n.data.url && (
+                  <a
+                    href={n.data.url}
+                    class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-brand-700 hover:text-brand-900"
+                  >
+                    {n.data.urlLabel ?? "Mehr dazu"}
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </a>
+                )}
+              </div>
             </li>
           ))}
         </ol>
@@ -552,26 +618,26 @@ const weitereThemen = [
   <!-- Bewusst im normalen Seitenlayout statt als dunkler Block: der Blog ist
        kein Angebot, und in der Übersicht oben steht er aus demselben Grund
        als schmale Leiste unter den drei Bereichen. Ein Kasten, der lauter ist
-       als alles andere auf der Seite, widerspricht dieser Reihenfolge. -->
+       als alles andere auf der Seite, widerspricht dieser Reihenfolge.
+
+       Deshalb hier auch ein Nebenabschnitt: weniger Luft als bei Speaking und
+       Bildung, drei Zeilen mit Datum links. -->
   <Section
     id="blog"
-    background="muted"
+    tone="minor"
     eyebrow="Blog"
     title="Mein persönlicher Blog"
     lead="Gedanken zu Themen, die mich umtreiben – IT-Sicherheit, KI, IT in der Bildung und vieles mehr. Für Professionals, Lehrkräfte, Eltern, Schüler:innen und Neugierige."
   >
-    <ul class="mx-auto grid max-w-4xl gap-4 sm:grid-cols-3">
+    <ul class="border-t border-ink-200">
       {
         latestPosts.map((post) => (
-          <li>
-            <a
-              href={postPath(post.id)}
-              class="group flex h-full flex-col rounded-2xl border border-ink-200 bg-surface p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md"
-            >
-              <time datetime={post.data.pubDate.toISOString()} class="text-xs text-ink-500">
+          <li class="border-b border-ink-100">
+            <a href={postPath(post.id)} class="group grid items-baseline gap-x-10 gap-y-1 py-6 md:grid-cols-12">
+              <time datetime={post.data.pubDate.toISOString()} class="u-eyebrow text-ink-400 md:col-span-3">
                 {postFmt.format(post.data.pubDate)}
               </time>
-              <span class="mt-2 flex-1 font-semibold leading-snug text-ink-900 group-hover:text-brand-700">
+              <span class="u-heading text-ink-900 transition-colors group-hover:text-brand-700 md:col-span-9">
                 {post.data.title}
               </span>
             </a>
@@ -580,13 +646,10 @@ const weitereThemen = [
       }
     </ul>
 
-    <div class="mt-8 text-center">
-      <a
-        href={PATHS.blog}
-        class="inline-flex items-center gap-2 rounded-lg border border-ink-200 bg-surface px-5 py-3 text-sm font-medium text-ink-800 shadow-sm transition hover:border-brand-300 hover:text-brand-700"
-      >
+    <div class="mt-10">
+      <a href={PATHS.blog} class={knopfSekundaer}>
         Alle Beiträge
-        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg class="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
       </a>
@@ -594,71 +657,82 @@ const weitereThemen = [
   </Section>
 
   <!-- KONTAKT -->
+  <!-- Zurück auf die gedämpfte Fläche und mit voller Luft: das ist die
+       eigentliche Handlung der Seite. -->
   <Section
     id="kontakt"
+    background="muted"
     eyebrow="Kontakt"
     title="Lassen Sie uns sprechen"
     lead="Ein Vortrag, ein Workshop,  eine Zusammenarbeit oder einfach eine Frage – eine kurze Nachricht genügt. Ich melde mich werktags innerhalb von 48 Stunden."
   >
-    <div class="grid gap-10 md:grid-cols-[1.2fr_1fr]">
-      <ContactForm />
+    <div class="grid gap-x-12 gap-y-12 md:grid-cols-12">
+      <div class="md:col-span-7">
+        <ContactForm />
+      </div>
 
-      <aside class="space-y-6">
-        <div class="rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
-          <h2 class="font-display text-lg font-semibold text-ink-900">Direkter Kontakt</h2>
-          <ul class="mt-4 space-y-3 text-sm">
-            <li>
-              <div class="font-medium text-ink-500">E-Mail</div>
-              <a class="text-brand-700 underline" href={`mailto:${SITE.email}`}>{SITE.email}</a>
-            </li>
-            <li>
-              <div class="font-medium text-ink-500">LinkedIn</div>
-              <a class="text-brand-700 underline" href={SITE.linkedin} target="_blank" rel="noopener noreferrer">Profil ansehen</a>
-            </li>
-            <li>
-              <div class="font-medium text-ink-500">GitHub</div>
-              <a class="text-brand-700 underline" href={SITE.github} target="_blank" rel="noopener noreferrer">Profil ansehen</a>
-            </li>
-          </ul>
-        </div>
-
+      <aside class="md:col-span-4 md:col-start-9">
+        <h2 class="u-eyebrow text-ink-500">Direkter Kontakt</h2>
+        <ul class="mt-5 border-t border-ink-200">
+          <li class="border-b border-ink-100 py-4">
+            <div class="text-xs font-medium uppercase tracking-wider text-ink-500">E-Mail</div>
+            <a class="mt-1 block text-[0.9375rem] font-medium text-brand-700 underline underline-offset-4 hover:text-brand-900" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+          </li>
+          <li class="border-b border-ink-100 py-4">
+            <div class="text-xs font-medium uppercase tracking-wider text-ink-500">LinkedIn</div>
+            <a class="mt-1 block text-[0.9375rem] font-medium text-brand-700 underline underline-offset-4 hover:text-brand-900" href={SITE.linkedin} target="_blank" rel="noopener noreferrer">Profil ansehen</a>
+          </li>
+          <li class="border-b border-ink-100 py-4">
+            <div class="text-xs font-medium uppercase tracking-wider text-ink-500">GitHub</div>
+            <a class="mt-1 block text-[0.9375rem] font-medium text-brand-700 underline underline-offset-4 hover:text-brand-900" href={SITE.github} target="_blank" rel="noopener noreferrer">Profil ansehen</a>
+          </li>
+        </ul>
       </aside>
     </div>
   </Section>
+
   <!-- PRESSE / REDNERPROFIL -->
+  <!-- Ein Nebenabschnitt: wer hier landet, sucht gezielt. Entsprechend
+       zurückgenommen. -->
   <Section
     id="presse"
-    background="muted"
+    tone="minor"
     eyebrow="Presse & Rednerprofil"
     title="Material für Veranstalter & Presse"
     lead="Kurzbio, Foto und Rednerprofil – das Wichtigste auf einen Blick."
   >
-    <div class="grid gap-6 md:grid-cols-[1.4fr_1fr]">
-      <div class="rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm md:p-8">
-        <h3 class="font-display text-lg font-semibold text-ink-900">Kurzbio (zum Kopieren)</h3>
-        <p class="mt-3 text-sm leading-relaxed text-ink-700">
+    <div class="grid gap-x-12 gap-y-12 border-t border-ink-200 pt-10 md:grid-cols-12">
+      <div class="md:col-span-7">
+        <h3 class="u-eyebrow text-ink-500">Kurzbio (zum Kopieren)</h3>
+        <p class="u-measure mt-4 leading-relaxed text-ink-700">
           Felix Paul ist Informatiker und Mathematiker mit Schwerpunkt IT Security, IAM, KI und Cloud. Hauptberuflich ist er
-          Solution Architekt bei der Atruvia AG, dem IT-Dienstleister der genossenschaftlichen Banken. Daneben ist er auch freiberuflich sehr aktiv. 
+          Solution Architekt bei der Atruvia AG, dem IT-Dienstleister der genossenschaftlichen Banken. Daneben ist er auch freiberuflich sehr aktiv.
           Als Keynote-Speaker spricht er auf Konferenzen, an Universitäten
-          und in Unternehmen. Außerdem hält er Vorträge an Schulen, vertreibt eigene Softwareprodukte und 
+          und in Unternehmen. Außerdem hält er Vorträge an Schulen, vertreibt eigene Softwareprodukte und
           veröffentlichte ein Buch über Post-Quanten-Kryptographie bei Springer.
         </p>
-        <dl class="mt-6 grid gap-x-8 gap-y-3 text-sm sm:grid-cols-2">
-          <div><dt class="font-medium text-ink-500">Sprachen</dt><dd class="mt-1 text-ink-900">Deutsch · Englisch</dd></div>
-          <div><dt class="font-medium text-ink-500">Kontakt</dt><dd class="mt-1"><a class="text-brand-700 underline" href={`mailto:${SITE.email}`}>{SITE.email}</a></dd></div>
+        <dl class="mt-8 grid gap-x-10 gap-y-4 text-sm sm:grid-cols-2">
+          <div><dt class="text-xs font-medium uppercase tracking-wider text-ink-500">Sprachen</dt><dd class="mt-1 text-ink-900">Deutsch · Englisch</dd></div>
+          <div><dt class="text-xs font-medium uppercase tracking-wider text-ink-500">Kontakt</dt><dd class="mt-1"><a class="text-brand-700 underline underline-offset-4" href={`mailto:${SITE.email}`}>{SITE.email}</a></dd></div>
         </dl>
       </div>
 
-      <div class="flex flex-col gap-4 rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm md:p-8">
-        <h3 class="font-display text-lg font-semibold text-ink-900">Downloads</h3>
-        <a href="/pdf/rednerprofil.pdf" download class="flex items-center justify-between rounded-lg border border-ink-200 px-4 py-3 text-sm font-medium text-ink-800 transition hover:border-brand-300 hover:text-brand-700">
-          Rednerprofil (PDF)
-          <span class="text-xs text-ink-400">PDF</span>
-        </a>
-        <a href={PORTRAIT.press} download class="flex items-center justify-between rounded-lg border border-ink-200 px-4 py-3 text-sm font-medium text-ink-800 transition hover:border-brand-300 hover:text-brand-700">
-          Pressefoto (Porträt)
-          <span class="text-xs text-ink-400">PNG</span>
-        </a>
+      <div class="md:col-span-4 md:col-start-9">
+        <h3 class="u-eyebrow text-ink-500">Downloads</h3>
+        <ul class="mt-5 border-t border-ink-200">
+          <li>
+            <a href="/pdf/rednerprofil.pdf" download class="flex min-h-11 items-center justify-between gap-4 border-b border-ink-100 py-4 text-[0.9375rem] font-medium text-ink-800 transition hover:text-brand-700">
+              Rednerprofil (PDF)
+              <span class="u-eyebrow text-ink-400">PDF</span>
+            </a>
+          </li>
+          <li>
+            <a href={PORTRAIT.press} download class="flex min-h-11 items-center justify-between gap-4 border-b border-ink-100 py-4 text-[0.9375rem] font-medium text-ink-800 transition hover:text-brand-700">
+              Pressefoto (Porträt)
+              <span class="u-eyebrow text-ink-400">PNG</span>
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
   </Section>

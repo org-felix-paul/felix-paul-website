@@ -5,9 +5,11 @@ import { SITE } from "../consts";
 ---
 
 <Layout title="Impressum" description="Impressum gemäß § 5 DDG / § 18 MStV.">
-  <Section as="h1" title="Impressum" eyebrow="Rechtliches">
-    <div class="mx-auto max-w-3xl">
-      <div class="prose-content">
+  <Section
+    as="h1"
+    width="narrow"
+    headerLayout="stacked" title="Impressum" eyebrow="Rechtliches">
+    <div class="prose-content">
         <h2>Angaben gemäß § 5 DDG</h2>
         <p>
           {SITE.author}<br />
@@ -69,7 +71,6 @@ import { SITE } from "../consts";
           Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der
           Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.
         </p>
-      </div>
     </div>
   </Section>
 </Layout>

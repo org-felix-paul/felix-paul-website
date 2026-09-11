@@ -1,4 +1,19 @@
 ---
+/*
+ * Der redaktionelle Rahmen für einen Abschnitt.
+ *
+ * Vorher war jeder Abschnitt derselbe zentrierte Kasten: Eyebrow, Überschrift
+ * und Lead mittig über einem Raster aus umrandeten Karten. Dadurch sah jeder
+ * Abschnitt aus wie jeder andere — und nichts war wichtiger als etwas anderes.
+ *
+ * Jetzt trägt die Typografie die Hierarchie: die Marke und die Überschrift
+ * stehen links im Satzspiegel, der Lead läuft rechts daneben und sitzt auf der
+ * Grundlinie der Überschrift auf. Das bricht die Mittelachse, ohne dass ein
+ * einziger Rahmen nötig wäre.
+ *
+ * `tone` steuert die Luft: ein Hauptabschnitt bekommt spürbar mehr als ein
+ * Nebenabschnitt. Genau daran erkennt man beim Scrollen, was zählt.
+ */
 interface Props {
   id?: string;
   eyebrow?: string;
@@ -11,30 +26,80 @@ interface Props {
    * Section that IS the page's main heading — every page needs exactly one h1.
    */
   as?: "h1" | "h2";
+  /** Wie viel Luft der Abschnitt bekommt. Hauptabschnitte deutlich mehr. */
+  tone?: "major" | "minor";
+  /** Breite der Inhaltsspalte. "narrow" für reinen Fließtext (Rechtstexte). */
+  width?: "wide" | "narrow";
+  /** Kopf zweispaltig (Standard) oder als ein linksbündiger Block. */
+  headerLayout?: "split" | "stacked";
 }
 
-const { id, eyebrow, title, lead, background = "white", as = "h2" } = Astro.props;
+const {
+  id,
+  eyebrow,
+  title,
+  lead,
+  background = "white",
+  as = "h2",
+  tone = "major",
+  width = "wide",
+  headerLayout = "split",
+} = Astro.props;
+
 const Heading = as;
-const bg = background === "muted" ? "bg-ink-50" : "bg-surface";
+const hatKopf = Boolean(eyebrow || title || lead);
+const geteilt = headerLayout === "split";
 ---
 
-<section id={id} class={`${bg}`}>
-  <div class="mx-auto max-w-6xl px-6 py-20">
+<section id={id} class:list={["editorial-section", background === "muted" && "is-muted"]}>
+  <div
+    class:list={[
+      "mx-auto px-5 sm:px-8",
+      width === "narrow" ? "max-w-3xl" : "max-w-[88rem]",
+      tone === "major" ? "py-20 md:py-28 lg:py-32" : "py-14 md:py-20",
+    ]}
+  >
     {
-      (eyebrow || title || lead) && (
-        <header class="mx-auto mb-12 max-w-3xl text-center">
-          {eyebrow && (
-            <p class="text-sm font-semibold uppercase tracking-widest text-brand-700">{eyebrow}</p>
+      hatKopf && (
+        <header class:list={["grid gap-x-12 gap-y-5", geteilt && "lg:grid-cols-12"]}>
+          <div class:list={[geteilt && "lg:col-span-5"]}>
+            {eyebrow && <p class="u-eyebrow text-brand-700">{eyebrow}</p>}
+            {title && (
+              <Heading class:list={["u-title text-balance text-ink-900", eyebrow && "mt-4"]}>
+                {title}
+              </Heading>
+            )}
+          </div>
+          {lead && (
+            <p
+              class:list={[
+                "u-lede u-measure text-ink-600",
+                geteilt && "lg:col-span-6 lg:col-start-7 lg:self-end",
+              ]}
+            >
+              {lead}
+            </p>
           )}
-          {title && (
-            <Heading class="mt-3 font-display text-3xl font-bold tracking-tight text-ink-900 md:text-4xl">
-              {title}
-            </Heading>
-          )}
-          {lead && <p class="mt-4 text-lg leading-relaxed text-ink-600">{lead}</p>}
         </header>
       )
     }
-    <slot />
+    <div class:list={[hatKopf && (tone === "major" ? "mt-14 md:mt-20" : "mt-10 md:mt-12")]}>
+      <slot />
+    </div>
   </div>
 </section>
+
+<style>
+  /* Der einzige Flächenwechsel auf der Seite. Haarlinien oben und unten,
+     damit das Band im dunklen Schema nicht in der Leinwand verschwindet —
+     dort trennen ink-50 und canvas nur wenige Prozent Helligkeit. */
+  .editorial-section.is-muted {
+    background-color: var(--color-ink-50);
+    border-block: 1px solid var(--color-ink-100);
+  }
+
+  /* Zwei gedämpfte Bänder direkt hintereinander sind ein Band. */
+  .editorial-section.is-muted + .editorial-section.is-muted {
+    border-top: 0;
+  }
+</style>

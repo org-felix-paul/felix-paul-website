@@ -30,46 +30,50 @@ const deutschesZiel = (href: string) => lang === "en" && nurDeutsch(href);
 const year = new Date().getFullYear();
 ---
 
-<footer class="mt-24 border-t border-ink-100 bg-ink-50">
-  <div class="mx-auto max-w-6xl px-6 py-12">
-    <div class="grid gap-10 md:grid-cols-[1fr_1.4fr]">
-      <div>
-        <a href={ziel(PATHS.home)} class="flex w-fit items-center gap-2">
+<!-- Keine eigene Fläche mehr: die Fußzeile steht auf derselben Leinwand wie
+     der Rest der Seite und wird nur durch eine Haarlinie und viel Luft
+     abgesetzt. Ein grauer Block am Seitenende war ein weiterer Kasten in
+     einer Seite, die aus Kästen bestand. -->
+<footer class="mt-32 border-t border-ink-200">
+  <div class="mx-auto max-w-[88rem] px-5 py-16 sm:px-8 md:py-20">
+    <div class="grid gap-x-12 gap-y-12 md:grid-cols-12">
+      <div class="md:col-span-4 lg:col-span-3">
+        <a href={ziel(PATHS.home)} class="flex w-fit items-center gap-2.5">
           <span
-            class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-brand-700 font-bold text-white"
+            class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-brand-700 text-[0.8125rem] font-bold text-white"
             aria-hidden="true"
           >
             FP
           </span>
-          <span class="text-lg font-semibold text-ink-900">{SITE.name}</span>
+          <span class="font-display text-base font-semibold tracking-tight text-ink-900">{SITE.name}</span>
         </a>
-        <p class="mt-3 max-w-xs text-sm leading-relaxed text-ink-600">
+        <p class="u-measure-tight mt-5 text-[0.9375rem] leading-relaxed text-ink-600">
           {t("tagline")}
         </p>
       </div>
 
-      <div>
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-ink-500">{t("alleBereiche")}</h2>
-        <ul class="mt-3 grid gap-3 text-sm text-ink-700 sm:grid-cols-2">
-          <li>
-            <a href={ziel(PATHS.home)} class="font-medium text-ink-800 hover:text-brand-700">{t("startseite")}</a>
-            <span class="block text-xs text-ink-500">{t("startseiteNote")}</span>
+      <div class="md:col-span-8 lg:col-span-8 lg:col-start-5">
+        <h2 class="u-eyebrow text-ink-500">{t("alleBereiche")}</h2>
+        <ul class="mt-6 grid gap-x-10 border-t border-ink-200 text-sm text-ink-700 sm:grid-cols-2">
+          <li class="border-b border-ink-100 py-4">
+            <a href={ziel(PATHS.home)} class="font-medium text-ink-900 hover:text-brand-700">{t("startseite")}</a>
+            <span class="mt-0.5 block text-xs leading-relaxed text-ink-500">{t("startseiteNote")}</span>
           </li>
           {
             AREAS.map((a) => (
-              <li>
+              <li class="border-b border-ink-100 py-4">
                 <a
                   href={a.external ? a.href : ziel(a.href)}
                   target={a.external ? "_blank" : undefined}
                   rel={a.external ? "noopener noreferrer" : undefined}
-                  class="font-medium text-ink-800 hover:text-brand-700"
+                  class="font-medium text-ink-900 hover:text-brand-700"
                 >
                   {beschriftung(a)}
                   {deutschesZiel(a.href) && <span class="ml-1.5 text-[0.65rem] uppercase tracking-wider text-ink-400">in German</span>}
                 </a>
-                <span class="block text-xs text-ink-500">{notiz(a)}</span>
+                <span class="mt-0.5 block text-xs leading-relaxed text-ink-500">{notiz(a)}</span>
                 {a.items && (
-                  <ul class="mt-1.5 space-y-1 border-l border-ink-200 pl-3 text-xs">
+                  <ul class="mt-2.5 space-y-1.5 border-l border-ink-200 pl-3.5 text-xs">
                     {a.items.map((i) => (
                       <li>
                         <a href={ziel(i.href)} class="text-ink-600 hover:text-brand-700">
@@ -88,10 +92,10 @@ const year = new Date().getFullYear();
     </div>
 
     <div
-      class="mt-10 flex flex-col gap-3 border-t border-ink-200 pt-6 text-xs text-ink-500 sm:flex-row sm:items-center sm:justify-between"
+      class="mt-14 flex flex-col gap-4 border-t border-ink-200 pt-8 text-xs text-ink-500 sm:flex-row sm:items-center sm:justify-between"
     >
       <p>© {year} {SITE.author}. {t("rechteVorbehalten")}</p>
-      <ul class="flex flex-wrap gap-x-5 gap-y-2">
+      <ul class="flex flex-wrap items-center gap-x-7 gap-y-2">
         <li><a href={ziel(PATHS.kontakt)} class="font-medium hover:text-brand-700">{t("kontakt")}</a></li>
         <li><a href={ziel(PATHS.impressum)} class="hover:text-brand-700">{t("impressum")}</a></li>
         <li><a href={ziel(PATHS.datenschutz)} class="hover:text-brand-700">{t("datenschutz")}</a></li>

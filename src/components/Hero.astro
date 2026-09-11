@@ -1,4 +1,17 @@
 ---
+/*
+ * Die Eröffnung der Seite als typografische Aussage.
+ *
+ * Vorher: zwei Spalten, links Text, rechts ein quadratisches Porträt in einer
+ * abgerundeten Box mit Schlagschatten und zwei Farbwolken dahinter — das
+ * Standardbild „Gründer-Headshot". Das Foto war so laut wie der Name.
+ *
+ * Jetzt trägt der Name allein: eine Zeile über die halbe Bildschirmbreite,
+ * darunter der Untertitel eine Stufe kleiner, darunter eine Haarlinie, und
+ * erst dahinter Lead und Handlungsaufforderung. Das Porträt steht hochkant
+ * daneben und läuft nach unten aus dem Abschnitt heraus — anwesend und groß,
+ * aber nicht als Kachel mit Rahmen.
+ */
 import { SITE, PORTRAIT } from "../consts";
 import type { Sprache } from "../i18n/ui";
 
@@ -22,50 +35,93 @@ const T = {
 };
 ---
 
-<section id="top" class="relative overflow-hidden bg-gradient-to-br from-brand-50 via-canvas to-canvas">
-  <div class="absolute inset-0 -z-10 opacity-60">
-    <div class="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-brand-200/40 blur-3xl"></div>
-    <div class="absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-brand-100/60 blur-3xl"></div>
-  </div>
+<section id="top" class="hero relative overflow-hidden">
+  <div class="mx-auto max-w-[88rem] px-5 sm:px-8">
+    <div class="grid items-end gap-y-12 lg:grid-cols-12 lg:gap-x-12">
+      <!-- Die Aussage. Nimmt sieben von zwölf Spalten, damit sie im Vergleich
+           zum Bild eindeutig die Hauptrolle spielt. -->
+      <div class="pt-16 pb-4 md:pt-24 lg:col-span-7 lg:pt-32 lg:pb-24">
+        <p class="u-eyebrow text-brand-700" set:html={T.fuer} />
 
-  <div class="mx-auto grid max-w-6xl gap-12 px-6 py-20 md:grid-cols-[1.3fr_1fr] md:items-center md:py-28">
-    <div>
-      <p class="text-sm font-semibold uppercase tracking-widest text-brand-700" set:html={T.fuer} />
-      <h1 class="mt-3 font-display text-4xl font-bold leading-tight tracking-tight text-ink-900 md:text-5xl">
-        <span class="text-brand-700">Felix Paul</span>
-        <span class="mt-3 block text-2xl font-semibold leading-snug text-ink-700 md:text-3xl" set:html={T.untertitel} />
-      </h1>
+        <h1 class="mt-7 text-ink-900">
+          <span class="u-display block text-balance">Felix Paul</span>
+          <span
+            class="u-subtitle mt-4 block text-balance font-normal text-ink-500"
+            set:html={T.untertitel}
+          />
+        </h1>
 
-      <p class="mt-7 max-w-xl text-lg leading-relaxed text-ink-700">{T.lead}</p>
+        <div class="mt-10 max-w-2xl border-t border-ink-200 pt-8">
+          <p class="u-lede u-measure text-ink-700">{T.lead}</p>
 
-      <p class="mt-4 max-w-xl text-base leading-relaxed text-ink-500">
-        {T.hauptberuflich}
-        <strong class="font-semibold text-ink-700">Atruvia AG</strong>.
-      </p>
+          <p class="u-measure mt-4 text-[0.9375rem] leading-relaxed text-ink-500">
+            {T.hauptberuflich}
+            <strong class="font-semibold text-ink-700">Atruvia AG</strong>.
+          </p>
 
-      <!-- Nur ein Button. Der zweite zeigte auf #speaking und ließ die Seite
-           wirken, als ginge es vor allem um Keynotes; die Übersicht direkt
-           darunter nennt ohnehin alle Bereiche. -->
-      <div class="mt-8">
-        <a
-          href="#kontakt"
-          class="rounded-lg bg-brand-700 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-brand-800"
-        >
-          {T.cta}
-        </a>
+          <!-- Nur ein Button. Der zweite zeigte auf #speaking und ließ die Seite
+               wirken, als ginge es vor allem um Keynotes; die Übersicht direkt
+               darunter nennt ohnehin alle Bereiche. -->
+          <div class="mt-9">
+            <a
+              href="#kontakt"
+              class="inline-flex min-h-11 items-center rounded-full bg-brand-700 px-7 text-[0.9375rem] font-medium text-white transition hover:bg-brand-800"
+            >
+              {T.cta}
+            </a>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="relative mx-auto w-full max-w-sm">
-      <div class="absolute -inset-4 -z-10 rounded-[2rem] bg-gradient-to-br from-brand-200/50 to-brand-100/30 blur-2xl"></div>
-      <img
-        src={PORTRAIT.image}
-        alt={T.portraet}
-        width="800"
-        height="800"
-        class="aspect-square w-full rounded-3xl object-cover shadow-xl ring-1 ring-ink-200"
-        loading="eager"
-      />
+      <!-- Das Porträt: hochkant, groß, ohne Rahmen und ohne Schatten. Auf dem
+           Desktop läuft es unten aus dem Abschnitt heraus, statt in einer Box
+           zu sitzen — die Kante unten übernimmt der nächste Abschnitt. -->
+      <div class="hero__portrait lg:col-span-5">
+        <img
+          src={PORTRAIT.image}
+          alt={T.portraet}
+          width="800"
+          height="800"
+          class="h-full w-full object-cover object-[50%_18%]"
+          loading="eager"
+        />
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  /* Ein sehr weicher Verlauf aus der Markenfarbe, der nach unten in die
+     Leinwand ausläuft. Er ersetzt die beiden geblurrten Farbkreise: dieselbe
+     Wärme, aber ohne dass zwei Objekte hinter dem Text herumschweben. */
+  .hero {
+    background-image: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-brand-50) 85%, transparent),
+      var(--color-canvas) 70%
+    );
+  }
+
+  /* Große Fläche, großer Radius — und nur oben, weil die Unterkante auf dem
+     Desktop ohnehin aus dem Abschnitt läuft. */
+  .hero__portrait {
+    overflow: hidden;
+    border-radius: 1.75rem;
+    aspect-ratio: 4 / 3;
+    background-color: var(--color-ink-100);
+  }
+
+  @media (min-width: 640px) {
+    .hero__portrait {
+      aspect-ratio: 3 / 2;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero__portrait {
+      aspect-ratio: 4 / 5;
+      border-radius: 2rem 2rem 0 0;
+      margin-bottom: -1px;
+    }
+  }
+</style>

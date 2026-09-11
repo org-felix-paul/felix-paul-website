@@ -29,10 +29,13 @@ const T = {
 };
 ---
 
+<!-- Ohne Kasten: das Formular steht auf der Fläche des Abschnitts, die
+     Felder selbst tragen die Struktur. Ein Rahmen um einen Rahmen war eine
+     Kante zu viel. -->
 <form
   action={`https://formsubmit.co/${SITE.email}`}
   method="POST"
-  class="space-y-5 rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm md:p-8"
+  class="space-y-6"
 >
   <input type="hidden" name="_subject" value={T.betreff} />
   <input type="hidden" name="_template" value="table" />
@@ -46,7 +49,7 @@ const T = {
   <input type="text" name="_honey" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
 
   <div>
-    <label for="name" class="block text-sm font-medium text-ink-800">{T.name}</label>
+    <label for="name" class="block text-xs font-semibold uppercase tracking-wider text-ink-500">{T.name}</label>
     <input
       type="text"
       id="name"
@@ -54,12 +57,12 @@ const T = {
       placeholder={T.namePlatzhalter}
       required
       autocomplete="name"
-      class="mt-1 w-full rounded-lg border border-ink-200 bg-surface px-3 py-2 text-sm shadow-sm transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 focus:outline-none"
+      class="mt-2 min-h-11 w-full rounded-lg border border-ink-300 bg-surface px-3.5 py-2.5 text-[0.9375rem] text-ink-900 transition placeholder:text-ink-400 focus:border-brand-500 focus:outline-none"
     />
   </div>
 
   <div>
-    <label for="email" class="block text-sm font-medium text-ink-800">{T.email}</label>
+    <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-ink-500">{T.email}</label>
     <input
       type="email"
       id="email"
@@ -67,37 +70,37 @@ const T = {
       required
       autocomplete="email"
       placeholder={T.emailPlatzhalter}
-      class="mt-1 w-full rounded-lg border border-ink-200 bg-surface px-3 py-2 text-sm shadow-sm transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 focus:outline-none"
+      class="mt-2 min-h-11 w-full rounded-lg border border-ink-300 bg-surface px-3.5 py-2.5 text-[0.9375rem] text-ink-900 transition placeholder:text-ink-400 focus:border-brand-500 focus:outline-none"
     />
   </div>
 
   <div>
-    <label for="message" class="block text-sm font-medium text-ink-800">{T.nachricht}</label>
+    <label for="message" class="block text-xs font-semibold uppercase tracking-wider text-ink-500">{T.nachricht}</label>
     <textarea
       id="message"
       name="message"
       rows="5"
       required
       placeholder={T.nachrichtPlatzhalter}
-      class="mt-1 w-full rounded-lg border border-ink-200 bg-surface px-3 py-2 text-sm shadow-sm transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 focus:outline-none"
+      class="mt-2 w-full rounded-lg border border-ink-300 bg-surface px-3.5 py-2.5 text-[0.9375rem] leading-relaxed text-ink-900 transition placeholder:text-ink-400 focus:border-brand-500 focus:outline-none"
     ></textarea>
   </div>
 
-  <div class="flex items-start gap-2 text-sm text-ink-600">
+  <div class="flex items-start gap-3 border-t border-ink-200 pt-6 text-sm leading-relaxed text-ink-600">
     <input
       id="privacy"
       type="checkbox"
       name="privacy"
       value="yes"
       required
-      class="mt-1 h-4 w-4 rounded border-ink-300 text-brand-700 focus:ring-brand-500"
+      class="mt-1 h-4 w-4 shrink-0 rounded border-ink-300 text-brand-700"
     />
     <label for="privacy">
       {
         en ? (
           <Fragment>
             I have read the{" "}
-            <a href={lokalisiere(PATHS.datenschutz, lang)} class="text-brand-700 underline">
+            <a href={lokalisiere(PATHS.datenschutz, lang)} class="text-brand-700 underline underline-offset-2">
               privacy policy
             </a>{" "}
             and consent to my details being processed in order to handle this enquiry.
@@ -105,7 +108,7 @@ const T = {
         ) : (
           <Fragment>
             Ich habe die{" "}
-            <a href={PATHS.datenschutz} class="text-brand-700 underline">
+            <a href={PATHS.datenschutz} class="text-brand-700 underline underline-offset-2">
               Datenschutzerklärung
             </a>{" "}
             gelesen und willige ein, dass meine Angaben zur Bearbeitung der Anfrage verarbeitet werden.
@@ -117,12 +120,12 @@ const T = {
 
   <button
     type="submit"
-    class="inline-flex w-full items-center justify-center rounded-lg bg-brand-700 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-brand-800 sm:w-auto"
+    class="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-brand-700 px-7 text-[0.9375rem] font-medium text-white transition hover:bg-brand-800 sm:w-auto"
   >
     {T.senden}
   </button>
 
   <p class="text-xs text-ink-500">
-    {T.direkt} <a class="text-brand-700 underline" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+    {T.direkt} <a class="text-brand-700 underline underline-offset-2" href={`mailto:${SITE.email}`}>{SITE.email}</a>
   </p>
 </form>

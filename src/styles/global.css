@@ -168,6 +168,9 @@
 
 html {
   scroll-behavior: smooth;
+  /* Der Kopf klebt oben. Ohne diesen Abstand landet jeder Sprungziel-Anker
+     (#speaking, #kontakt …) unter der Leiste statt darunter. */
+  scroll-padding-top: 6rem;
 }
 
 body {
@@ -176,6 +179,115 @@ body {
   background-color: var(--color-canvas);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Redaktionelle Typo-Skala ──────────────────────────────────────────────
+   Die Hierarchie dieser Seite wird von der Schrift getragen, nicht von
+   Kästen. Deshalb steht die Skala hier einmal als Variablen und wird über
+   die u-*-Klassen benutzt — statt an jeder Stelle eine andere Kombination
+   aus text-3xl/md:text-4xl zu erfinden.
+
+   Fließtext liegt bei 17–19px: 17pt ist Apples Lesbarkeitsuntergrenze für
+   Armlängen-Abstand, 14px-Fließtext ist es nicht.                          */
+:root {
+  --step-display: clamp(2.75rem, 1.15rem + 6.6vw, 6rem);
+  --step-title: clamp(1.875rem, 1.2rem + 2.7vw, 3.25rem);
+  --step-subtitle: clamp(1.375rem, 1.15rem + 1vw, 2rem);
+  --step-heading: clamp(1.125rem, 1.05rem + 0.3vw, 1.3125rem);
+  --step-body: clamp(1.0625rem, 1.01rem + 0.22vw, 1.1875rem);
+  --step-lede: clamp(1.125rem, 1rem + 0.55vw, 1.375rem);
+
+  /* Zeilenlänge. Alles darüber liest sich als Wand, nicht als Text. */
+  --measure: 68ch;
+  --measure-tight: 54ch;
+
+  /* Haarlinien statt Schlagschatten: die eine Kante, die Struktur trägt. */
+  --rule: var(--color-ink-200);
+  --rule-soft: var(--color-ink-100);
+}
+
+.u-display {
+  font-family: var(--font-display);
+  font-size: var(--step-display);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+
+.u-title {
+  font-family: var(--font-display);
+  font-size: var(--step-title);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+
+.u-subtitle {
+  font-family: var(--font-display);
+  font-size: var(--step-subtitle);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.u-heading {
+  font-size: var(--step-heading);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.011em;
+}
+
+.u-body {
+  font-size: var(--step-body);
+  line-height: 1.7;
+}
+
+.u-lede {
+  font-size: var(--step-lede);
+  line-height: 1.55;
+  letter-spacing: -0.011em;
+}
+
+/* Kapitälchen-Marke über einem Abschnitt. Klein, weit gesperrt, ruhig. */
+.u-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.u-measure {
+  max-width: var(--measure);
+}
+
+.u-measure-tight {
+  max-width: var(--measure-tight);
+}
+
+/* Ein sichtbarer Fokusring auf allem, was man mit der Tastatur erreicht.
+   Vorher hing das an den Standardstilen des Browsers — die auf farbigen
+   Flächen praktisch unsichtbar sind. */
+:where(a, button, summary, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 3px;
+}
+
+/* Wer Bewegung abbestellt hat, bekommt keine. Gilt auch für das weiche
+   Scrollen und für den Kopf, der sich beim Scrollen zusammenzieht. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 .prose-content :where(h2):not(:first-child) {
@@ -189,23 +301,30 @@ body {
   scroll-margin-top: 5rem;
 }
 
+.prose-content {
+  font-size: var(--step-body);
+}
+
 .prose-content h2 {
-  font-size: 1.5rem;
+  font-family: var(--font-display);
+  font-size: var(--step-subtitle);
   font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
   color: var(--color-ink-900);
   margin-bottom: 1rem;
 }
 
 .prose-content h3 {
-  font-size: 1.125rem;
+  font-size: var(--step-heading);
   font-weight: 600;
   color: var(--color-ink-900);
-  margin-top: 1.5rem;
+  margin-top: 1.75rem;
   margin-bottom: 0.5rem;
 }
 
 .prose-content p {
-  margin-bottom: 1rem;
+  margin-bottom: 1.15rem;
   line-height: 1.7;
   color: var(--color-ink-700);
 }
@@ -213,20 +332,20 @@ body {
 .prose-content ul {
   list-style-type: disc;
   padding-left: 1.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.15rem;
   color: var(--color-ink-700);
 }
 
 .prose-content ol {
   list-style-type: decimal;
   padding-left: 1.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.15rem;
   color: var(--color-ink-700);
 }
 
 .prose-content li {
-  margin-bottom: 0.25rem;
-  line-height: 1.65;
+  margin-bottom: 0.35rem;
+  line-height: 1.7;
 }
 
 .prose-content strong {
@@ -290,16 +409,22 @@ body {
   font-size: 0.95rem;
 }
 
+/* Haarlinien statt Gitternetz: nur waagerechte Trenner, kein Kasten um jede
+   Zelle. Die Spalten hält der Abstand zusammen. */
 .prose-content th,
 .prose-content td {
-  border: 1px solid var(--color-ink-200);
-  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--rule-soft);
+  padding: 0.65rem 0.85rem;
   text-align: left;
 }
 
 .prose-content th {
-  background-color: var(--color-ink-50);
+  border-bottom-color: var(--rule);
   font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-500);
 }
 
 /* Mermaid-Diagramme: als zentrierte Grafik, nicht als Code-Block darstellen. */

@@ -18,9 +18,11 @@ import { SITE } from "../../consts";
   title="Legal notice"
   description="Legal notice under § 5 DDG / § 18 MStV (German law)."
 >
-  <Section as="h1" title="Legal notice" eyebrow="Legal">
-    <div class="mx-auto max-w-3xl">
-      <p class="mb-8 rounded-xl border border-ink-200 bg-ink-50 px-5 py-4 text-sm leading-relaxed text-ink-700">
+  <Section
+    as="h1"
+    width="narrow"
+    headerLayout="stacked" title="Legal notice" eyebrow="Legal">
+          <p class="u-measure mb-12 border-l-2 border-ink-300 pl-5 text-sm leading-relaxed text-ink-500">
         This is a courtesy translation. The legally binding version is the German
         one at <a href="/impressum/" class="text-brand-700 underline">felix-paul.de/impressum/</a>,
         and the statutory references below are to German law.
@@ -91,7 +93,6 @@ import { SITE } from "../../consts";
           of exploitation beyond the limits of copyright require the written consent of
           the respective author or creator.
         </p>
-      </div>
     </div>
   </Section>
 </Layout>
