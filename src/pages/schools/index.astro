@@ -67,7 +67,7 @@ const angebote = (await getCollection("angebote")).sort(
             <th class="px-5 py-3 font-semibold">Honorar</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-ink-100 text-ink-800">
+        <tbody class="divide-y divide-ink-200 text-ink-800">
           {
             angebote.filter((a) => !a.data.preview).map((angebot) => (
               <tr>
@@ -95,21 +95,21 @@ const angebote = (await getCollection("angebote")).sort(
     lead="Pädagogik allein reicht nicht, IT-Expertise allein verfehlt die Klasse. Beides zusammen ist selten – und genau das ist mein Angebot."
   >
     <div class="grid gap-8 md:grid-cols-3">
-      <div class="rounded-2xl border border-ink-100 bg-surface p-6 shadow-sm">
+      <div class="rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
         <div class="text-4xl font-bold text-brand-700">M.Ed.</div>
         <h3 class="mt-2 text-lg font-semibold text-ink-900">Lehramt</h3>
         <p class="mt-2 text-sm leading-relaxed text-ink-600">
           Master of Education in Mathematik und Informatik. Ich weiß, wie Schule funktioniert.
         </p>
       </div>
-      <div class="rounded-2xl border border-ink-100 bg-surface p-6 shadow-sm">
+      <div class="rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
         <div class="text-4xl font-bold text-brand-700">M.Sc.</div>
         <h3 class="mt-2 text-lg font-semibold text-ink-900">Informatik</h3>
         <p class="mt-2 text-sm leading-relaxed text-ink-600">
           B.Sc. Mathematik, B.Sc. + M.Sc. Informatik. KI, Security, Cloud – ich weiß wie die Technik funktioniert.
         </p>
       </div>
-      <div class="rounded-2xl border border-ink-100 bg-surface p-6 shadow-sm">
+      <div class="rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
         <div class="text-4xl font-bold text-brand-700">Praxis</div>
         <h3 class="mt-2 text-lg font-semibold text-ink-900">Berufserfahrung</h3>
         <p class="mt-2 text-sm leading-relaxed text-ink-600">
@@ -135,7 +135,7 @@ const angebote = (await getCollection("angebote")).sort(
           "Klare, ehrliche Kommunikation",
           "Aktiv Lernen statt Frontalbeschallung",
         ].map((punkt) => (
-          <li class="flex items-start gap-3 rounded-2xl border border-ink-100 bg-surface p-5 shadow-sm">
+          <li class="flex items-start gap-3 rounded-2xl border border-ink-200 bg-surface p-5 shadow-sm">
             <span class="mt-0.5 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />

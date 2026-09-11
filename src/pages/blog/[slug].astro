@@ -53,7 +53,7 @@ const schema = [
   schema={schema}
 >
   <article>
-    <section class="border-b border-ink-100 bg-gradient-to-br from-brand-50 via-canvas to-canvas">
+    <section class="border-b border-ink-200 bg-gradient-to-br from-brand-50 via-canvas to-canvas">
       <div class="mx-auto max-w-3xl px-6 py-16">
         <a href={BLOG.base} class="text-sm font-medium text-brand-700 hover:text-brand-900">← Alle Beiträge</a>
         <h1 class="mt-4 font-display text-3xl font-bold tracking-tight text-ink-900 md:text-4xl">
@@ -140,30 +140,33 @@ const schema = [
         theme: "base",
         darkMode: istDunkel(),
         fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
+        // Feste Hexwerte, weil mermaid die Farben ins SVG schreibt und keine
+        // CSS-Variablen auflöst. Sie sind Kopien aus src/styles/global.css —
+        // ändert sich die Palette dort, muss dieser Block mitgezogen werden.
         themeVariables: istDunkel()
           ? {
-              primaryColor: "#14497a",
-              primaryBorderColor: "#4aa8ea",
-              primaryTextColor: "#eef2f7",
-              secondaryColor: "#1e242f",
-              tertiaryColor: "#0d3355",
-              lineColor: "#6dbdf2",
-              clusterBkg: "#131820",
-              clusterBorder: "#2b3341",
-              edgeLabelBackground: "#131820",
-              xyChart: { plotColorPalette: "#4aa8ea" },
+              primaryColor: "#251a63", // brand-100
+              primaryBorderColor: "#ab90ff", // brand-700
+              primaryTextColor: "#f4f4f8", // ink-900
+              secondaryColor: "#21212a", // ink-100
+              tertiaryColor: "#1a1145", // brand-50
+              lineColor: "#9c82f4", // brand-500
+              clusterBkg: "#0e0e12", // surface
+              clusterBorder: "#6d6d78", // ink-200
+              edgeLabelBackground: "#0e0e12", // surface
+              xyChart: { plotColorPalette: "#ab90ff" }, // brand-700
             }
           : {
-              primaryColor: "#e0effe",
-              primaryBorderColor: "#0072c6",
-              primaryTextColor: "#1f2733",
-              secondaryColor: "#f6f7f9",
-              tertiaryColor: "#f0f7ff",
-              lineColor: "#36abf7",
-              clusterBkg: "#f0f7ff",
-              clusterBorder: "#bae0fd",
-              edgeLabelBackground: "#ffffff",
-              xyChart: { plotColorPalette: "#0d8fe8" },
+              primaryColor: "#e5e0ff", // brand-100
+              primaryBorderColor: "#5934c4", // brand-700
+              primaryTextColor: "#101017", // ink-900
+              secondaryColor: "#f4f4f6", // ink-50
+              tertiaryColor: "#f4f2ff", // brand-50
+              lineColor: "#6c4bd9", // brand-500
+              clusterBkg: "#ffffff", // surface
+              clusterBorder: "#898994", // ink-200
+              edgeLabelBackground: "#ffffff", // surface
+              xyChart: { plotColorPalette: "#5934c4" }, // brand-700
             },
         flowchart: { curve: "basis", useMaxWidth: true },
         sequence: { useMaxWidth: true },

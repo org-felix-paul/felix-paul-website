@@ -33,7 +33,13 @@
   --color-emerald-100: var(--c-emerald-100);
   --color-emerald-200: var(--c-emerald-200);
   --color-emerald-300: var(--c-emerald-300);
+  /* 400 und 600 fehlten hier und fielen deshalb auf Tailwinds eingebautes
+     Emerald zurück — im Dunkelmodus also auf einen Hellmodus-Wert. Beide
+     Stufen werden im Markup benutzt (`hover:border-emerald-400`,
+     `bg-emerald-600`), gehören also in die Skala. */
+  --color-emerald-400: var(--c-emerald-400);
   --color-emerald-500: var(--c-emerald-500);
+  --color-emerald-600: var(--c-emerald-600);
   --color-emerald-700: var(--c-emerald-700);
   --color-emerald-800: var(--c-emerald-800);
   --color-emerald-900: var(--c-emerald-900);
@@ -53,60 +59,113 @@
   --color-surface: var(--c-surface);
   --color-canvas: var(--c-canvas);
 
+  /* „Weiß" ist hier keine Farbe mehr, sondern eine Rolle: die Schrift auf
+     einer gefüllten Akzentfläche. Im Markup steht `text-white` ausnahmslos
+     auf bg-brand-600/700, auf dem brand-700→900-Verlauf oder auf
+     bg-emerald-600 — nie auf einer neutralen Fläche (geprüft: 41 Stellen,
+     keine Ausnahme; `bg-white`/`border-white` gibt es nicht).
+
+     Das repariert einen Fehler, den die alte Palette hatte: im Dunkelmodus
+     ist brand-700 ein HELLER Ton (die Marken-Skala kippt mit), weißer Text
+     darauf kam auf 1,7:1 — jeder Button der Seite war im Dunkeln unlesbar.
+     Jetzt zieht `text-white` dort auf Fast-Schwarz und erreicht 8:1+. */
+  --color-white: var(--c-on-accent);
+
   --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-display: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
 }
+
+/* ══ Hochkontrast-Experiment ═══════════════════════════════════════════════
+   Diese Skalen folgen EINER Regel, in allen vier Familien und in beiden
+   Schemata gleich:
+
+     50 / 100      Flächen. Leise Tönungen, tragen nie Struktur.
+     200 / 300     Linien. Jede Stufe hält ≥ 3:1 gegen die Fläche, auf der
+                   sie im Markup wirklich liegt (canvas, surface, ink-50).
+                   Deshalb liegen 200 und 300 dicht beieinander — beide sind
+                   im Markup Rahmen (border-ink-200, border-brand-200,
+                   ring-brand-200, border-emerald-300 …), und ein Rahmen, den
+                   man nicht sieht, ist kein Rahmen.
+     400 – 950     Schrift und gefüllte Flächen. Fließtext (ink-700) liegt
+                   über 12:1, Überschriften (ink-900) über 16:1, der
+                   Linkton (brand-700) über 7:1 — AAA, nicht AA.
+
+   Weder Schwarz noch Weiß werden für Schrift benutzt: #000 auf #fff über
+   große Flächen flimmert. ink-900 ist ein sehr dunkles Grau, im Dunkelmodus
+   ein sehr helles — die letzten zwei Prozent Kontrast sind bewusst
+   verschenkt.                                                              */
 
 /* ── Helles Schema ─────────────────────────────────────────────────────── */
 :root {
   color-scheme: light;
 
-  --c-brand-50: #f0f7ff;
-  --c-brand-100: #e0effe;
-  --c-brand-200: #bae0fd;
-  --c-brand-300: #7cc7fb;
-  --c-brand-400: #36abf7;
-  --c-brand-500: #0d8fe8;
-  --c-brand-600: #0072c6;
-  --c-brand-700: #015aa0;
-  --c-brand-800: #064c84;
-  --c-brand-900: #0a406d;
-  --c-brand-950: #072849;
+  /* Ein lautes, gesättigtes Indigo-Violett statt des früheren Azurblaus.
+     Es ist als Linkfarbe auf Weiß AAA (7:1) und trägt weißen Text auf
+     bg-brand-700 mit demselben Wert — beides ist dasselbe Verhältnis. */
+  --c-brand-50: #f4f2ff;
+  --c-brand-100: #e5e0ff;
+  --c-brand-200: #9581ef;
+  --c-brand-300: #866ee9;
+  --c-brand-400: #7859e2;
+  --c-brand-500: #6c4bd9;
+  --c-brand-600: #6240d0;
+  --c-brand-700: #5934c4;
+  --c-brand-800: #47279e;
+  --c-brand-900: #371e7b;
+  --c-brand-950: #20134c;
 
-  --c-ink-50: #f6f7f9;
-  --c-ink-100: #ebeef2;
-  --c-ink-200: #d3dae3;
-  --c-ink-300: #adb9c8;
-  --c-ink-400: #8092a8;
-  --c-ink-500: #61748d;
-  --c-ink-600: #4d5d75;
-  --c-ink-700: #404c5f;
-  --c-ink-800: #384151;
-  --c-ink-900: #1f2733;
-  --c-ink-950: #0f141c;
+  /* Echte Neutraltöne, minimal kühl (der Blaustich sitzt nur im letzten
+     Byte). Wärme würde genau die Härte wegnehmen, die hier geprüft wird. */
+  --c-ink-50: #f4f4f6;
+  --c-ink-100: #e7e7ec;
+  --c-ink-200: #898994;
+  --c-ink-300: #74747f;
+  --c-ink-400: #5e5e6a;
+  --c-ink-500: #4b4b56;
+  --c-ink-600: #3a3a45;
+  --c-ink-700: #2a2a33;
+  --c-ink-800: #1d1d25;
+  --c-ink-900: #101017;
+  --c-ink-950: #000000;
 
-  --c-emerald-50: #ecfdf5;
-  --c-emerald-100: #d1fae5;
-  --c-emerald-200: #a7f3d0;
-  --c-emerald-300: #6ee7b7;
-  --c-emerald-500: #10b981;
-  --c-emerald-700: #047857;
-  --c-emerald-800: #065f46;
-  --c-emerald-900: #064e3b;
+  --c-emerald-50: #e9faf1;
+  --c-emerald-100: #d6f4e5;
+  --c-emerald-200: #1e8f6b;
+  --c-emerald-300: #17805f;
+  --c-emerald-400: #117053;
+  --c-emerald-500: #0d6248;
+  --c-emerald-600: #0b5540;
+  --c-emerald-700: #094834;
+  --c-emerald-800: #073a2a;
+  --c-emerald-900: #052c20;
 
-  --c-amber-50: #fffbeb;
-  --c-amber-100: #fef3c7;
-  --c-amber-200: #fde68a;
-  --c-amber-300: #fcd34d;
-  --c-amber-400: #fbbf24;
-  --c-amber-500: #f59e0b;
-  --c-amber-700: #b45309;
-  --c-amber-800: #92400e;
-  --c-amber-900: #78350f;
-  --c-amber-950: #451a03;
+  /* Der frühere Bernstein war die härteste Kontrastfalle der Seite:
+     #f59e0b auf Weiß sind 1,9:1, text-amber-800 auf amber-50 knapp.
+     Bernstein ist von Natur aus hell — ein Ton, der als Linie 3:1 auf Weiß
+     hält, MUSS ockerfarben sein. Das ist der Preis dieses Zweigs; der
+     Balken (bg-amber-500) verliert dadurch etwas Leuchtkraft. */
+  --c-amber-50: #fff7e8;
+  --c-amber-100: #ffe8bd;
+  --c-amber-200: #e0a63a;
+  --c-amber-300: #bf7d00;
+  --c-amber-400: #b87800;
+  --c-amber-500: #9c6400;
+  --c-amber-700: #7a4e00;
+  --c-amber-800: #613e00;
+  --c-amber-900: #492e00;
+  --c-amber-950: #1f1300;
 
   --c-surface: #ffffff;
   --c-canvas: #ffffff;
+
+  /* Schrift auf gefüllter Akzentfläche (siehe --color-white oben). */
+  --c-on-accent: #ffffff;
+
+  /* Codeblöcke bringen ihre Farben als Inline-Style von Shiki mit
+     (github-dark, Grund #24292e). Auf einer reinweißen Seite ist das ein
+     mattes Grau; hier wird daraus eine harte, fast schwarze Platte mit
+     sichtbarer Kante. */
+  --c-code-bg: #16161b;
 }
 
 /* ── Dunkles Schema ────────────────────────────────────────────────────────
@@ -118,52 +177,71 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --c-brand-50: #0a2540;
-  --c-brand-100: #0d3355;
-  --c-brand-200: #14497a;
-  --c-brand-300: #1d6aad;
-  --c-brand-400: #2f8ad2;
-  --c-brand-500: #4aa8ea;
-  --c-brand-600: #6dbdf2;
-  --c-brand-700: #93cff7;
-  --c-brand-800: #b6e0fa;
-  --c-brand-900: #d5eefd;
-  --c-brand-950: #eaf6fe;
+  /* Das Dunkelschema ist bewusst KEINE Spiegelung des hellen. Ein Violett,
+     das auf Weiß 7:1 hält, hält auf Schwarz 2:1 — die beiden Rampen müssen
+     unterschiedlich gebaut sein. brand-700 ist hier ein leuchtendes
+     Violett (8:1 auf Schwarz); die dazugehörige Schrift auf gefüllten
+     Markenflächen ist deshalb --c-on-accent, nicht Weiß. */
+  --c-brand-50: #1a1145;
+  --c-brand-100: #251a63;
+  --c-brand-200: #6547d8;
+  --c-brand-300: #7a5ee6;
+  --c-brand-400: #8e73ef;
+  --c-brand-500: #9c82f4;
+  --c-brand-600: #a68cf9;
+  --c-brand-700: #ab90ff;
+  --c-brand-800: #c2adff;
+  --c-brand-900: #ddd2ff;
+  --c-brand-950: #efeaff;
 
-  --c-ink-50: #171c25;
-  --c-ink-100: #1e242f;
-  --c-ink-200: #2b3341;
-  --c-ink-300: #3d4859;
-  --c-ink-400: #5b6b83;
-  --c-ink-500: #8093ab;
-  --c-ink-600: #a3b3c7;
-  --c-ink-700: #bcc9d8;
-  --c-ink-800: #d3dce7;
-  --c-ink-900: #eef2f7;
+  --c-ink-50: #17171d;
+  --c-ink-100: #21212a;
+  --c-ink-200: #6d6d78;
+  --c-ink-300: #82828d;
+  --c-ink-400: #9c9ca8;
+  --c-ink-500: #b4b4c0;
+  --c-ink-600: #c9c9d3;
+  --c-ink-700: #dedee6;
+  --c-ink-800: #ececf2;
+  --c-ink-900: #f4f4f8;
   --c-ink-950: #ffffff;
 
-  --c-emerald-50: #06281d;
-  --c-emerald-100: #083a2a;
-  --c-emerald-200: #0d5540;
-  --c-emerald-300: #14855f;
-  --c-emerald-500: #2fcf95;
-  --c-emerald-700: #6ee7b7;
-  --c-emerald-800: #a7f3d0;
-  --c-emerald-900: #d1fae5;
+  --c-emerald-50: #05201a;
+  --c-emerald-100: #073026;
+  --c-emerald-200: #158a66;
+  --c-emerald-300: #1ba077;
+  --c-emerald-400: #26b98a;
+  --c-emerald-500: #35cc9a;
+  --c-emerald-600: #55dcae;
+  --c-emerald-700: #7ce9c3;
+  --c-emerald-800: #a9f2d8;
+  --c-emerald-900: #d3f9ea;
 
-  --c-amber-50: #2a1c05;
-  --c-amber-100: #3d2907;
-  --c-amber-200: #5c3d0a;
-  --c-amber-300: #8a5c0f;
-  --c-amber-400: #c08519;
-  --c-amber-500: #e5a72c;
-  --c-amber-700: #f6c964;
-  --c-amber-800: #fbdd97;
-  --c-amber-900: #fdecc6;
-  --c-amber-950: #fef8e7;
+  --c-amber-50: #201400;
+  --c-amber-100: #2e1d00;
+  --c-amber-200: #6b4400;
+  --c-amber-300: #8f5b00;
+  --c-amber-400: #996200;
+  --c-amber-500: #d38b00;
+  --c-amber-700: #f0aa2b;
+  --c-amber-800: #f8c66f;
+  --c-amber-900: #fbdda8;
+  --c-amber-950: #fffaf0;
 
-  --c-surface: #131820;
-  --c-canvas: #0d1117;
+  /* Drei Ebenen, ohne einen einzigen Schatten:
+       canvas  #000000  der Seitengrund. Die body-Regel weiter unten setzt
+                        background-color auf canvas und schlägt dabei die
+                        Utility-Klasse bg-surface am <body>, weil sie außerhalb
+                        von @layer steht. Also echtes Schwarz — OLED-freundlich
+                        und der tiefste Punkt der Seite.
+       surface #0e0e12  Karten und helle Abschnitte, eine sichtbare Stufe höher.
+       ink-50  #17171d  gedämpfte Abschnitte, Fußzeile, Tabellenköpfe. */
+  --c-surface: #0e0e12;
+  --c-canvas: #000000;
+
+  --c-on-accent: #0b0a12;
+
+  --c-code-bg: #08080b;
 }
 
 html {
@@ -300,6 +378,27 @@ body {
 .prose-content th {
   background-color: var(--color-ink-50);
   font-weight: 600;
+}
+
+/* Codeblöcke. Shiki schreibt Grundfarbe und Textfarbe als INLINE-Style ins
+   <pre> (Theme github-dark, Grund #24292e) — dagegen kommt eine normale Regel
+   nicht an, deshalb hier ausnahmsweise !important. Nur der Grund wird ersetzt,
+   die Token-Farben bleiben Shikis; auf der dunkleren Platte steigt ihr
+   Kontrast, der Fließtext des Themes (#e1e4e8) kommt auf 14:1 (hell) bzw.
+   16:1 (dunkel).
+
+   Die Kante ist dieselbe Linie wie an jeder Karte: in einem Schema, das mit
+   Rahmen statt mit Schatten schichtet, darf ausgerechnet der Codeblock nicht
+   randlos in die Seite laufen. */
+.prose-content .astro-code {
+  background-color: var(--c-code-bg) !important;
+  border: 1px solid var(--color-ink-200);
+  border-radius: 0.5rem;
+  /* Innenabstand und Außenabstand kommen erst mit dem Rahmen dazu: ohne ihn
+     lief die Platte randlos und ohne Luft, mit ihm würde die Schrift sonst
+     auf der Linie kleben. Schriftgröße und Zeilenhöhe bleiben unangetastet. */
+  padding: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 /* Mermaid-Diagramme: als zentrierte Grafik, nicht als Code-Block darstellen. */
