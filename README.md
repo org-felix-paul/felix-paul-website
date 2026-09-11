@@ -1,337 +1,179 @@
 # felix-paul.de
 
 One Astro project serving the whole domain: the personal site at `/`, the blog
-at `/blog/`, school workshops at `/education/`, and three reference projects
-served verbatim under `/projects/`.
+at `/blog/`, the school workshops at `/schools/`, the audience pages
+`/companies/` and `/individuals/`, and English versions of the main pages
+under `/en/`. Static output, deployed by Cloudflare Pages on every push to
+`main`.
 
-- **Merge history and every decision made:** [`claude-behavior.md`](./claude-behavior.md)
-- **Blog section docs:** [`src/blog/README.md`](./src/blog/README.md)
-- **Education section docs:** [`src/education/README.md`](./src/education/README.md)
+- **Daily use:** this file.
+- **How the site is built and why:** [`docs/`](docs/README.md) — a tutorial for
+  the first change, how-to recipes, a file map, the architecture explanation
+  and the decision records.
+- **Never worked with Astro?** Start with
+  [`docs/tutorials/first-change.md`](docs/tutorials/first-change.md).
 
 ## Run
 
 ```bash
 npm install
-npm run dev       # http://localhost:4321
-npm run build     # -> dist/
-npm run preview   # serve dist/ locally
-npm run check       # astro check (types + diagnostics)
-npm run check:links # broken internal links, resolved the way the host does
-npm run check:links:live fetch every page from the live site
-npm run verify      # check + build + link check, all three
-npm run slug -- "Ein Titel"   # slug helper for new blog posts
+npm run dev          # http://localhost:4321, reloads on save
+npm run build        # -> dist/
+npm run preview      # serve dist/ locally
+```
+
+Checks (all run before every push by the git hook, see below):
+
+```bash
+npm run check          # astro check — types and diagnostics
+npm run check:links    # every internal link in dist/, resolved the way the host does
+npm run verify         # check + build + link check in one go
+npm run check:links:live   # additionally fetch every page from the live site
+npm run check:contrast     # WCAG AA contrast of every colour pair in the markup, both themes
+npm run slug -- "Ein Titel"   # anchor id for a heading, for hand-written tables of contents
 ```
 
 ## Adding content
 
-| what | where |
+Content is Markdown with a validated frontmatter. Add a file, and it appears
+everywhere it belongs (list page, detail page, home page teaser, sitemap).
+
+| What | Where | Details |
+|---|---|---|
+| Blog post | `src/blog/content/posts/<slug>.md` | [how-to](docs/how-to/add-content.md#blog-post) |
+| School workshop | `src/schools/content/angebote/<slug>.md` | [how-to](docs/how-to/add-content.md#school-workshop) |
+| News entry ("Aktuelles") | `src/news/content/<slug>.md`, copy `_vorlage.md` | [how-to](docs/how-to/add-content.md#news-entry) — section currently hidden |
+| Images, PDFs, downloads | `public/…` | served verbatim at the same path |
+
+The file name becomes the URL slug. `draft: true` hides a post or news entry;
+`preview: true` shows a post or workshop as a "coming soon" teaser.
+
+## Changing text, navigation, design
+
+| I want to change… | Look in |
 |---|---|
-| Blog post | `src/blog/content/posts/<slug>.md` |
-| Bildungsangebot | `src/education/content/angebote/<slug>.md` |
-| Aktuelles-Eintrag (Vortrag, Workshop, Release) | `src/news/content/<slug>.md` — copy `_vorlage.md`, set `draft: false` |
+| Name, address, e-mail, social links | `src/consts.ts` → `SITE` |
+| A URL of a section, the four business areas, the header menu | `src/consts.ts` → `PATHS`, `AREAS`, `NAV` |
+| Text on the home page | `src/home/<Section>.astro` — one file per section, German and English side by side |
+| Text on `/companies/` or `/individuals/` | `src/audiences/CompaniesPage.astro`, `IndividualsPage.astro` |
+| Text on `/schools/` and its sub-pages | `src/pages/schools/*.astro`, `src/schools/components/*.astro` |
+| Legal pages | `src/pages/impressum.astro`, `datenschutz.astro` (+ `src/pages/en/`) |
+| Colours, dark mode, fonts | `src/styles/global.css` |
+| `<head>`: titles, OG tags, schema.org | `src/layouts/Layout.astro` |
+| Redirects | `public/_redirects` |
 
-The home page renders the education offers, the three latest posts and the
-news log **from these same collections**. Add a file, and it appears in both
-places at once — there is no second copy to keep in sync.
+More in [`docs/how-to/`](docs/how-to/). The decision flow "what to change
+where" is drawn in
+[`docs/how-to/change-text-and-navigation.md`](docs/how-to/change-text-and-navigation.md).
 
-## Layout in one paragraph
+## Where things live
 
-`src/consts.ts` holds site identity and **every URL** (`PATHS`, `PROJECTS`,
-`PORTRAIT`, `FAVICONS`) — change a section's path there, not with
-find-and-replace. `src/layouts/Layout.astro` owns the entire `<head>`:
-canonical, OG/Twitter, and the site-wide schema.org graph.
-`src/components/SiteHeader.astro` and `SiteFooter.astro` hold the chrome once;
-each section passes its own branding as props. Each section (`src/blog/`,
-`src/education/`) owns its branding, components, content and content schema,
-and wraps the shared Layout in its own `*Layout.astro`. **Shared code never
-imports from a section** — that one-way dependency is what keeps a section
-extractable. `src/pages/` holds routes only.
+```mermaid
+flowchart LR
+  subgraph routes["src/pages/ — routes only"]
+    R1["index.astro<br/>en/index.astro"]
+    R2["companies.astro<br/>individuals.astro<br/>(+ en/)"]
+    R3["schools/index.astro<br/>schools/insights.astro<br/>schools/workshops/[slug].astro"]
+    R4["blog/index.astro<br/>blog/[slug].astro"]
+    R5["impressum, datenschutz,<br/>thank-you, 404 (+ en/)"]
+  end
+  R1 --> H["src/home/<br/>one file per home section"]
+  R2 --> A["src/audiences/"]
+  R3 --> S["src/schools/<br/>layout, components, consts,<br/>content/angebote/*.md"]
+  R4 --> B["src/blog/<br/>layout, components, consts,<br/>content/posts/*.md"]
+  H & A & S & B & R5 --> L["src/layouts/Layout.astro<br/>the whole &lt;head&gt;, header, footer"]
+  L --> C["src/components/<br/>SiteHeader, SiteFooter, Section,<br/>ContactForm, ThemeToggle …"]
+  L & C & H & S & B --> K["src/consts.ts<br/>SITE, PATHS, AREAS, NAV"]
+  K --> I["src/i18n/<br/>which /en/ pages exist, UI labels"]
+  L --> G["src/styles/global.css<br/>colour tokens, light + dark"]
+```
 
-Single copies, on purpose: one contact form (the `#kontakt` block on the home
-page), one confirmation page (`/thank-you/`), one Impressum, one Datenschutz,
-one portrait image, and one footer (`SiteFooter.astro` takes no props and is
-byte-identical on every page). Each section has its own favicon.
-
-The four areas of the business — Keynotes & Fachvorträge, Bildungsangebote,
-Software, Blog — are declared once as `AREAS` in `src/consts.ts` and reused by
-the footer and the overview block, so the same four labels appear everywhere.
+Rule that keeps this tidy: **shared code (`components/`, `layouts/`,
+`consts.ts`) never imports from a section (`blog/`, `schools/`, `news/`)**.
+Sections and pages may import shared code. That is what keeps a section
+liftable into its own repo.
 
 ## Setting up a clone
 
 ```bash
-git clone git@github.com:org-felix-paul/official-representation.git
-cd official-representation
+git clone git@github.com:org-felix-paul/felix-paul-website.git
+cd felix-paul-website
 npm install
 git config core.hooksPath .githooks   # ← do not skip this
 ```
 
-**Why that last line is needed.** Git's own hook directory is `.git/hooks/`,
-which is never cloned or pushed — anything in there stays on one machine. So
-the hook lives in `.githooks/`, a normal tracked folder that *does* travel with
-the repo, and `core.hooksPath` tells git to look there instead.
-
-The config itself is per-clone and is deliberately not synced: a repo you clone
-must not be able to run code on your machine without you opting in. So the
-script arrives automatically, the activation does not. **On every new machine,
-run that one command.**
-
-Check it is active:
-
-```bash
-git config --get core.hooksPath     # should print: .githooks
-```
+The last line activates the pre-push hook. Git's own hook folder is not
+cloned, so the hook lives in the tracked `.githooks/` folder and every clone
+has to opt in once. Check with `git config --get core.hooksPath` (prints
+`.githooks`).
 
 ## Before pushing
 
-With the hook active, `git push` first runs `.githooks/pre-push`:
-
-```
-npm run check      # astro check — types and diagnostics
-npm run build      # produces dist/
-node scripts/check-links.mjs        # link check against that fresh build
-```
-
-Roughly 25–30 seconds, almost all of it the build. It runs on **push**, not on
-commit — committing work in progress stays free.
-
-**If anything fails, the push is aborted** and nothing reaches the remote; the
-commits stay local until it is fixed. Git's rule is just exit code 0 = proceed,
-anything else = stop. A typical failure:
-
-```
-  /impressum/
-    → /gibt-es-nicht/
-      404 – keine Datei, die ausgeliefert würde
-
-pre-push abgebrochen: gebrochene interne Links (siehe oben).
-```
-
-Fix the link, or — if it genuinely cannot be repaired — add it to `KNOWN` in
-`scripts/check-links.mjs` with a reason.
-
-### Skipping the hook
-
-```bash
-git push --no-verify
-```
-
-Skips every pre-push hook. Legitimate when you need the commits on the remote
-and know what the check would say — for instance pushing a branch that is not
-deployed. Do not make it a habit on `main`: this site deploys straight from
-`main`, so whatever passes here goes live.
-
-**Why a custom link checker.** "Does the file exist?" is the wrong question: a
-folder without an `index.html` exists on disk but is served as a 404. That is
-exactly how `/projects/neck/css` slipped through. `scripts/check-links.mjs`
-resolves every link the way the host does — trailing slash, implicit
-`.html`, implicit `index.html`, folder-without-index — checks relative links
-too, covers the reference projects under `/projects/`, and verifies that
-`#anchors` exist on the page they point at.
-
-Links that genuinely cannot be repaired live in the `KNOWN` list at the top of
-that script, each with a reason. One of them is deliberate: a Codenight page
-about alt texts shows a missing image on purpose.
-
-## Dark Mode
-
-Die Seite folgt der Systemeinstellung; der Knopf im Header überschreibt sie und
-merkt sich die Wahl in `localStorage`. Wer nie klickt, folgt dem System
-dauerhaft — auch wenn es später wechselt.
-
-**Wie es umgesetzt ist.** Nicht über `dark:`-Varianten im Markup: die ~590
-Farbklassen hätten je eine Zweitfassung gebraucht. Stattdessen zeigen die
-Tailwind-Tokens in `@theme` auf CSS-Variablen, die in `:root` (hell) und
-`:root[data-theme="dark"]` (dunkel) unterschiedlich belegt sind. Jede
-vorhandene Klasse zeigt damit automatisch auf den passenden Wert.
-
-Die `ink`-Skala ist im Dark Mode **invertiert**: `ink-900` bleibt „stärkster
-Textkontrast", `ink-50` bleibt „dezenteste Fläche" — nur eben dunkel. Deshalb
-musste kein einziges `text-ink-*` angefasst werden.
-
-Zwei Dinge ließen sich nicht über Tokens lösen und wurden ersetzt:
-`bg-white` → `bg-surface` (61 Stellen) und `via-white to-white` →
-`via-canvas to-canvas` (5 Gradienten). `text-white` blieb: es steht überall auf
-farbigem Grund und ist dort in beiden Schemata richtig.
-
-Das Setzen des Schemas passiert **inline im `<head>`**, vor dem Body — sonst
-blitzt beim Laden kurz das falsche Schema auf.
-
-Mermaid-Diagramme brennen ihre Farben ins SVG. Sie werden deshalb bei einem
-Themenwechsel neu gezeichnet; der Diagrammquelltext wird dafür vorher
-zwischengespeichert.
-
-## Environment banner
-
-Preview deployments show an amber strip above the header saying they are not
-the public site. Production shows nothing.
-
-**How it decides.** Cloudflare Pages sets `CF_PAGES_BRANCH` on every build.
-`src/deploy.ts` reads it:
-
-| build | `CF_PAGES_BRANCH` | banner |
-|---|---|---|
-| production | `main` | none |
-| any other branch | `int`, `dev`, `feat/x`, … | `Vorschau · Branch <name>` |
-| `astro dev` | unset | `Lokale Entwicklung` |
-| local `npm run build` | unset | none |
-
-**Every branch except `main` gets one**, named after the branch — there is no
-list of known environments to maintain, so a feature-branch preview is covered
-too. The check is against the literal string `main`: if the production branch
-is ever renamed, `src/deploy.ts` has to be renamed with it, or production would
-start showing a banner.
-
-The last row is deliberate: a banner that leaks into production is worse than
-one missing from a preview, so anything uncertain is treated as production.
-Cloudflare always sets the variable, so the only uncertain case is local.
-
-**Why not a branch that edits the code.** The old `int` branch carried a
-one-line source change to mark the environment. Every merge from `main` then
-had to preserve it, and the two branches drifted. With the banner, `int` can
-be a plain copy of `main` — no branch-only edits, nothing to reconcile.
-
-**Nothing is shipped to production.** `import.meta.env.CF_PAGES_BRANCH` is
-replaced at build time, so on `main` the condition is statically false and the
-markup is dropped. Verified: the strings do not appear in the production HTML.
-
-Test it locally:
-
-```bash
-CF_PAGES_BRANCH=int npm run build && npm run preview   # banner
-npm run build && npm run preview                       # no banner
-```
-
-To set up a preview environment: create the branch, add it under
-Settings → Builds & Deployments → Branch control in the Pages project, and
-give it a hostname (e.g. `int.felix-paul.de`) if you want a stable URL. No
-code change is needed — the banner appears automatically.
+With the hook active, `git push` first runs `astro check`, `astro build` and
+the link checker (about 25–30 s). **If anything fails, nothing is pushed.**
+Fix the problem, or, for a link that genuinely cannot be repaired, add it to
+`KNOWN` in `scripts/check-links.mjs` with a reason. `git push --no-verify`
+skips the hook; fine for a branch that is not deployed, not on `main`.
 
 ## Deploy
 
 Cloudflare Pages, git-connected: push to `main` → build → live. Build command
-`npm run build`, output directory `dist`. No `wrangler.toml`, no GitHub Actions
-deploy step — the git connection is the pipeline.
+`npm run build`, output directory `dist`, no secrets, no CI file. Every other
+branch that Pages builds gets an amber "preview" banner above the header
+automatically (`src/deploy.ts`). Details and the manual SEO review in
+[`docs/how-to/check-and-deploy.md`](docs/how-to/check-and-deploy.md).
 
-Restrict Pages builds to `main` (+ `dev`/`int` if used) under
-Settings → Builds & Deployments → Branch control. The free tier allows 500
-builds/month across all projects.
+## Branching
 
----
+Work on feature branches; one commit per feature; never commit to `main`
+directly; delete branches after merging. `main` is what is live.
 
-# Manual SEO review
+## Tech stack
 
-Run this after any structural change and once a quarter. It is deliberately
-all-manual and free — no tooling to install. Deeper strategy (content, E-E-A-T,
-GEO) lives in `administration/discussions/seo.md`; this is the mechanical check
-for *this* repo.
+| Layer | Choice | Why |
+|---|---|---|
+| Framework | [Astro](https://astro.build/) 7, static output | Markdown content in git, zero JS by default, one origin for several sections |
+| Styling | [Tailwind CSS](https://tailwindcss.com/) 4 via the Vite plugin | Utility classes in the markup; colour tokens in `global.css` switch light/dark |
+| Content | Astro content collections with Zod schemas | A typo in frontmatter fails the build, not the live site |
+| Diagrams | [Mermaid](https://mermaid.js.org/) in blog Markdown, rendered in the browser | Only loaded on pages that contain a diagram |
+| Fonts | Inter, self-hosted via `@fontsource-variable/inter` | No third-party request, no render-blocking |
+| Forms | [FormSubmit](https://formsubmit.co) | Static site, no backend; see [ADR 0004](docs/adr/0004-formsubmit-contact-form.md) |
+| Hosting | Cloudflare Pages | Free, git-connected, `_redirects` file for moved URLs |
+| Checks | `astro check`, own link checker, own contrast checker, pre-push hook | Broken links and unreadable colours never reach `main` |
 
-## A. Manual checks against `dist/`
+## History
 
-```bash
-npm run build
-```
+Everything before September 2026 lived in four repositories and four
+subdomains. What happened since, condensed:
 
-**1. Every page has exactly one H1 and a unique title**
+| When | What | Why |
+|---|---|---|
+| 2026-09-10 | Four sites merged into one Astro project, one domain | Authority collects on one domain; one identity in schema.org instead of three competing ones |
+| 2026-09-10 | Shared header, footer, contact form, legal pages, portrait | Each existed several times; single copies cannot drift |
+| 2026-09-10 | Home page restructured, audience pages `/schools/`, `/companies/`, `/individuals/` | The offer is meant to cover adult education, not only schools |
+| 2026-09-10 | English route segments, link checker, pre-push hook | Folders without `index.html` were served as 404 and slipped through naive checks |
+| 2026-09-10 | Environment banner on preview deployments | The old `int` branch carried a source change and drifted from `main` |
+| 2026-09-10 | Dark mode via colour tokens | About 590 colour classes; token switching needs no `dark:` variants |
+| 2026-09-10 | `/en/` with German fallback | Complete English URL tree from day one; every translation replaces a fallback |
+| 2026-09-10 | Reference projects moved out to GitHub Pages | 36 MB of never-changing copies were three quarters of every deploy |
+| 2026-09-11 | Contrast fixes, Astro 7, tables and diagrams that fit on a phone | Measured, not guessed: `check-contrast.mjs`, headless Chrome measurements |
+| 2026-09-11 | Repo cleanup: home and audience pages exist once, folder `src/schools/`, `docs/` | Every layout change had to be made twice, docs described an older state |
 
-```bash
-python3 - <<'PY'
-import re, pathlib
-d = pathlib.Path("dist"); titles = {}
-for p in sorted(d.rglob("*.html")):
-    if "projects" in p.relative_to(d).parts: continue
-    h = p.read_text(errors="ignore")
-    n = len(re.findall(r"<h1[\s>]", h))
-    t = (re.search(r"<title>(.*?)</title>", h, re.S) or [None,""])[1]
-    r = "/" + str(p.relative_to(d)).replace("index.html","")
-    if n != 1: print(f"  H1={n}  {r}")
-    titles.setdefault(t, []).append(r)
-for t, rs in titles.items():
-    if len(rs) > 1: print(f"  DUPLICATE TITLE {t!r}: {rs}")
-print("done")
-PY
-```
-Zero output before `done` = pass. A page with no H1 usually means a `Section`
-that should carry `as="h1"` doesn't.
+The reasoning behind each structural decision is in
+[`docs/adr/`](docs/adr/README.md).
 
-**2. No broken internal links** — automated, nothing to do here
+## Known gaps
 
-```bash
-npm run check:links
-```
+Recorded so they are not mistaken for oversights. None is urgent.
 
-This runs on every push via `.githooks/pre-push`. An earlier version of this
-checklist had an inline script for it; it was removed because it asked "does
-the path exist", which treats a folder without an `index.html` as valid when
-the host serves it as a 404. `scripts/check-links.mjs` resolves links the way
-the host does instead.
-
-**3. Meta descriptions present and 120–160 characters**
-
-```bash
-grep -rho '<meta name="description" content="[^"]*"' dist --include='*.html' \
-  | sed 's/.*content="//;s/"$//' | awk '{ print length(), $0 }' | sort -n | head -5
-```
-Anything under ~80 or over ~170 characters is worth rewriting. Homepages may
-keep the `SITE` default; every other page should have its own.
-
-**4. Structured data is one block with the right nodes**
-
-```bash
-python3 - <<'PY'
-import re, json, pathlib
-for f in ["dist/index.html", "dist/blog/how-to-mislead-ai/index.html",
-          "dist/education/angebote/ki-lehrerworkshop/index.html"]:
-    h = pathlib.Path(f).read_text()
-    b = re.findall(r'<script type="application/ld\+json">(.*?)</script>', h, re.S)
-    print(f, len(b), [[n.get("@type") for n in json.loads(x).get("@graph",[json.loads(x)])] for x in b])
-PY
-```
-Expected: exactly **1** block each, with
-`['Person','Organization','WebSite','ProfilePage']` on the home page,
-`[…,'WebPage','BlogPosting']` on a post, `[…,'WebPage','Service']` on an offer.
-More than one block, or a second `Person`, means a section re-declared identity —
-that is the bug this structure exists to prevent.
-
-**5. Canonical matches the real URL and the sitemap is complete**
-
-```bash
-grep -rho '<link rel="canonical" href="[^"]*"' dist --include='*.html' | sort -u
-grep -o '<loc>[^<]*</loc>' dist/sitemap-0.xml | sed 's/<[^>]*>//g' | sort
-```
-Every canonical must start `https://felix-paul.de` and match where the file
-actually sits. Confirmation pages (`/thank-you/`, `/education/danke/`) must
-**not** appear in the sitemap.
-
-## B. After deploying — checks in the browser
-
-1. **Rich Results Test** — <https://search.google.com/test/rich-results>, paste
-   the homepage, a blog post and an offer page. Person/BlogPosting/Service must
-   be detected without errors.
-2. **Schema.org validator** — <https://validator.schema.org/> for the raw graph.
-3. **PageSpeed Insights** — <https://pagespeed.web.dev/>, mobile tab. Targets:
-   LCP < 2.5 s, INP < 200 ms, CLS < 0.1.
-4. **Social preview** — paste a URL into WhatsApp or LinkedIn and confirm the
-   right OG image appears (main site, blog and education have different ones).
-5. **`site:` check** — `site:felix-paul.de` in Google and Bing. Count the
-   indexed pages; compare against the 22 in the sitemap.
-
-## C. Search Console and Bing — after this merge specifically
-
-The old subdomain properties are dead. Do this once:
-
-1. **Google Search Console** → the `felix-paul.de` Domain property is the only
-   one that matters now. Submit `https://felix-paul.de/sitemap-index.xml`.
-2. Use **URL Inspection → Request indexing** for `/`, `/blog/`, `/education/`.
-3. **Bing Webmaster Tools** → import from Search Console (fastest), submit the
-   same sitemap. Bing feeds ChatGPT and Copilot, so skipping it costs AI visibility.
-4. Delete the `blog.`, `edu.`, `neck.`, `tierparks.`, `codenight.` properties
-   once they stop reporting — they can no longer be verified anyway.
-5. Watch **Index coverage** for 4–6 weeks. The old subdomain URLs will drop out
-   as 404s; that is expected and needs no action, since nothing resolves there.
-
-## D. Recurring, quarterly
-
-- Re-run section A after any structural change.
-- Re-check Core Web Vitals in Search Console (field data, not lab).
-- Ask ChatGPT, Perplexity and Google AI Mode a question your content answers —
-  see whether you get cited. That is the GEO half of `discussions/seo.md`.
+- No RSS feed for the blog (`@astrojs/rss`, about half an hour).
+- The sitemap has no `lastmod`; blog posts could pass `pubDate`.
+- All pages share one `og:image` per section; per-post images would make
+  shared links distinguishable.
+- No `BreadcrumbList` in the schema.org graph.
+- `/blog/` ships the full text of every post in a `data-search` attribute
+  (about 245 KB) so that search works offline. Deliberate; revisit if the
+  blog grows.
+- `public/llms.txt` is hand-written and nothing checks it against `AREAS`.
+- The "Aktuelles" section (`src/news/`) exists but is hidden until it has
+  more than one entry.
