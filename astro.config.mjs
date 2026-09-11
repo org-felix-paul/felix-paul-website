@@ -3,7 +3,7 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import { unified } from "@astrojs/markdown-remark";
 import rehypeSlug from "rehype-slug";
-import rehypeTableScroll from "./src/blog/plugins/rehype-table-scroll.mjs";
+import rehypeTableWrap from "./src/blog/plugins/rehype-table-wrap.mjs";
 import remarkMermaid from "./src/blog/plugins/remark-mermaid.mjs";
 import { echteEnglischeRouten } from "./src/i18n/pages.mjs";
 
@@ -58,7 +58,7 @@ export default defineConfig({
       remarkPlugins: [remarkMermaid],
       // rehype-slug gives every heading a GitHub-style anchor id so the tables
       // of contents can jump to a section.
-      rehypePlugins: [rehypeSlug, rehypeTableScroll],
+      rehypePlugins: [rehypeSlug, rehypeTableWrap],
     }),
   },
   // Tailwind läuft seit Astro 7 (Vite 8) über das Vite-Plugin statt über
