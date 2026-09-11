@@ -36,21 +36,25 @@ const bausteine = [
     title="Für Privatpersonen"
     lead="Erwachsenenbildung für Einzelne und kleine Gruppen – individuell zugeschnitten."
   >
-    <div class="mx-auto max-w-3xl">
-      <p class="text-base leading-relaxed text-ink-700">
-        KI veränder die Art und Weise wie wir arbeiten. Mit zielgerichteter Individualberatung bleiben Sie wettbewerbsfähig. 
-        Beschleunigen Sie nicht nur Einzelaufgaben oder manuelle Workflows, sondern denken Sie Wertschöpfungsketten neu. 
+    <div class="max-w-2xl">
+      <p class="text-[1.0625rem] leading-relaxed text-ink-700">
+        KI veränder die Art und Weise wie wir arbeiten. Mit zielgerichteter Individualberatung bleiben Sie wettbewerbsfähig.
+        Beschleunigen Sie nicht nur Einzelaufgaben oder manuelle Workflows, sondern denken Sie Wertschöpfungsketten neu.
         Dazu unterstütze ich gerne mit individueller Beratung.
       </p>
     </div>
 
-    <div class="mt-8 grid gap-4 sm:grid-cols-2">
+    {/* Vier Rasterzellen mit laufender Nummer: die Bausteine bauen
+        aufeinander auf (anwenden → integrieren → neu schaffen → skalieren),
+        und die Nummer macht genau diese Reihenfolge sichtbar. */}
+    <div class="cellgrid mt-10 sm:grid-cols-2">
       {
-        bausteine.map((b) => (
-          <article class="relative flex flex-col overflow-hidden rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
-            <span class="absolute inset-x-0 top-0 h-1 bg-amber-500" aria-hidden="true" />
-            <h2 class="text-lg font-semibold text-ink-900">{b.title}</h2>
-            <p class="mt-2 text-sm leading-relaxed text-ink-600">{b.text}</p>
+        bausteine.map((b, i) => (
+          <article class="flex flex-col p-6">
+            <span class="-mx-6 -mt-6 mb-5 h-[3px] bg-amber-500" aria-hidden="true" />
+            <span class="label text-ink-400" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+            <h2 class="mt-2 text-lg font-semibold text-ink-900">{b.title}</h2>
+            <p class="mt-2 text-[0.9375rem] leading-relaxed text-ink-600">{b.text}</p>
           </article>
         ))
       }
@@ -59,20 +63,20 @@ const bausteine = [
     <!-- Dominanter Abschluss-CTA, gleiche Behandlung wie auf /schools/: dies
          ist die eigentliche Handlung der Seite, und ein blasser Kasten in
          Fließtextgröße wurde ihr nicht gerecht. -->
-    <div class="mt-10 grid items-center gap-10 rounded-3xl bg-gradient-to-br from-brand-700 to-brand-900 p-8 text-white md:grid-cols-[2fr_1fr] md:p-12">
+    <div class="mt-12 grid items-center gap-8 bg-brand-800 p-8 text-white md:grid-cols-[2fr_auto] md:p-12">
       <div>
-        <h2 class="font-display text-3xl font-bold leading-tight md:text-4xl">
+        <h2 class="font-display text-2xl font-bold leading-tight md:text-4xl">
           Jetzt individuelle Beratung anfragen
         </h2>
-        <p class="mt-3 max-w-xl text-brand-100">
-          Schreiben Sie mir formlos – ich melde mich werktags innerhalb von 48 Stunden zurück. 
-          Umfang, Format und Preis hängen davon ab, worum es gehen soll und wie viele Teilnehmer Sie sind. 
+        <p class="mt-4 max-w-xl text-[0.9375rem] leading-relaxed text-brand-100">
+          Schreiben Sie mir formlos – ich melde mich werktags innerhalb von 48 Stunden zurück.
+          Umfang, Format und Preis hängen davon ab, worum es gehen soll und wie viele Teilnehmer Sie sind.
         </p>
       </div>
       <div class="flex md:justify-end">
         <a
           href={PATHS.kontakt}
-          class="inline-flex items-center justify-center rounded-lg bg-surface px-6 py-3 text-base font-semibold text-brand-800 shadow-sm transition hover:bg-brand-50"
+          class="inline-flex min-h-12 items-center justify-center bg-surface px-6 text-sm font-semibold text-brand-800 transition hover:bg-brand-50"
         >
           Jetzt anfragen
         </a>

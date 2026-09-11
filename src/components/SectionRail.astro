@@ -1,0 +1,229 @@
+---
+// Das Abschnittsverzeichnis der Seite — ein Inhaltsverzeichnis, das mitläuft.
+//
+// EIN Markup für zwei Erscheinungsformen, nicht zwei Kopien: ab 1024px die
+// feste Seitenspalte links neben dem Text, darunter eine waagerecht
+// scrollende Chipleiste, die unter der Kopfzeile klebt. Zwei DOM-Bäume hätten
+// zwei Navigations-Landmarken mit demselben Namen ergeben und zwei Stellen,
+// an denen dieselbe Liste gepflegt werden müsste.
+//
+// Die aktive Markierung kommt NICHT aus einem zweiten Beobachter: die Links
+// tragen dasselbe `data-spy` wie die Einträge der Hauptnavigation, und der
+// Scroll-Beobachter in SiteHeader.astro setzt auf allem, was `data-spy` trägt,
+// `aria-current`. Kopfzeile und Seitenspalte können dadurch nicht
+// widersprüchlich leuchten.
+// Beschriftet wird mit dem Mikro-Label des Abschnitts, nicht mit seinem
+// Titel: ein Verzeichnis, dessen Zeilen dreizeilig umbrechen, ist keines.
+import { nummer, type RailItem } from "./outline";
+
+interface Props {
+  items: readonly RailItem[];
+  /** Zugänglicher Name der Landmarke. Sprache der Seite. */
+  navLabel: string;
+}
+
+const { items, navLabel } = Astro.props;
+---
+
+<nav class="doc-rail" aria-label={navLabel}>
+  <div class="doc-rail__inner">
+    <ol class="railnav">
+      {
+        items.map((item, i) => (
+          <li class="railnav__item">
+            <a href={`#${item.id}`} data-spy={item.id} class="railnav__link">
+              <span class="railnav__num">{nummer(i)}</span>
+              <span class="railnav__label">{item.label}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</nav>
+
+<style>
+  /* ── unter 1024px: klebende Chipleiste ─────────────────────────────────
+     Der Bruch ist bewusst gestaltet und kein Rest: aus der senkrechten Liste
+     wird eine waagerechte Leiste, die dieselbe Nummerierung behält und
+     denselben Eintrag hervorhebt. Sie bricht seitlich aus dem Innenabstand
+     des Rahmens aus, damit sie von Kante zu Kante läuft. */
+  .doc-rail {
+    position: sticky;
+    top: var(--header-h);
+    z-index: 30;
+    margin-inline: -1.5rem;
+    background-color: var(--color-canvas);
+    border-block: 1px solid var(--color-rule);
+  }
+
+  .doc-rail__inner {
+    overflow-x: auto;
+    /* Die Leiste scrollt seitlich, das Dokument darf das nie. */
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .doc-rail__inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .railnav {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .railnav__item + .railnav__item {
+    border-left: 1px solid var(--color-rule-soft);
+  }
+
+  .railnav__link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* 48px hoch: über der 44px-Untergrenze für Berührungsziele. */
+    height: 3rem;
+    padding-inline: 0.875rem;
+    white-space: nowrap;
+    color: var(--color-ink-600);
+    transition: color 150ms ease, background-color 150ms ease;
+  }
+
+  /* Der erste Chip beginnt genau am Seitensteg, damit die Leiste an derselben
+     Kante hängt wie der Text darunter. */
+  .railnav__item:first-child .railnav__link {
+    padding-left: 1.5rem;
+  }
+
+  .railnav__item:last-child .railnav__link {
+    padding-right: 1.5rem;
+  }
+
+  .railnav__link:hover {
+    background-color: var(--color-ink-50);
+    color: var(--color-ink-900);
+  }
+
+  .railnav__num {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-ink-400);
+  }
+
+  .railnav__label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  /* Der laufende Abschnitt: volle Textfarbe, Markenfarbe auf der Ziffer und
+     eine 2px-Kante — dieselbe Sprache wie die aktive Kopfzeilen-Navigation. */
+  .railnav__link[aria-current] {
+    color: var(--color-ink-900);
+    background-color: var(--color-brand-50);
+    box-shadow: inset 0 -2px 0 0 var(--color-brand-700);
+  }
+
+  .railnav__link[aria-current] .railnav__num {
+    color: var(--color-brand-700);
+  }
+
+  /* ── ab 1024px: feste Seitenspalte ─────────────────────────────────── */
+  @media (min-width: 1024px) {
+    .doc-rail {
+      position: static;
+      z-index: auto;
+      margin-inline: 0;
+      background-color: transparent;
+      border-block: 0;
+      border-right: 1px solid var(--color-rule);
+    }
+
+    .doc-rail__inner {
+      position: sticky;
+      top: calc(var(--header-h) + 2.5rem);
+      max-height: calc(100vh - var(--header-h) - 5rem);
+      overflow-x: visible;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    .railnav {
+      display: block;
+    }
+
+    .railnav__item + .railnav__item {
+      border-left: 0;
+      border-top: 1px solid var(--color-rule-soft);
+    }
+
+    .railnav__link {
+      display: grid;
+      grid-template-columns: 1.5rem minmax(0, 1fr);
+      gap: 0.625rem;
+      align-items: baseline;
+      height: auto;
+      min-height: 2.75rem;
+      /* Der Innenabstand sitzt am Link, nicht an der Spalte: nur so endet der
+         Link genau auf der Rasterlinie und die aktive Markierung liegt AUF
+         der Linie statt anderthalb Zentimeter daneben. */
+      padding: 0.6875rem 1.5rem 0.6875rem 0;
+      white-space: normal;
+    }
+
+    .railnav__item:first-child .railnav__link,
+    .railnav__item:last-child .railnav__link {
+      padding-left: 0;
+      padding-right: 1.5rem;
+    }
+
+    .railnav__link[aria-current] {
+      background-color: transparent;
+      /* Der Balken sitzt auf der Rasterkante rechts, an der die Spalte
+         ohnehin endet — die Markierung liegt damit auf der Linie und nicht
+         daneben. */
+      box-shadow: inset -2px 0 0 0 var(--color-brand-700);
+    }
+
+    .railnav__label {
+      font-size: 0.8125rem;
+      line-height: 1.35;
+    }
+  }
+</style>
+
+<script>
+  // Die Chipleiste kann breiter sein als der Bildschirm. Läuft der Leser in
+  // einen Abschnitt, dessen Chip gerade außerhalb liegt, wäre die Markierung
+  // unsichtbar — die Leiste schiebt ihn deshalb nach. Bewusst über scrollLeft
+  // statt scrollIntoView: letzteres kann die ganze Seite mitscrollen.
+  const leiste = document.querySelector<HTMLElement>(".doc-rail__inner");
+  if (leiste) {
+    const sanft = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const nachfuehren = () => {
+      // Nur in der waagerechten Darstellung; die Seitenspalte scrollt nicht.
+      if (leiste.scrollWidth <= leiste.clientWidth) return;
+      const aktiv = leiste.querySelector<HTMLElement>("[aria-current]");
+      if (!aktiv) return;
+      const ziel = aktiv.offsetLeft - (leiste.clientWidth - aktiv.offsetWidth) / 2;
+      leiste.scrollTo({
+        left: Math.max(0, ziel),
+        behavior: sanft ? "smooth" : "auto",
+      });
+    };
+
+    // aria-current wird vom Scroll-Beobachter in SiteHeader.astro gesetzt.
+    // Statt den Beobachter zu duplizieren, wird hier nur beobachtet, wann er
+    // etwas ändert.
+    const beobachter = new MutationObserver(nachfuehren);
+    beobachter.observe(leiste, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["aria-current"],
+    });
+  }
+</script>

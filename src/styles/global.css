@@ -53,8 +53,25 @@
   --color-surface: var(--c-surface);
   --color-canvas: var(--c-canvas);
 
+  /* Die tragende Haarlinie dieses Layouts. Eigenes Token, weil sie eine
+     ANDERE Aufgabe hat als border-ink-200: sie trägt die Gliederung und muss
+     deshalb in beiden Schemata 3:1 gegen ihre Fläche schaffen (WCAG 1.4.11
+     für UI-Komponenten). ink-200 schafft auf Weiß nur 1,4:1 — als weiche
+     Kastenkante genügt das, als Rasterlinie nicht.
+     Gemessen: hell 3,5:1 auf surface / 3,3:1 auf ink-50;
+               dunkel 4,2:1 auf surface / 4,0:1 auf ink-50. */
+  --color-rule: var(--c-rule);
+  /* Zweite Ordnung: Zeilentrenner innerhalb eines Blocks. Darf leiser sein,
+     weil daneben immer schon eine Rasterlinie erster Ordnung steht. */
+  --color-rule-soft: var(--c-rule-soft);
+
   --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-display: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  /* Die Ziffern- und Marken-Schrift dieses Layouts: Abschnittsnummern,
+     Datumsspalten und Mikro-Labels. Tabellarische Ziffern sind der Grund —
+     eine Datumsspalte, deren Zeichen unterschiedlich breit sind, ist keine
+     Spalte. */
+  --font-mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
 
 /* ── Helles Schema ─────────────────────────────────────────────────────── */
@@ -107,6 +124,9 @@
 
   --c-surface: #ffffff;
   --c-canvas: #ffffff;
+
+  --c-rule: #7a8a9e;
+  --c-rule-soft: #c3ccd8;
 }
 
 /* ── Dunkles Schema ────────────────────────────────────────────────────────
@@ -164,6 +184,25 @@
 
   --c-surface: #131820;
   --c-canvas: #0d1117;
+
+  --c-rule: #6b7c95;
+  --c-rule-soft: #333d4d;
+}
+
+/* ── Maße, die mehrere Bausteine teilen ───────────────────────────────────
+   Die Kopfzeile ist klebend. Jeder Anker, jedes zweite klebende Element und
+   jedes scroll-margin muss ihre Höhe kennen — deshalb steht sie hier einmal
+   und nicht als geratene Zahl an fünf Stellen.                             */
+:root {
+  --header-h: 4.25rem;
+  /* Unter 1024px ersetzt eine waagerechte Chipleiste die Seitenspalte. */
+  --railbar-h: 3rem;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --railbar-h: 0rem;
+  }
 }
 
 html {
@@ -176,6 +215,186 @@ body {
   background-color: var(--color-canvas);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ein angesprungener Abschnitt darf nicht unter der klebenden Kopfzeile und
+   der Chipleiste verschwinden. */
+:where([id]) {
+  scroll-margin-top: calc(var(--header-h) + var(--railbar-h) + 1.5rem);
+}
+
+/* Sichtbarer Tastaturfokus auf allem, was Fokus bekommen kann. Vorher hing
+   das an einzelnen focus:ring-Klassen und fehlte auf den meisten Links. */
+:where(a, button, summary, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-brand-700);
+  outline-offset: 2px;
+}
+
+/* Wer Bewegung abbestellt hat, bekommt keine — auch nicht das weiche
+   Scrollen, das bisher unbedingt aktiv war. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ══ Rasterbausteine ══════════════════════════════════════════════════════
+   Experiment 4 trägt seine Gliederung sichtbar: eine feste Seitenspalte mit
+   dem Abschnittsverzeichnis, nummerierte Abschnitte, Haarlinien als Struktur
+   statt als Dekoration. Die Mechanik steht hier einmal, damit sie nicht als
+   Klassenwolke in zehn Dateien kopiert wird.                                */
+
+/* ── Mikro-Label ──────────────────────────────────────────────────────────
+   Die frühere Kopfzeile („eyebrow") war Zierrat. Hier ist sie ein
+   Strukturhinweis: Monospace, versal, gesperrt, klein — dieselbe Familie wie
+   die Abschnittsnummern und die Datumsspalten. */
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Dokumentraster: Seitenspalte + Inhalt ────────────────────────────── */
+.doc {
+  margin-inline: auto;
+  max-width: 84rem;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .doc {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 1fr);
+    column-gap: 3rem;
+  }
+}
+
+/* Die Seitenspalte selbst (das Abschnittsverzeichnis) bringt ihre Darstellung
+   mit: src/components/SectionRail.astro. Hier steht nur, dass sie die erste
+   Spalte des Rasters ist — sie wird über die ganze Zeilenhöhe gedehnt
+   (Grid-Vorgabe `stretch`), damit ihr klebendes Inneres überhaupt Weg hat.
+   Wäre sie `align-self: start`, hätte sticky keinen Raum und griffe nie. */
+
+/* ── Ein Abschnitt ────────────────────────────────────────────────────────
+   Aussen die durchgehende Haarlinie, innen das asymmetrische Zweispaltige:
+   Nummer, Label und Überschrift links und schmal, alles Übrige rechts und
+   breit. Beide hängen an derselben Kante. */
+.doc-section {
+  border-top: 1px solid var(--color-rule);
+}
+
+.doc-section__inner {
+  margin-inline: auto;
+  max-width: 72rem;
+  padding-inline: 1.5rem;
+  padding-block: 3.25rem;
+  /* Der Umbruchpunkt der Innenspalten richtet sich nach dem PLATZ, den der
+     Abschnitt hat, nicht nach der Fensterbreite: mit Seitenspalte steht ihm
+     deutlich weniger zur Verfügung als ohne. Eine Media Query würde das
+     verwechseln und bei 1024px zwei Spalten in 460px pressen. */
+  container-type: inline-size;
+}
+
+/* Innerhalb des Dokumentrasters bringt der Rahmen die Breite und den
+   Innenabstand schon mit — der Abschnitt darf beides nicht doppeln. */
+.doc-body .doc-section__inner {
+  max-width: none;
+  padding-inline: 0;
+}
+
+@media (min-width: 768px) {
+  .doc-section__inner {
+    padding-block: 4.5rem;
+  }
+}
+
+.doc-section__grid {
+  display: grid;
+  gap: 1.75rem;
+}
+
+@container (min-width: 52rem) {
+  .doc-section__grid {
+    grid-template-columns: minmax(0, 13.5rem) minmax(0, 1fr);
+    column-gap: 3rem;
+    row-gap: 0;
+    align-items: start;
+  }
+
+  /* Ein Abschnitt ohne Kopf (reiner Abschluss-Block) hat nichts, was in die
+     schmale Spalte gehörte — er nimmt die ganze Breite. */
+  .doc-section__grid--full {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Die Kopfspalte klebt mit: bei einem langen Abschnitt bleibt sichtbar,
+   worüber man gerade liest. */
+@container (min-width: 52rem) {
+  .doc-section__head {
+    position: sticky;
+    top: calc(var(--header-h) + 2.5rem);
+  }
+}
+
+/* ── Zellraster ───────────────────────────────────────────────────────────
+   Karten werden zu Rasterzellen. Der 1px-Abstand zeigt den Hintergrund des
+   Rahmens und wird dadurch selbst zur Linie: keine doppelten Kanten an
+   Nachbarzellen, kein Nachrechnen bei Umbrüchen, jede Spaltenzahl möglich. */
+.cellgrid {
+  display: grid;
+  gap: 1px;
+  background-color: var(--color-rule);
+  border: 1px solid var(--color-rule);
+}
+
+.cellgrid > * {
+  background-color: var(--color-surface);
+}
+
+/* ── Satzspiegel für Datensätze ───────────────────────────────────────────
+   Nachrichten, Publikationen und Blogteaser sind Einträge, keine Prospekte:
+   linksbündige Zeilen mit einer durchlaufenden Datums- bzw. Kennungsspalte.
+   Eigener Container, weil eine Liste sowohl im Dokumentraster als auch frei
+   auf einer Seite stehen kann und die Spalte in beiden Fällen erst dann
+   entstehen soll, wenn sie wirklich passt. */
+.recordlist {
+  border-top: 1px solid var(--color-rule);
+  container-type: inline-size;
+}
+
+.recordlist > * {
+  border-bottom: 1px solid var(--color-rule-soft);
+}
+
+.recordlist > *:last-child {
+  border-bottom-color: var(--color-rule);
+}
+
+.record {
+  display: grid;
+  gap: 0.25rem 1.5rem;
+  padding-block: 1rem;
+  align-items: baseline;
+}
+
+@container (min-width: 34rem) {
+  .record {
+    grid-template-columns: 7.5rem minmax(0, 1fr) auto;
+  }
 }
 
 .prose-content :where(h2):not(:first-child) {
@@ -202,6 +421,14 @@ body {
   color: var(--color-ink-900);
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
+}
+
+/* 17px ist die Untergrenze für Fließtext auf Armlänge (Apple HIG: Body 17pt).
+   Der Rest der Seite ist dichter geworden — der Lesetext darf das nicht. */
+.prose-content p,
+.prose-content ul,
+.prose-content ol {
+  font-size: 1.0625rem;
 }
 
 .prose-content p {
@@ -269,9 +496,8 @@ body {
   transform: translateX(-50%);
   margin-bottom: 1.5rem;
   overflow-x: auto;
-  /* Ein per Tastatur fokussierbarer Bereich braucht einen sichtbaren Fokus. */
-  border-radius: 0.5rem;
 }
+/* Ein per Tastatur fokussierbarer Bereich braucht einen sichtbaren Fokus. */
 .prose-content .table-scroll:focus-visible {
   outline: 2px solid var(--color-brand-700);
   outline-offset: 2px;
@@ -292,7 +518,7 @@ body {
 
 .prose-content th,
 .prose-content td {
-  border: 1px solid var(--color-ink-200);
+  border: 1px solid var(--color-rule-soft);
   padding: 0.5rem 0.75rem;
   text-align: left;
 }
@@ -363,8 +589,7 @@ body {
   visibility: visible;
   display: block;
   overflow-x: auto;
-  border: 1px solid var(--color-ink-200);
-  border-radius: 0.75rem;
+  border: 1px solid var(--color-rule);
   background: var(--color-ink-50);
   padding: 1rem;
   text-align: left;

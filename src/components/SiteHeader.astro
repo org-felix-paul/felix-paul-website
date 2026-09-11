@@ -96,15 +96,18 @@ const beschriftung = (e: { label: string; labelEn?: string }) =>
 // gerade wer die Seite vorgelesen bekommt, will das vorher wissen.
 const fremd = (e: { fremdsprachig?: boolean }) => lang === "en" && e.fremdsprachig;
 const fremdKlasse =
-  "ml-2 rounded-sm bg-ink-100 px-1.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-ink-500";
+  "ml-2 border border-rule-soft px-1.5 py-0.5 font-mono text-[0.65rem] font-semibold uppercase tracking-wider text-ink-500";
 
 // Externe Ziele öffnen in einem neuen Tab. rel="noopener" ist dabei Pflicht:
 // ohne das bekommt die Zielseite über window.opener Zugriff auf diese hier.
 const zielAttribute = (e: { external?: boolean }) =>
   e.external ? { target: "_blank", rel: "noopener noreferrer" } : {};
 
+// Der aktive Eintrag markiert sich mit einer 2px-Kante, die auf der
+// Unterkante der Kopfzeile sitzt — dieselbe Sprache wie die Markierung im
+// Abschnittsverzeichnis der Seitenspalte.
 const linkClass =
-  "border-b-2 border-transparent pb-0.5 transition-colors hover:text-brand-700 aria-[current]:border-brand-600 aria-[current]:text-brand-700";
+  "inline-flex h-full min-h-11 items-center border-b-2 border-transparent transition-colors hover:text-brand-700 aria-[current]:border-brand-700 aria-[current]:text-brand-700";
 import ThemeToggle from "./ThemeToggle.astro";
 import { uebersetzer } from "../i18n/ui";
 import LanguageLink from "./LanguageLink.astro";
@@ -112,23 +115,27 @@ const t = uebersetzer(lang);
 ---
 
 <header
-  class="sticky top-0 z-40 border-b border-ink-100 bg-surface/80 backdrop-blur supports-[backdrop-filter]:bg-surface/70"
+  class="sticky top-0 z-40 border-b border-rule bg-surface/85 backdrop-blur supports-[backdrop-filter]:bg-surface/75"
 >
-  <div class={`mx-auto flex ${width} items-center justify-between gap-6 px-6 py-4`}>
-    <a href={toHref(home)} class="flex items-center gap-2 font-display font-semibold tracking-tight">
+  {/* Feste Höhe statt Innenabstand: nur so reicht ein Navigationseintrag bis
+      an die Unterkante der Kopfzeile, und seine 2px-Markierung liegt AUF der
+      Rasterlinie statt einen Zentimeter darüber. Die Höhe steht als
+      --header-h in global.css, weil Anker und Chipleiste sie kennen müssen. */}
+  <div class={`mx-auto flex ${width} h-[var(--header-h)] items-stretch justify-between gap-6 px-6`}>
+    <a href={toHref(home)} class="flex items-center gap-2.5 font-display font-semibold tracking-tight">
       {
         logo ? (
-          <img src={logo} alt={logoAlt} width="36" height="36" class="h-9 w-9 rounded-lg" />
+          <img src={logo} alt={logoAlt} width="36" height="36" class="h-9 w-9" />
         ) : (
           <span
-            class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-brand-700 font-bold text-white"
+            class="inline-flex h-9 w-9 items-center justify-center bg-brand-700 font-mono text-sm font-bold tracking-tight text-white"
             aria-hidden="true"
           >
             {initials}
           </span>
         )
       }
-      <span class="text-lg text-ink-900" set:html={
+      <span class="text-[1.0625rem] text-ink-900" set:html={
         wordmarkAccent
           ? `${wordmark} <span class="text-brand-700">${wordmarkAccent}</span>`
           : wordmark
@@ -138,11 +145,11 @@ const t = uebersetzer(lang);
     {
       nav.length > 0 && (
         <nav aria-label="Hauptnavigation" class="hidden lg:block">
-          <ul class="flex items-center gap-7 text-sm font-medium text-ink-700">
+          <ul class="flex h-full items-stretch gap-7 text-sm font-medium text-ink-700">
             {nav.map((entry) =>
               isGroup(entry) ? (
-                <li>
-                  <details class="group relative" data-nav-group>
+                <li class="flex">
+                  <details class="group relative flex" data-nav-group>
                     <summary
                       data-spy-group={entry.items.map((i) => i.spy).filter(Boolean).join(" ")}
                       class={`flex cursor-pointer list-none items-center gap-1 ${linkClass}`}
@@ -159,7 +166,7 @@ const t = uebersetzer(lang);
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                       </svg>
                     </summary>
-                    <ul class="absolute right-0 z-50 mt-3 w-64 overflow-hidden rounded-xl border border-ink-200 bg-surface p-1 shadow-lg">
+                    <ul class="absolute top-full right-0 z-50 w-72 border border-rule bg-surface">
                       {entry.items.map((item) => (
                         <li>
                           <a
@@ -167,7 +174,7 @@ const t = uebersetzer(lang);
                             {...zielAttribute(item)}
                             data-spy={item.spy}
                             data-nav-close
-                            class="block rounded-lg px-3 py-2 text-ink-700 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
+                            class="flex min-h-11 items-center border-b border-rule-soft px-4 text-ink-700 transition last:border-b-0 hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
                           >
                             {beschriftung(item)}
                             {fremd(item) && <span class={fremdKlasse}>in German</span>}
@@ -178,7 +185,7 @@ const t = uebersetzer(lang);
                   </details>
                 </li>
               ) : (
-                <li>
+                <li class="flex">
                   <a
                     href={toHref(entry.href)}
                     {...zielAttribute(entry)}
@@ -197,14 +204,14 @@ const t = uebersetzer(lang);
       )
     }
 
-    <div class="hidden items-center gap-2 lg:flex">
+    <div class="hidden items-center gap-1 lg:flex">
       <LanguageLink />
       <ThemeToggle />
       {
         cta && (
           <a
             href={toHref(cta.href)}
-            class="rounded-lg bg-brand-700 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-800"
+            class="inline-flex min-h-11 items-center bg-brand-700 px-4 text-sm font-semibold text-white transition hover:bg-brand-800"
           >
             {cta.label}
           </a>
@@ -217,7 +224,7 @@ const t = uebersetzer(lang);
       <ThemeToggle />
     <button
       type="button"
-      class="rounded-lg p-2 text-ink-700 hover:bg-ink-50"
+      class="inline-flex h-11 w-11 items-center justify-center text-ink-700 transition hover:bg-ink-50 hover:text-ink-900"
       aria-controls="mobile-nav"
       aria-expanded="false"
       data-mobile-menu-button
@@ -230,8 +237,8 @@ const t = uebersetzer(lang);
     </div>
   </div>
 
-  <nav id="mobile-nav" aria-label="Mobile Navigation" class="hidden border-t border-ink-100 lg:hidden" data-mobile-menu>
-    <ul class="space-y-1 px-6 py-4 text-base font-medium text-ink-800">
+  <nav id="mobile-nav" aria-label="Mobile Navigation" class="hidden border-t border-rule bg-surface lg:hidden" data-mobile-menu>
+    <ul class="text-[0.9375rem] font-medium text-ink-800">
       {
         nav.map((entry) =>
           isGroup(entry) ? (
@@ -242,8 +249,8 @@ const t = uebersetzer(lang);
              * Menü wird lang und die Gliederung ist nicht mehr erkennbar.
              */
             <li>
-              <details class="group/mobile">
-                <summary class="flex cursor-pointer list-none items-center justify-between rounded-md px-3 py-2 transition hover:bg-ink-50 hover:text-brand-700">
+              <details class="group/mobile border-b border-rule-soft">
+                <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between px-6 transition hover:bg-ink-50 hover:text-brand-700">
                   {beschriftung(entry)}
                   <svg
                     class="h-4 w-4 text-ink-400 transition group-open/mobile:rotate-180"
@@ -256,7 +263,7 @@ const t = uebersetzer(lang);
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </summary>
-                <ul class="mt-1 ml-3 space-y-1 border-l border-ink-200 pl-3 text-sm font-normal">
+                <ul class="ml-6 border-l border-rule pb-2 text-sm font-normal">
                   {entry.items.map((item) => (
                     <li>
                       <a
@@ -264,7 +271,7 @@ const t = uebersetzer(lang);
                         {...zielAttribute(item)}
                         data-mobile-link
                         data-spy={item.spy}
-                        class="block rounded-md px-3 py-1.5 text-ink-600 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
+                        class="flex min-h-11 items-center px-4 text-ink-600 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
                       >
                         {beschriftung(item)}
                         {fremd(item) && <span class={fremdKlasse}>in German</span>}
@@ -275,14 +282,14 @@ const t = uebersetzer(lang);
               </details>
             </li>
           ) : (
-            <li>
+            <li class="border-b border-rule-soft">
               <a
                 href={toHref(entry.href)}
                 {...zielAttribute(entry)}
                 data-mobile-link
                 data-spy={entry.spy}
                 aria-current={isActive(entry.href) ? "page" : undefined}
-                class="block rounded-md px-3 py-2 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
+                class="flex min-h-12 items-center px-6 transition hover:bg-ink-50 hover:text-brand-700 aria-[current]:bg-brand-50 aria-[current]:text-brand-700"
               >
                 {beschriftung(entry)}
                 {fremd(entry) && <span class={fremdKlasse}>in German</span>}
@@ -293,11 +300,11 @@ const t = uebersetzer(lang);
       }
       {
         cta && (
-          <li class="pt-3">
+          <li>
             <a
               href={toHref(cta.href)}
               data-mobile-link
-              class="block rounded-lg bg-brand-700 px-4 py-2 text-center text-white transition hover:bg-brand-800"
+              class="flex min-h-12 items-center justify-center bg-brand-700 px-4 font-semibold text-white transition hover:bg-brand-800"
             >
               {cta.label}
             </a>
@@ -371,7 +378,15 @@ const t = uebersetzer(lang);
 
   const sections = ids
     .map((id) => document.getElementById(id))
-    .filter((el): el is HTMLElement => el !== null);
+    .filter((el): el is HTMLElement => el !== null)
+    // Nach DOKUMENTREIHENFOLGE sortieren, nicht nach der Reihenfolge der
+    // Menüeinträge. Solange nur die Kopfzeile Spy-Links hatte, fielen beide
+    // ungefähr zusammen; seit das Abschnittsverzeichnis der Seitenspalte
+    // dieselben Marken benutzt und mehr Abschnitte kennt, tut es das nicht
+    // mehr — und „der oberste sichtbare gewinnt" wäre sonst schlicht falsch.
+    .sort((a, b) =>
+      a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1,
+    );
 
   if (sections.length) {
     // Document order, so the topmost visible section wins when two overlap.

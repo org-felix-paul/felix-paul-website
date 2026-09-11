@@ -1,72 +1,77 @@
 ---
+// Der Kopf des Schulbereichs — dieselbe Titelseiten-Form wie auf der
+// Startseite, damit die Domain als EIN Dokument gelesen wird: Label, Linie,
+// Titel, dann zwei Felder auf einer gemeinsamen Kante. Die drei Eckdaten
+// stehen als Datensatzzeilen mit Monospalte darunter, nicht mehr als frei
+// verteiltes dl-Raster. Die Worte sind unverändert.
 import { SITE } from "../../consts";
 import { EDU, EDU_PATHS } from "../consts";
+
+const eckdaten = [
+  { dt: "Qualifikation", dd: "M.Ed. + M.Sc. Informatik" },
+  { dt: "Beruf", dd: "Solution-Architekt (Finanzindustrie)" },
+  { dt: "Einsatzgebiet", dd: "Schwerpunkt RLP & Hamburg" },
+];
 ---
 
-<section class="relative overflow-hidden bg-gradient-to-br from-brand-50 via-canvas to-canvas">
-  <div class="absolute inset-0 -z-10 opacity-60">
-    <div class="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-brand-200/40 blur-3xl"></div>
-    <div class="absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-brand-100/60 blur-3xl"></div>
-  </div>
+<section class="bg-surface">
+  <div class="mx-auto max-w-[84rem] px-6 pt-10 pb-14 md:pt-14 md:pb-20">
+    <p class="label inline-flex items-center gap-2 border border-rule px-3 py-2 text-brand-700">
+      <span class="h-2 w-2 shrink-0 bg-brand-500" aria-hidden="true"></span>
+      Buchbar als Referent für Lehrerfortbildungen, Schülerworkshops, Kursserien &amp; Elternabende
+    </p>
 
-  <div class="mx-auto grid max-w-6xl gap-12 px-6 py-20 md:grid-cols-[1.4fr_1fr] md:items-center md:py-28">
-    <div>
-      <p class="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-surface px-3 py-1 text-xs font-medium text-brand-700">
-        <span class="h-2 w-2 rounded-full bg-brand-500"></span>
-        Buchbar als Referent für Lehrerfortbildungen, Schülerworkshops, Kursserien &amp; Elternabende
-      </p>
-
-      <h1 class="mt-5 font-display text-4xl font-bold leading-tight tracking-tight text-ink-900 md:text-5xl">
+    <div class="mt-6 border-t border-rule pt-6 md:pt-8">
+      <h1 class="max-w-4xl font-display text-4xl font-bold leading-[1.05] tracking-tight text-ink-900 md:text-6xl">
         Bildungsangebote für Schulen – <span class="text-brand-700">verständlich erklärt</span> <span class="text-brand-700 text-2xl md:text-3xl">von Felix Paul</span>
       </h1>
-
-      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-700">
-        Ich bin <strong class="font-semibold text-ink-900">{SITE.author}</strong> - M.Ed. <em>und</em> M.Sc. Informatik. Diese
-        Doppelqualifikation ist selten und genau das, was Schulen heute brauchen: jemand, der KI und IT-Security technisch
-        versteht, praktisch in der Wirtschaft anwendet und gleichzeitig weiß, wie Unterricht funktioniert.
-      </p>
-
-      <div class="mt-8 flex flex-wrap gap-3">
-        <a
-          href="#angebote"
-          class="rounded-lg bg-brand-700 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-brand-800"
-        >
-          Angebote ansehen
-        </a>
-        <a
-          href={EDU_PATHS.kontakt}
-          class="rounded-lg border border-ink-200 bg-surface px-5 py-3 text-sm font-medium text-ink-800 shadow-sm transition hover:border-brand-300 hover:text-brand-700"
-        >
-          Unverbindlich anfragen
-        </a>
-      </div>
-
-      <dl class="mt-10 grid grid-cols-2 gap-x-8 gap-y-4 text-sm sm:grid-cols-3">
-        <div>
-          <dt class="font-medium text-ink-500">Qualifikation</dt>
-          <dd class="mt-1 text-ink-900">M.Ed. + M.Sc. Informatik</dd>
-        </div>
-        <div>
-          <dt class="font-medium text-ink-500">Beruf</dt>
-          <dd class="mt-1 text-ink-900">Solution-Architekt (Finanzindustrie)</dd>
-        </div>
-        <div>
-          <dt class="font-medium text-ink-500">Einsatzgebiet</dt>
-          <dd class="mt-1 text-ink-900">Schwerpunkt RLP &amp; Hamburg</dd>
-        </div>
-      </dl>
     </div>
 
-    <div class="relative mx-auto w-full max-w-sm">
-      <div class="absolute -inset-4 -z-10 rounded-[2rem] bg-gradient-to-br from-brand-200/50 to-brand-100/30 blur-2xl"></div>
-      <img
-        src={EDU.portrait}
-        alt={`${SITE.author} – IT-Pädagoge für Vorträge und Workshops zu KI, Cybersicherheit und Medienkompetenz an Schulen`}
-        width="800"
-        height="800"
-        class="aspect-square w-full rounded-3xl object-cover shadow-xl ring-1 ring-ink-200"
-        loading="eager"
-      />
+    <div class="mt-10 grid gap-8 border-t border-rule pt-8 md:mt-14 md:grid-cols-[minmax(0,1fr)_18rem] md:gap-12 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <div>
+        <p class="max-w-2xl text-[1.0625rem] leading-relaxed text-ink-700 md:text-lg">
+          Ich bin <strong class="font-semibold text-ink-900">{SITE.author}</strong> - M.Ed. <em>und</em> M.Sc. Informatik. Diese
+          Doppelqualifikation ist selten und genau das, was Schulen heute brauchen: jemand, der KI und IT-Security technisch
+          versteht, praktisch in der Wirtschaft anwendet und gleichzeitig weiß, wie Unterricht funktioniert.
+        </p>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a
+            href="#angebote"
+            class="inline-flex min-h-11 items-center justify-center bg-brand-700 px-5 text-sm font-semibold text-white transition hover:bg-brand-800"
+          >
+            Angebote ansehen
+          </a>
+          <a
+            href={EDU_PATHS.kontakt}
+            class="inline-flex min-h-11 items-center justify-center border border-rule bg-surface px-5 text-sm font-semibold text-ink-800 transition hover:border-brand-700 hover:text-brand-700"
+          >
+            Unverbindlich anfragen
+          </a>
+        </div>
+
+        <dl class="recordlist mt-10 max-w-2xl">
+          {
+            eckdaten.map((e) => (
+              <div class="record">
+                <dt class="label text-ink-500">{e.dt}</dt>
+                <dd class="text-ink-900">{e.dd}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+
+      <figure class="border border-rule">
+        <img
+          src={EDU.portrait}
+          alt={`${SITE.author} – IT-Pädagoge für Vorträge und Workshops zu KI, Cybersicherheit und Medienkompetenz an Schulen`}
+          width="800"
+          height="800"
+          class="aspect-square w-full object-cover md:aspect-[4/5]"
+          loading="eager"
+        />
+      </figure>
     </div>
   </div>
 </section>

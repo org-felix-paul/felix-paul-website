@@ -62,29 +62,33 @@ const gruppen = [
 ];
 ---
 
+{/*
+  Drei Zellen eines Rasters statt drei frei stehender Karten: der 1px-Abstand
+  zeigt die Rasterlinie, die farbige Kante oben bleibt als Kennzeichnung der
+  Zielgruppe erhalten — jetzt aber als 3px-Kante auf der Rasterlinie, nicht als
+  schwebendes Stäbchen.
+*/}
 <div class={compact ? "" : "mt-10"}>
   {
     !compact && (
-      <h3 class="text-sm font-semibold uppercase tracking-wider text-ink-500">Auch außerhalb der Schule</h3>
+      <h3 class="label border-b border-rule pb-2 text-ink-500">Auch außerhalb der Schule</h3>
     )
   }
-  <ul class={`grid gap-4 sm:grid-cols-3 ${compact ? "" : "mt-4"}`}>
+  <ul class={`cellgrid sm:grid-cols-3 ${compact ? "" : "border-t-0"}`}>
     {
       gruppen.map((g) => (
-        <li class="relative flex flex-col overflow-hidden rounded-2xl border border-ink-200 bg-surface p-5 shadow-sm">
-          <span class={`absolute inset-x-0 top-0 h-1 ${g.bar}`} aria-hidden="true" />
-          <span class={`inline-flex w-fit rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider ${g.chip}`}>
-            {g.label}
-          </span>
-          <p class="mt-3 flex-1 text-sm leading-relaxed text-ink-600">{compact ? g.short : g.text}</p>
+        <li class="flex flex-col p-5">
+          <span class={`-mx-5 -mt-5 mb-4 h-[3px] ${g.bar}`} aria-hidden="true" />
+          <span class={`label w-fit px-2 py-1 ${g.chip}`}>{g.label}</span>
+          <p class="mt-3 flex-1 text-[0.9375rem] leading-relaxed text-ink-600">{compact ? g.short : g.text}</p>
           {g.href && (
             <a
               href={lokalisiere(g.href, lang)}
-              class="mt-3 inline-flex w-fit items-center gap-1 text-sm font-medium text-brand-700 hover:text-brand-900"
+              class="mt-3 inline-flex min-h-11 w-fit items-center gap-1.5 text-sm font-semibold text-brand-700 hover:text-brand-900"
             >
               {g.hrefLabel}
               {en && nurDeutsch(g.href) && (
-                <span class="rounded-sm bg-ink-100 px-1.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-ink-500">
+                <span class="border border-rule-soft px-1.5 py-0.5 font-mono text-[0.65rem] font-semibold uppercase tracking-wider text-ink-500">
                   in German
                 </span>
               )}

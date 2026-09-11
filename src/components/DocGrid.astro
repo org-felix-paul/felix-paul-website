@@ -1,0 +1,26 @@
+---
+// Der Rahmen der Startseite: Abschnittsverzeichnis links, Dokument rechts.
+//
+// Die Seite ist damit nicht mehr ein Stapel gleich breiter, zentrierter Boxen,
+// sondern ein gesetztes Dokument mit sichtbarer Gliederung. Das Verzeichnis
+// ist dieselbe Liste, aus der die Abschnitte ihre Nummern beziehen — es kann
+// nicht auseinanderlaufen, weil es nur eine gibt.
+import SectionRail from "./SectionRail.astro";
+import type { RailItem } from "./outline";
+
+interface Props {
+  /** Die Gliederung der Seite, in Dokumentreihenfolge. */
+  outline: readonly RailItem[];
+  /** Zugänglicher Name der Landmarke, in der Sprache der Seite. */
+  navLabel: string;
+}
+
+const { outline, navLabel } = Astro.props;
+---
+
+<div class="doc">
+  <SectionRail items={outline} navLabel={navLabel} />
+  <div class="doc-body">
+    <slot />
+  </div>
+</div>

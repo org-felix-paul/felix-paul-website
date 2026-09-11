@@ -7,10 +7,24 @@ import AngebotCard from "../../education/components/AngebotCard.astro";
 import ZielgruppenHinweis from "../../education/components/ZielgruppenHinweis.astro";
 import { SITE, PATHS } from "../../consts";
 import { EDU_PATHS, angebotPath } from "../../education/consts";
+import { nummernGeber, type RailItem } from "../../components/outline";
 
 const angebote = (await getCollection("angebote")).sort(
   (a, b) => a.data.order - b.data.order,
 );
+
+// Dieselbe Gliederungsmechanik wie auf der Startseite: die Nummern der
+// Abschnitte kommen aus einer Liste, nicht aus der Hand. Eine Seitenspalte
+// bekommt diese Seite bewusst nicht — ihre fünf Abschnitte stehen schon im
+// Kopfmenü des Bereichs, ein zweites Verzeichnis daneben wäre Doppelung.
+const OUTLINE: readonly RailItem[] = [
+  { id: "angebote", label: "Was ich anbiete" },
+  { id: "preise", label: "Honorare" },
+  { id: "warum", label: "Warum ich" },
+  { id: "haltung", label: "Haltung" },
+  { id: "ablauf", label: "So läuft eine Buchung" },
+];
+const nr = nummernGeber(OUTLINE);
 ---
 
 <Layout
@@ -20,11 +34,12 @@ const angebote = (await getCollection("angebote")).sort(
 
   <Section
     id="angebote"
+    index={nr("angebote")}
     eyebrow="Was ich anbiete"
     title="Angebote für Schulen"
     lead="Vom Pädagogischen Tag über Klassen-Workshops und Elternabende bis zur AG über ein Halbjahr – erprobte Formate, die sich auf andere Zielgruppen zuschneiden lassen."
   >
-    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div class="cellgrid sm:grid-cols-2 xl:grid-cols-3">
       {
         angebote.map((angebot) => (
           <AngebotCard
@@ -44,7 +59,7 @@ const angebote = (await getCollection("angebote")).sort(
 
     <ZielgruppenHinweis />
 
-    <p class="mx-auto mt-10 max-w-2xl rounded-2xl border border-brand-200 bg-brand-50 px-6 py-5 text-center text-sm leading-relaxed text-brand-900">
+    <p class="mt-10 border-t-2 border-brand-700 bg-brand-50 px-6 py-5 text-[0.9375rem] leading-relaxed text-brand-900">
       Sie suchen ein Thema, das hier nicht dabei ist?
       <strong>Neue Workshops erstelle ich gerne auf Anfrage</strong> – passgenau für Ihre Schule, Klassenstufe und Ihren Zeitrahmen.
       <a href={EDU_PATHS.kontakt} class="font-medium text-brand-700 underline">Schreiben Sie mir kurz.</a>
@@ -52,67 +67,70 @@ const angebote = (await getCollection("angebote")).sort(
   </Section>
 
   <Section
-    background="muted"
     id="preise"
+    index={nr("preise")}
     eyebrow="Honorare"
     title="Preise auf einen Blick"
     lead="Transparente Spannen statt Verhandlungspoker – das endgültige Honorar hängt von Umfang und Zielgruppe ab."
   >
-    <div class="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-ink-200 bg-surface shadow-sm">
-      <table class="w-full text-left text-sm">
-        <thead class="bg-ink-50 text-ink-700">
-          <tr>
-            <th class="px-5 py-3 font-semibold">Format</th>
-            <th class="px-5 py-3 font-semibold">Dauer</th>
-            <th class="px-5 py-3 font-semibold">Honorar</th>
+    {/* Eine Preistabelle ist der Ort, an dem dieses Layout zu Hause ist:
+        Kopfzeile in Versalien, Haarlinien zwischen den Zeilen, die
+        Honorarspalte rechtsbündig mit tabellarischen Ziffern. */}
+    <div class="overflow-x-auto border border-rule">
+      <table class="w-full min-w-[32rem] text-left text-sm">
+        <thead>
+          <tr class="border-b border-rule bg-ink-50">
+            <th class="label px-4 py-3 text-ink-600">Format</th>
+            <th class="label px-4 py-3 text-ink-600">Dauer</th>
+            <th class="label px-4 py-3 text-right text-ink-600">Honorar</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-ink-100 text-ink-800">
+        <tbody class="text-ink-800">
           {
             angebote.filter((a) => !a.data.preview).map((angebot) => (
-              <tr>
-                <td class="px-5 py-3">
-                  <a href={angebotPath(angebot.id)} class="hover:text-brand-700">{angebot.data.title}</a>
+              <tr class="border-b border-rule-soft last:border-b-0">
+                <td class="px-4 py-3">
+                  <a href={angebotPath(angebot.id)} class="font-medium hover:text-brand-700">{angebot.data.title}</a>
                 </td>
-                <td class="px-5 py-3 text-ink-600">{angebot.data.dauer}</td>
-                <td class="px-5 py-3 whitespace-nowrap font-medium">{angebot.data.preis}</td>
+                <td class="px-4 py-3 text-ink-600">{angebot.data.dauer}</td>
+                <td class="px-4 py-3 text-right whitespace-nowrap font-semibold tabular-nums">{angebot.data.preis}</td>
               </tr>
             ))
           }
         </tbody>
       </table>
     </div>
-    <p class="mx-auto mt-6 max-w-3xl text-center text-sm text-ink-600">
+    <p class="mt-6 text-sm text-ink-600">
       Alle Beträge sind Orientierungswerte zzgl. Reisekosten – das endgültige Honorar stimmen wir individuell ab.
     </p>
   </Section>
 
   <Section
-    background="muted"
     id="warum"
+    index={nr("warum")}
     eyebrow="Warum ich"
     title="Doppelqualifikation, die Schulen heute brauchen"
     lead="Pädagogik allein reicht nicht, IT-Expertise allein verfehlt die Klasse. Beides zusammen ist selten – und genau das ist mein Angebot."
   >
-    <div class="grid gap-8 md:grid-cols-3">
-      <div class="rounded-2xl border border-ink-100 bg-surface p-6 shadow-sm">
-        <div class="text-4xl font-bold text-brand-700">M.Ed.</div>
-        <h3 class="mt-2 text-lg font-semibold text-ink-900">Lehramt</h3>
-        <p class="mt-2 text-sm leading-relaxed text-ink-600">
+    <div class="cellgrid md:grid-cols-3">
+      <div class="p-6">
+        <div class="font-display text-3xl font-bold text-brand-700">M.Ed.</div>
+        <h3 class="mt-3 border-t border-rule-soft pt-3 text-base font-semibold text-ink-900">Lehramt</h3>
+        <p class="mt-2 text-[0.9375rem] leading-relaxed text-ink-600">
           Master of Education in Mathematik und Informatik. Ich weiß, wie Schule funktioniert.
         </p>
       </div>
-      <div class="rounded-2xl border border-ink-100 bg-surface p-6 shadow-sm">
-        <div class="text-4xl font-bold text-brand-700">M.Sc.</div>
-        <h3 class="mt-2 text-lg font-semibold text-ink-900">Informatik</h3>
-        <p class="mt-2 text-sm leading-relaxed text-ink-600">
+      <div class="p-6">
+        <div class="font-display text-3xl font-bold text-brand-700">M.Sc.</div>
+        <h3 class="mt-3 border-t border-rule-soft pt-3 text-base font-semibold text-ink-900">Informatik</h3>
+        <p class="mt-2 text-[0.9375rem] leading-relaxed text-ink-600">
           B.Sc. Mathematik, B.Sc. + M.Sc. Informatik. KI, Security, Cloud – ich weiß wie die Technik funktioniert.
         </p>
       </div>
-      <div class="rounded-2xl border border-ink-100 bg-surface p-6 shadow-sm">
-        <div class="text-4xl font-bold text-brand-700">Praxis</div>
-        <h3 class="mt-2 text-lg font-semibold text-ink-900">Berufserfahrung</h3>
-        <p class="mt-2 text-sm leading-relaxed text-ink-600">
+      <div class="p-6">
+        <div class="font-display text-3xl font-bold text-brand-700">Praxis</div>
+        <h3 class="mt-3 border-t border-rule-soft pt-3 text-base font-semibold text-ink-900">Berufserfahrung</h3>
+        <p class="mt-2 text-[0.9375rem] leading-relaxed text-ink-600">
           Hauptberuflich Solution-Architekt in der Finanzindustrie. Reale Projekte, reale Sicherheitsanforderungen –
           echte Erfahrung.
         </p>
@@ -123,11 +141,12 @@ const angebote = (await getCollection("angebote")).sort(
 
   <Section
     id="haltung"
+    index={nr("haltung")}
     eyebrow="Haltung"
     title="Was mir wichtig ist"
     lead=""
   >
-    <ul class="mx-auto grid max-w-3xl gap-4 sm:grid-cols-2">
+    <ul class="cellgrid sm:grid-cols-2">
       {
         [
           "Zeilgruppengerechte Workshops, die einen echten Mehrwert liefern für die Menschen, mit denen ich arbeite",
@@ -135,19 +154,19 @@ const angebote = (await getCollection("angebote")).sort(
           "Klare, ehrliche Kommunikation",
           "Aktiv Lernen statt Frontalbeschallung",
         ].map((punkt) => (
-          <li class="flex items-start gap-3 rounded-2xl border border-ink-100 bg-surface p-5 shadow-sm">
-            <span class="mt-0.5 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
+          <li class="flex items-start gap-3 p-5">
+            <span class="mt-0.5 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center bg-brand-100 text-brand-700">
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
             </span>
-            <span class="text-sm leading-relaxed text-ink-700">{punkt}</span>
+            <span class="text-[0.9375rem] leading-relaxed text-ink-700">{punkt}</span>
           </li>
         ))
       }
     </ul>
 
-    <p class="mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed text-ink-600">
+    <p class="mt-8 max-w-2xl text-[0.9375rem] leading-relaxed text-ink-600">
       Vollständiger Lebenslauf, Berufsstationen und Empfehlungen auf
       <a class="font-medium text-brand-700 underline" href={SITE.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>.
       Neben den schulischen Angeboten halte ich auch professionelle Keynotes und Fachvorträge
@@ -158,29 +177,33 @@ const angebote = (await getCollection("angebote")).sort(
 
   <Section
     id="ablauf"
+    index={nr("ablauf")}
     eyebrow="So läuft eine Buchung"
     title="In drei Schritten zum Workshop"
     lead="Kein langer Verkaufsprozess. Sie schreiben, ich antworte, wir machen es."
   >
-    <ol class="grid gap-6 md:grid-cols-3">
-      <li class="relative rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
-        <div class="absolute -top-4 left-6 inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white">1</div>
-        <h3 class="mt-2 text-lg font-semibold text-ink-900">Anfrage</h3>
-        <p class="mt-2 text-sm leading-relaxed text-ink-600">
+    {/* Die Schrittzahl ist hier dasselbe typografische Element wie die
+        Abschnittsnummer: Monospace, gesperrt, auf einer eigenen Rasterzeile —
+        nicht mehr ein Kreis, der über die Kartenkante hängt. */}
+    <ol class="cellgrid md:grid-cols-3">
+      <li class="p-6">
+        <div class="label border-b border-rule pb-2 text-brand-700">01</div>
+        <h3 class="mt-4 text-base font-semibold text-ink-900">Anfrage</h3>
+        <p class="mt-2 text-[0.9375rem] leading-relaxed text-ink-600">
           Sie schreiben mir kurz: Schule, Zielgruppe, mögliches Datum, Thema.
         </p>
       </li>
-      <li class="relative rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
-        <div class="absolute -top-4 left-6 inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white">2</div>
-        <h3 class="mt-2 text-lg font-semibold text-ink-900">Abstimmung</h3>
-        <p class="mt-2 text-sm leading-relaxed text-ink-600">
+      <li class="p-6">
+        <div class="label border-b border-rule pb-2 text-brand-700">02</div>
+        <h3 class="mt-4 text-base font-semibold text-ink-900">Abstimmung</h3>
+        <p class="mt-2 text-[0.9375rem] leading-relaxed text-ink-600">
           Innerhalb von 48 Stunden Rückmeldung mit Terminvorschlag, Honorarangebot und – falls nötig – Datenschutz-Klärung.
         </p>
       </li>
-      <li class="relative rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
-        <div class="absolute -top-4 left-6 inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white">3</div>
-        <h3 class="mt-2 text-lg font-semibold text-ink-900">Durchführung</h3>
-        <p class="mt-2 text-sm leading-relaxed text-ink-600">
+      <li class="p-6">
+        <div class="label border-b border-rule pb-2 text-brand-700">03</div>
+        <h3 class="mt-4 text-base font-semibold text-ink-900">Durchführung</h3>
+        <p class="mt-2 text-[0.9375rem] leading-relaxed text-ink-600">
           Workshop vor Ort. Rechnung danach.
         </p>
       </li>
@@ -190,19 +213,19 @@ const angebote = (await getCollection("angebote")).sort(
          Stelle die Frage aufkommt, wie so ein Workshop konkret aussieht —
          im Header ist der Punkt zwar erreichbar, wird beim Lesen aber
          übersehen. Bewusst schmal, damit er die drei Schritte nicht überlagert. -->
-    <h3 class="mt-12 text-center font-display text-xl font-bold text-brand-700 md:text-2xl">
+    <h3 class="label mt-12 border-b border-rule pb-2 text-brand-700">
       Referenzen aus vergangenen Workshops
     </h3>
 
     <a
       href={EDU_PATHS.insights}
-      class="group mt-4 flex items-center gap-4 rounded-2xl border border-brand-200 bg-brand-50 px-6 py-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md"
+      class="group flex items-center gap-4 border-b border-rule bg-brand-50 px-6 py-5 transition hover:bg-brand-100"
     >
-      <span class="flex-1 text-sm leading-relaxed text-brand-900">
+      <span class="flex-1 text-[0.9375rem] leading-relaxed text-brand-900">
         <strong class="font-semibold">Vorher anschauen, wie das aussieht:</strong>
         Workshops, die schon stattgefunden haben – und die Lernsoftware, die daraus entstanden ist.
       </span>
-      <span class="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-brand-700">
+      <span class="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-brand-700">
         <span class="hidden sm:inline">Workshops &amp; Materialien</span>
         <svg class="h-4 w-4 transition group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -211,20 +234,20 @@ const angebote = (await getCollection("angebote")).sort(
     </a>
   </Section>
 
-  <Section background="muted">
-    <div class="grid items-center gap-10 rounded-3xl bg-gradient-to-br from-brand-700 to-brand-900 p-8 text-white md:grid-cols-[2fr_1fr] md:p-12">
+  <Section>
+    <div class="grid items-center gap-8 bg-brand-800 p-8 text-white md:grid-cols-[2fr_auto] md:p-12">
       <div>
-        <h2 class="font-display text-3xl font-bold leading-tight md:text-4xl">
+        <h2 class="font-display text-2xl font-bold leading-tight md:text-4xl">
           Sie wollen einen Termin oder ein Angebot?
         </h2>
-        <p class="mt-3 max-w-xl text-brand-100">
+        <p class="mt-4 max-w-xl text-[0.9375rem] leading-relaxed text-brand-100">
           Schreiben Sie mir formlos – ich melde mich werktags innerhalb von 48 Stunden mit einem Vorschlag zurück.
         </p>
       </div>
       <div class="flex md:justify-end">
         <a
           href={EDU_PATHS.kontakt}
-          class="inline-flex items-center justify-center rounded-lg bg-surface px-6 py-3 text-sm font-medium text-brand-800 shadow-sm transition hover:bg-brand-50"
+          class="inline-flex min-h-12 items-center justify-center bg-surface px-6 text-sm font-semibold text-brand-800 transition hover:bg-brand-50"
         >
           Jetzt anfragen
         </a>

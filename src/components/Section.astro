@@ -1,10 +1,29 @@
 ---
+// Ein Abschnitt des Dokumentrasters.
+//
+// Bis Experiment 4 war das eine zentrierte Box: Kopf mittig, Text mittig,
+// darunter der Inhalt über die volle Breite. Jetzt ist es eine Zeile eines
+// gesetzten Dokuments — oben eine durchgehende Haarlinie, links und schmal
+// Nummer, Label und Überschrift, rechts und breit alles Übrige. Beide Spalten
+// hängen an derselben Kante, und die Nummer ist dieselbe wie im
+// Abschnittsverzeichnis der Seitenspalte (siehe SectionRail.astro).
+//
+// Die Mechanik (Umbruchpunkt, Innenabstände, Haarlinie) steht in
+// src/styles/global.css unter „Rasterbausteine" — einmal, nicht als
+// Klassenwolke in jeder Seite.
 interface Props {
   id?: string;
   eyebrow?: string;
   title?: string;
   lead?: string;
   background?: "white" | "muted";
+  /**
+   * Die Abschnittsnummer als gesetztes Element: „01", „02", …. Kommt aus der
+   * Gliederung der Seite (`OUTLINE` in index.astro), damit Verzeichnis und
+   * Abschnitt nicht auseinanderlaufen können. Ohne Nummer verhält sich der
+   * Abschnitt wie vorher, nur linksbündig.
+   */
+  index?: string;
   /**
    * Heading level for `title`. Defaults to h2 because a Section is usually a
    * block inside a page that already has its own h1. Pass "h1" on the one
@@ -13,28 +32,47 @@ interface Props {
   as?: "h1" | "h2";
 }
 
-const { id, eyebrow, title, lead, background = "white", as = "h2" } = Astro.props;
+const {
+  id,
+  eyebrow,
+  title,
+  lead,
+  background = "white",
+  index,
+  as = "h2",
+} = Astro.props;
 const Heading = as;
 const bg = background === "muted" ? "bg-ink-50" : "bg-surface";
+const hatKopf = Boolean(eyebrow || title || index);
 ---
 
-<section id={id} class={`${bg}`}>
-  <div class="mx-auto max-w-6xl px-6 py-20">
-    {
-      (eyebrow || title || lead) && (
-        <header class="mx-auto mb-12 max-w-3xl text-center">
-          {eyebrow && (
-            <p class="text-sm font-semibold uppercase tracking-widest text-brand-700">{eyebrow}</p>
-          )}
-          {title && (
-            <Heading class="mt-3 font-display text-3xl font-bold tracking-tight text-ink-900 md:text-4xl">
-              {title}
-            </Heading>
-          )}
-          {lead && <p class="mt-4 text-lg leading-relaxed text-ink-600">{lead}</p>}
-        </header>
-      )
-    }
-    <slot />
+<section id={id} class={`doc-section ${bg}`}>
+  <div class="doc-section__inner">
+    <div class:list={["doc-section__grid", !hatKopf && "doc-section__grid--full"]}>
+      {
+        hatKopf && (
+          <header class="doc-section__head">
+            {index && (
+              <div class="label border-b border-rule pb-2 text-ink-500">
+                <span class="text-ink-900">{index}</span>
+                {eyebrow && <span class="ml-3 text-brand-700">{eyebrow}</span>}
+              </div>
+            )}
+            {!index && eyebrow && (
+              <div class="label border-b border-rule pb-2 text-brand-700">{eyebrow}</div>
+            )}
+            {title && (
+              <Heading class="mt-4 font-display text-2xl font-bold leading-tight tracking-tight text-balance text-ink-900 md:text-[1.75rem]">
+                {title}
+              </Heading>
+            )}
+          </header>
+        )
+      }
+      <div class="doc-section__body">
+        {lead && <p class="mb-8 max-w-2xl text-[1.0625rem] leading-relaxed text-ink-600">{lead}</p>}
+        <slot />
+      </div>
+    </div>
   </div>
 </section>
