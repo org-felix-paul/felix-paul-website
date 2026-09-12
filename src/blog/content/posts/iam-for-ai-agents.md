@@ -10,7 +10,7 @@ preview: false
 
 Ein KI-Agent, der E-Mails sortiert, Tickets anlegt und Pull Requests öffnet, ist aus Sicht des Identity- und Access-Managements (IAM) etwas Neues: kein Nutzer, keine klassische Anwendung, sondern ein Programm, das *im Auftrag* eines Menschen handelt, dabei selbst entscheidet, welche Werkzeuge es aufruft – und das sich durch einen präparierten Text umlenken lässt. Wer so einem System einfach einen technischen User mit weitreichenden Rechten gibt, hat die „Lethal Trifecta" aus meinem [Beitrag zu Prompt Injections](/blog/how-to-mislead-ai/) in Reinform gebaut. Die gute Nachricht: Fast alles, was man braucht, existiert bereits als Standard. Man muss die Bausteine nur richtig zusammensetzen – und ein paar Grundregeln ernst nehmen, die in vielen Projekten seit Jahren geschludert werden. Dieser Beitrag geht von den Grundlagen bis zu den Themen, die gerade in den Standardisierungsgremien und bei den Cloud-Anbietern entschieden werden.
 
-> **Hinweis zur Methode:** Die Grundlagen stützen sich auf die IETF-RFCs zu OAuth 2.0 und die Spezifikationen der OpenID Foundation; wo ich Entwürfe (Internet-Drafts) zitiere, kennzeichne ich sie als solche – sie können sich noch ändern. Die Abschnitte zu AWS, Azure und GCP beruhen auf der jeweiligen Herstellerdokumentation zum Redaktionsschluss; gerade dort ändert sich derzeit im Monatstakt etwas, prüfe im Zweifel die aktuelle Fassung. Ich bin Informatiker, kein Jurist – die Hinweise zum EU AI Act sind eine fundierte Orientierung, keine Rechtsberatung. Jede Quelle trägt Veröffentlichungs- und Abrufdatum (11.09.2026).
+> **Hinweis zur Methode:** Die Grundlagen stützen sich auf die IETF-RFCs zu OAuth 2.0 und die Spezifikationen der OpenID Foundation; wo ich Entwürfe (Internet-Drafts) zitiere, kennzeichne ich sie als solche – sie können sich noch ändern. Die Abschnitte zu AWS, Azure und GCP beruhen auf der jeweiligen Herstellerdokumentation zum Redaktionsschluss; gerade dort ändert sich derzeit im Monatstakt etwas, prüfe im Zweifel die aktuelle Fassung. Ich bin Informatiker, kein Jurist – die Hinweise zum EU AI Act sind eine fundierte Orientierung, keine Rechtsberatung. Jede Quelle trägt Veröffentlichungs- und Abrufdatum (11. bzw. 12.09.2026).
 
 ## Gliederung
 
@@ -27,8 +27,10 @@ Ein KI-Agent, der E-Mails sortiert, Tickets anlegt und Pull Requests öffnet, is
 11. [Echtzeit: Signaling, CAEP und Überwachung](#11-echtzeit-signaling-caep-und-überwachung)
 12. [Was sonst noch zu bedenken ist](#12-was-sonst-noch-zu-bedenken-ist)
 13. [Eine Referenzarchitektur und ein Reifegradmodell](#13-eine-referenzarchitektur-und-ein-reifegradmodell)
-14. [Fazit](#14-fazit)
-15. [Quellen](#15-quellen)
+14. [Hybrid- und Multi-Cloud: Identity Governance über Umgebungen hinweg](#14-hybrid--und-multi-cloud-identity-governance-über-umgebungen-hinweg)
+15. [Ehrliche Einschätzung aus der Praxis: was man wann tun sollte](#15-ehrliche-einschätzung-aus-der-praxis-was-man-wann-tun-sollte)
+16. [Fazit](#16-fazit)
+17. [Quellen](#17-quellen)
 
 ---
 
@@ -622,9 +624,227 @@ Man muss nicht alles auf einmal bauen. Als Reifegrad-Leiter:
 
 ---
 
-## 14. Fazit
+## 14. Hybrid- und Multi-Cloud: Identity Governance über Umgebungen hinweg
 
-KI-Agenten erfinden das IAM nicht neu – sie bestrafen nur gnadenlos jede Abkürzung, die man bisher nehmen konnte. Die Antwort ist auch keine neue Technologie, sondern Disziplin bei den bekannten: **Delegation statt Impersonation**, damit jeder Aufruf Mensch *und* Maschine benennt. **Rechte, die entlang der Kette nur fallen**, per Token Exchange, Session Policies oder Capabilities. **Ein PDP außerhalb des Modells**, der pro Werkzeugaufruf und pro Dokument entscheidet – und der Freigaben durch Menschen *verlangt*, statt darauf zu hoffen, dass der Agent fragt. **Kurze Laufzeiten und Signale**, damit ein Widerruf in Sekunden wirkt. Und **eine echte Identität für den Agenten**, ob als markierter Service Account oder als eigener Typ, mit Eigentümer, Lebenszyklus und Inventar.
+Bis hierher ging es um *einen* Agenten in *einer* Plattform. Die Realität in mittleren und großen Organisationen sieht anders aus: ein Active Directory on-premises, Entra ID in der Cloud, dazu AWS und vielleicht GCP, dreißig SaaS-Anwendungen – und jetzt kommen Agenten aus Copilot Studio, aus Azure AI Foundry, aus einem Eigenbau auf Kubernetes hinzu. Die Frage lautet nicht mehr „wie autorisiere ich einen Aufruf?", sondern „wer weiß überhaupt, welche Identitäten es gibt, was sie dürfen sollen, und wer nimmt es ihnen wieder weg?". Das ist **Identity Governance and Administration (IGA)**, und für Agenten gelten dieselben Regeln wie für Menschen – nur strenger, weil niemand einen Agenten beim Offboarding-Gespräch vermisst.
+
+### 14.1 Das Zielbild: eine Quelle, Föderation, Provisionierung, Governance
+
+Vier Dinge sollten in einer hybriden Landschaft jeweils genau **einmal** existieren:
+
+| Baustein | Aufgabe | Typische Umsetzung |
+|---|---|---|
+| **Eine autoritative Quelle je Identitätstyp** | Wo entsteht und stirbt eine Identität? | Mitarbeitende: HR-System → IGA → Verzeichnis. Externe: IGA. Workloads und Agenten: die Plattform, die sie erzeugt – *mit* Meldung ans Inventar. |
+| **Föderation für die Authentifizierung** | Jede Umgebung vertraut *einem* IdP, kein Passwort wird kopiert. | Entra ID als Hub; AWS IAM Identity Center, Google Cloud Identity und SaaS per SAML/OIDC angebunden.[^aws-identity-center][^gcp-entra] |
+| **Provisionierung für Konten und Gruppen** | Wer existiert wo, und in welchen Gruppen? | SCIM (RFC 7643/7644) vom Hub in die Zielsysteme;[^scim] on-premises Entra Connect bzw. Cloud Sync vom AD nach Entra.[^entra-hybrid] |
+| **Governance für das „Soll"** | Anträge, Genehmigungen, SoD-Prüfung, Rezertifizierung, Entzug. | Ein IGA-System – Entra ID Governance, SailPoint, Saviynt, Omada, One Identity –, das Berechtigungen als *Entitlements* kennt.[^entra-governance] |
+
+Die Gruppen sind die Währung, die alles verbindet: Das IGA vergibt Gruppenmitgliedschaften, die Provisionierung trägt sie in jede Umgebung, und *dort* sind Rollen ausschließlich an Gruppen gebunden – nie an einzelne Personen. Eine direkt in der AWS-Konsole vergebene Rolle ist damit per Definition ein Governance-Verstoß, den die Abgleichläufe des IGA als Drift melden.
+
+```mermaid
+flowchart LR
+    HR[("HR-System<br/>Eintritt, Wechsel, Austritt")] --> IGA["IGA<br/>Soll-Zustand: Rollen,<br/>Entitlements, SoD-Regeln,<br/>Rezertifizierung"]
+    IGA -- "Konto + Gruppen" --> AD["Active Directory<br/>on-premises"]
+    AD -- "Entra Connect /<br/>Cloud Sync" --> ENT["Entra ID<br/>Föderations-Hub"]
+    IGA -- "Cloud-Gruppen,<br/>Access Packages" --> ENT
+    subgraph ZU["Zielumgebungen – Rollen nur an Gruppen"]
+        direction TB
+        AWS["AWS IAM Identity Center<br/>Permission Sets"]
+        GCP["Google Cloud Identity<br/>IAM-Bindungen"]
+        SAAS["SaaS-Anwendungen<br/>App-Rollen"]
+    end
+    ENT -- "SCIM: Nutzer + Gruppen" --> ZU
+    ENT -. "SAML / OIDC:<br/>Authentifizierung" .-> ZU
+    ZU -- "Ist-Zustand<br/>(Abgleich, Drift)" --> IGA
+    ENT -- "Ist-Zustand: Gruppen, Apps,<br/>Service Principals, Agenten" --> IGA
+```
+
+Zwei Regeln, die in der Praxis über Erfolg und Misserfolg entscheiden: **Jedes Attribut hat genau eine schreibende Quelle.** Wer AD-Gruppen nach Entra synchronisiert *und* in Entra Gruppen aus Access Packages pflegt *und* in AWS noch von Hand nachbessert, verliert die Kontrolle in Monaten. Und: **Bindungen sind statisch, Mitgliedschaften dynamisch.** Die Rolle „Prod-Deployer" hängt an *einer* Gruppe, seit Jahren; wer in der Gruppe ist, entscheidet das IGA – täglich neu.
+
+### 14.2 Zentral verwalten, dezentral durchsetzen
+
+Die Frage „zentrale oder dezentrale Autorisierung?" ist falsch gestellt. Richtig ist: **Die grobe Ebene wird zentral *verwaltet*, die feine Ebene dezentral *entschieden*** – und beide sind über die Gruppen verbunden.
+
+```mermaid
+flowchart TB
+    subgraph Z["zentral: verwalten"]
+        Z1["Geschäftsrollen und Entitlements<br/>SoD-Regeln, Genehmigungen,<br/>Rezertifizierung (IGA)"]
+    end
+    subgraph V["zentral: verteilen"]
+        V1["Gruppen und Konten<br/>im Hub (Entra ID),<br/>per SCIM in jede Umgebung"]
+    end
+    subgraph B["dezentral: binden"]
+        B1["Rollen an Gruppen<br/>Azure RBAC, AWS Permission Sets,<br/>GCP IAM, App-Rollen"]
+    end
+    subgraph E["dezentral: entscheiden"]
+        E1["PDP in der Anwendung / am Gateway<br/>ReBAC, ABAC, Freigabe-Auflagen –<br/>pro Objekt, pro Aufruf"]
+    end
+    Z1 --> V1 --> B1 --> E1
+    E1 -. "Ist-Zustand, Audit,<br/>Nutzungsdaten" .-> Z1
+```
+
+Was das für die Agenten aus den Abschnitten 5 bis 8 bedeutet: Das IGA weiß, dass *Felix* die Geschäftsrolle „Sachbearbeitung Kreditoren" hat und deshalb in der Gruppe `app-erp-kreditoren-rw` ist. Die ERP-Anwendung bindet ihre App-Rolle an genau diese Gruppe. Wenn ein Agent für Felix handelt, trägt sein Token Felix' Gruppen (oder die daraus abgeleiteten Rollen-Claims) *plus* den `act`-Claim – und der PDP im ERP entscheidet dezentral, ob dieser Agent diese Rechnung anfassen darf. Das IGA muss von dem Agenten wissen (Inventar), aber es entscheidet nicht über den einzelnen Aufruf.
+
+### 14.3 Was ins zentrale Identity Management gehört – und was nicht
+
+Die häufigste Frage in Entra-Landschaften: „Müssen wir *alles* ins IGA holen?" Nein – aber alles muss *bekannt* sein. Die Unterscheidung ist **verwalten** (das IGA ist die schreibende Quelle) versus **inventarisieren und rezertifizieren** (das IGA liest und prüft, schreibt aber nicht).
+
+| Objekt | Ins IGA? | Wie | Begründung |
+|---|---|---|---|
+| **Nutzerkonten, Gruppen** | verwalten | Lebenszyklus aus HR, Anträge über Access Packages oder IGA-Katalog | Kern von Joiner-Mover-Leaver |
+| **Service Accounts on-premises** (AD) | verwalten | Eigentümer, Ablauf, Rezertifizierung; gMSA wo möglich, Passwörter im Tresor | klassische Waisen-Quelle |
+| **App Registrations / Enterprise Apps** | inventarisieren + rezertifizieren | Eigentümer pflichtig; die *API-Berechtigungen* der App (Application Permissions) werden nicht vom IGA provisioniert, sondern per Genehmigungsprozess mit Admin-Consent vergeben und regelmäßig überprüft; *Nutzerzuweisungen* zur App laufen über Gruppen → also doch verwaltet[^entra-consent] | Application Permissions wie `Mail.ReadWrite` oder `Directory.ReadWrite.All` sind faktisch Admin-Rechte ohne Nutzerkontext – sie brauchen einen Freigabeprozess, aber kein Provisioning |
+| **Geheimnisse und Zertifikate von Apps** | verwalten (Lebenszyklus) | Ablaufdaten überwachen, Rotation, wo möglich durch Federated Credentials oder Managed Identities ersetzen | ein abgelaufenes Zertifikat ist ein Ausfall, ein nie ablaufendes ein Risiko |
+| **Managed Identities, Workload-Identitäten** | inventarisieren | keine Geheimnisse, Bindung an Ressource; Rollen an sie nur per Infrastruktur-Code | vergibt man per Code, prüft man per Code-Review |
+| **Agenten** (Copilot Studio, Foundry, Eigenbau) | inventarisieren + rezertifizieren, ab Schreibzugriff verwalten | Eigentümer *und* fachlicher Sponsor, Klassifizierung nach Datenzugriff, Rezertifizierung; Nutzerzugriff auf den Agenten über Gruppen | siehe unten |
+
+**Zu Copilot Studio konkret.** Ein Copilot-Studio-Agent hat drei Berechtigungsschichten, die oft verwechselt werden: (1) *Wer darf den Agenten benutzen* – das ist eine Gruppenzuweisung in Entra und gehört ins IGA wie jede andere App-Rolle. (2) *Womit greift der Agent auf Daten zu* – bei Konnektoren entweder mit den Anmeldedaten der erstellenden Person („Maker-Authentifizierung") oder mit denen der jeweiligen Nutzer:innen. Ersteres ist Impersonation des Makers für alle Nutzer und damit genau das Muster aus Abschnitt 5, das man vermeiden will; für alles außer öffentlichen FAQ-Bots gehört die Nutzer-Authentifizierung eingeschaltet.[^copilot-studio-sec] (3) *Welche Konnektoren darf der Agent überhaupt haben* – das regeln Data-Loss-Prevention-Richtlinien des Power-Platform-Admin-Centers pro Umgebung, und *das* ist der Ort, an dem Least Privilege für Agenten aus Low-Code-Tools durchgesetzt wird.[^pp-dlp]
+
+Muss der Agent selbst ins Identity Management? Mit Entra Agent ID bekommen Copilot-Studio- und Foundry-Agenten automatisch eine Agentenidentität im Verzeichnis – sie *sind* damit inventarisiert, ob man will oder nicht.[^entra-agent-id] Die Governance-Frage ist, was man daraus macht: Meine Empfehlung ist eine Klassifizierung in drei Stufen. *Stufe 1* (liest nur öffentliche oder unkritische Daten): automatisches Inventar, Eigentümer pflichtig, jährliche Rezertifizierung. *Stufe 2* (liest interne oder personenbezogene Daten): zusätzlich ein Sponsor aus dem Fachbereich, Nutzerauthentifizierung verpflichtend, halbjährliche Rezertifizierung. *Stufe 3* (schreibt oder handelt: Mails, Tickets, Zahlungen, Dateien): Aufnahme ins IGA als verwaltetes Objekt mit Antrag, Genehmigung, SoD-Prüfung der Konnektoren und Human-in-the-Loop nach Abschnitt 7. Eine gesetzliche Pflicht, jeden Agenten im IGA zu führen, gibt es nicht; in regulierten Umfeldern wird der Prüfer aber fragen, wer für jede Identität mit Zugriff auf Produktivdaten verantwortlich ist und wann sie zuletzt überprüft wurde – ISO 27001 verlangt genau das für alle Identitäten (A.5.16, A.5.18), DORA für Finanzunternehmen ausdrücklich Zugriffsverwaltung und regelmäßige Überprüfung (Art. 9).[^iso27001][^dora]
+
+### 14.4 Entzug und Synchronität: Rechte wegnehmen, bevor sie schaden
+
+Rechte zu vergeben ist einfach; sie zuverlässig *überall* zu entziehen ist das eigentliche Governance-Problem. Drei Prinzipien:
+
+1. **Entzug ist ereignisgetrieben, nicht zyklisch.** Der Austritt im HR-System muss innerhalb von Minuten zu einem gesperrten AD-Konto, einer entfernten Gruppenmitgliedschaft und – über Entra Connect und SCIM – zu deprovisionierten Konten in AWS, GCP und SaaS führen. Der Rezertifizierungslauf alle sechs Monate ist das *Sicherheitsnetz*, nicht der Mechanismus.
+2. **Sitzungen müssen mitsterben.** Ein deprovisioniertes Konto hilft nichts, wenn Tokens noch Stunden gültig sind. Hier greifen Continuous Access Evaluation und die Sitzungswiderrufe aus Abschnitt 11 – und für Agenten bedeutet das: Alle delegierten Tokens, die im Auftrag dieser Person laufen, verfallen mit; laufende Agentenläufe werden abgebrochen.[^entra-cae]
+3. **Soll und Ist werden abgeglichen, aber nur in eine Richtung korrigiert.** Das IGA liest regelmäßig den Ist-Zustand aus jeder Umgebung. Findet es Rechte, die es nicht vergeben hat („out of band"), gibt es zwei legitime Reaktionen: automatisch entfernen (*closed loop*, für Produktion empfohlen) oder als Drift melden und in die nächste Rezertifizierung ziehen (*open loop*, für Entwicklungsumgebungen tolerierbar). Was es nicht geben darf: dass der Ist-Zustand stillschweigend zum neuen Soll wird.
+
+```mermaid
+sequenceDiagram
+    participant HR as HR-System
+    participant IGA as IGA
+    participant AD as AD / Entra ID
+    participant C as AWS, GCP, SaaS
+    participant IdP as Entra (CAE)
+    participant G as Agenten-Gateway
+    HR->>IGA: Austritt von felix, wirksam heute
+    IGA->>AD: Konto sperren, Gruppen entfernen
+    AD->>C: SCIM: Nutzer deaktivieren, Gruppen aktualisieren
+    IGA->>IdP: Sitzungen widerrufen
+    IdP-->>G: CAEP session-revoked (sub = felix)
+    G->>G: alle Läufe mit sub = felix abbrechen,<br/>delegierte Tokens sperren
+    Note over IGA,C: nächtlicher Abgleich: Ist-Zustand lesen,<br/>Drift melden oder entfernen
+```
+
+Damit das *technisch* möglich ist, müssen die Umgebungen es erlauben: In AWS verbietet eine Service Control Policy das Anlegen lokaler IAM-Nutzer und langlebiger Access Keys, in GCP eine Organisationsrichtlinie das Erzeugen von Service-Account-Schlüsseln, in Entra Conditional Access den Zugriff außerhalb der Föderation.[^aws-scp][^gcp-orgpolicy] Wo lokale Konten technisch möglich bleiben, wird jeder Entzug lückenhaft.
+
+### 14.5 Die drei Basics: Least Privilege, Need-to-know, Separation of Duties
+
+Alle drei sind alte Prinzipien (NIST SP 800-53 führt sie als AC-5 und AC-6),[^nist-80053] aber in hybriden Landschaften mit Agenten bekommen sie eine konkrete Form:
+
+**Least Privilege** heißt heute vor allem: **keine stehenden Privilegien**. Administrative Rollen werden *just in time* aktiviert – Entra Privileged Identity Management, temporär erhöhter Zugriff in AWS Identity Center, Privileged Access Manager in GCP – mit Begründung, Zeitfenster und Genehmigung.[^entra-pim] Für Agenten gilt das doppelt: Ein Agent hat keine stehenden Rechte, sondern bekommt sie pro Aufgabe per Token Exchange (Abschnitt 6), und Administratorrechte bekommt er gar nicht – wer einen „Admin-Agenten" baut, hat die Idee nicht verstanden.
+
+**Need-to-know** ist die Datenseite davon: Nicht „darf die Rolle Dateien lesen?", sondern „braucht diese Person *dieses* Dokument für *diese* Aufgabe?". In der Praxis heißt das Datenklassifizierung (Sensitivity Labels), Gruppen je Datendomäne statt je Abteilung, und für Agenten die Regel aus Abschnitt 8: Der Wissensabruf läuft nur unter der delegierten Identität der fragenden Person – ein Agent hat kein eigenes „Need-to-know".
+
+**Separation of Duties** ist der Punkt, an dem hybride Landschaften am häufigsten scheitern, weil die toxischen Kombinationen *über Umgebungsgrenzen hinweg* liegen. Beispiele:
+
+| Toxische Kombination | Wo sie sich versteckt |
+|---|---|
+| Lieferanten anlegen **und** Zahlungen freigeben | zwei App-Rollen im ERP – klassisch, im IGA modellierbar |
+| Code in Produktion bringen **und** Änderungen genehmigen | GitHub-Team + AWS Permission Set – zwei Systeme, ein Verstoß |
+| Entra Global Administrator **und** AWS-Organisationsadministrator | zwei Cloud-Kronjuwelen in einer Person |
+| Copilot-Studio-Maker in der Prod-Umgebung **und** Power-Platform-Administrator | wer die DLP-Regeln schreibt, darf sie nicht selbst umgehen |
+| Eigentümer eines Agenten **und** Genehmiger seiner kritischen Aktionen | die Human-in-the-Loop-Freigabe braucht eine *andere* Person |
+
+SoD-Regeln leben im IGA auf der Ebene der *Geschäftsrollen* und werden zweimal geprüft: **präventiv** beim Antrag (die Kombination wird verweigert oder braucht eine Ausnahmegenehmigung mit kompensierender Kontrolle) und **detektiv** bei der Rezertifizierung. Damit das über Umgebungen hinweg funktioniert, braucht es einen Rollenkatalog, der technische Gruppen in allen Umgebungen auf Geschäftsfunktionen abbildet – das ist die eigentliche Arbeit, nicht das Werkzeug.
+
+Für Agenten kommt eine Feinheit hinzu: **Ein Agent darf nie beide Seiten einer SoD-Regel automatisch ausführen, selbst wenn die beauftragende Person beide Rollen (mit Ausnahmegenehmigung) hält.** Die kompensierende Kontrolle für den Menschen ist typischerweise das Vier-Augen-Prinzip – und die lässt sich nur durchsetzen, wenn der PDP für die zweite Seite eine Freigabe durch eine andere Person verlangt (Abschnitt 7). Sonst wird der Agent zum Werkzeug, mit dem eine Person die SoD-Ausnahme automatisiert.
+
+### 14.6 Entra und on-premises: ein typisches Zielbild
+
+Zusammengesetzt für die häufigste Landschaft im deutschsprachigen Raum:
+
+- **Active Directory bleibt autoritativ für Mitarbeiterkonten**, gespeist aus HR über das IGA. Entra Connect oder Cloud Sync trägt Konten und – nur die dafür vorgesehenen – Gruppen nach Entra ID.[^entra-hybrid] AD-Gruppen bleiben für On-prem-Ressourcen (Dateifreigaben, Altanwendungen); für Cloud- und SaaS-Rollen werden **Cloud-Gruppen** verwendet, die über Access Packages beantragt und rezertifiziert werden.[^entra-governance] Das vermeidet Rückschreibe-Komplexität und AD-Gruppenwildwuchs.
+- **Entra ID ist der Föderations-Hub**: AWS Identity Center und Google Cloud Identity werden per SAML angebunden und per SCIM mit Nutzern und Gruppen versorgt; Permission Sets und IAM-Bindungen zeigen ausschließlich auf Gruppen.[^aws-identity-center][^gcp-entra] Conditional Access und PIM gelten damit für alle Clouds.
+- **Workload-Identitäten ohne Geheimnisse**: Managed Identities in Azure, Federated Credentials für Pipelines, Workload Identity Federation nach AWS und GCP. Service-Account-Schlüssel und IAM-Nutzer sind per Richtlinie verboten.
+- **Agenten** – ob aus Copilot Studio, Foundry oder Eigenbau – erscheinen als Agentenidentitäten in Entra, bekommen Eigentümer und Sponsor, werden nach Datenzugriff klassifiziert und handeln für Menschen ausschließlich per On-Behalf-Of-Flow.[^entra-obo] Der Zugriff auf On-prem-Daten läuft über einen Data Gateway oder Entra Application Proxy; dessen Dienstkonto im AD ist ein verwaltetes Service-Konto mit Eigentümer im IGA.
+- **Eine Ehrlichkeit zum Schluss**: Beim Übergang in die On-prem-Welt geht die Delegationskette oft verloren. Application Proxy mit Kerberos Constrained Delegation stellt sich gegenüber dem Backend als *der Nutzer* dar – die Information, dass ein Agent gehandelt hat, steckt dann nur noch im Log des Proxys, nicht im Backend.[^entra-appproxy-kcd] Wer das auditieren muss, korreliert Proxy-Logs und Backend-Logs über die Zeit – oder zieht die Schnittstelle in eine API, die Tokens versteht.
+
+---
+
+## 15. Ehrliche Einschätzung aus der Praxis: was man wann tun sollte
+
+Dieser Beitrag beschreibt viel, und nicht alles davon gehört in jedes Projekt. Hier die Einordnung, wie ich sie in Architekturgesprächen gebe – nach Nutzen, Aufwand und dem Zeitpunkt, an dem es fällig wird.
+
+```mermaid
+quadrantChart
+    title Nutzen gegen Aufwand
+    x-axis "geringer Aufwand" --> "hoher Aufwand"
+    y-axis "geringer Nutzen" --> "hoher Nutzen"
+    quadrant-1 "planen, sobald fällig"
+    quadrant-2 "sofort"
+    quadrant-3 "kann warten"
+    quadrant-4 "gut überlegen"
+    Keine Geheimnisse: [0.12, 0.92]
+    Kurze TTL und aud: [0.1, 0.72]
+    Identität je Agententyp: [0.28, 0.82]
+    Werkzeuge klassifizieren: [0.2, 0.6]
+    Token-Broker gemietet: [0.35, 0.66]
+    Tool-Gateway als PEP: [0.58, 0.92]
+    Delegation mit act: [0.72, 0.84]
+    HITL am PEP: [0.6, 0.72]
+    RAG mit ACL-Filter: [0.78, 0.62]
+    Eigener ReBAC-Betrieb: [0.8, 0.44]
+    SSF über Anbieter: [0.72, 0.32]
+    Eigener Identitätstyp: [0.85, 0.18]
+    DPoP: [0.42, 0.38]
+    RAR: [0.38, 0.24]
+    Macaroons: [0.3, 0.1]
+```
+
+### Sofort – billig und wirksam
+
+Das hier kostet Tage, nicht Monate, und ist meist Konfiguration statt Entwicklung:
+
+- **Keine statischen Geheimnisse, kurze Laufzeiten, `aud`-Prüfung.** Managed Identities, Workload Identity Federation, Tokens im Minutenbereich. Wer nur eines tut, tut das.
+- **Eine Identität je Agententyp**, mit Eigentümer und Ablaufdatum, und sei es zunächst ein markierter Service Account (Abschnitt 9).
+- **Werkzeuge klassifizieren** – lesen, reversibel schreiben, irreversibel, finanziell. Das ist eine Tabelle, kein Projekt, und die Grundlage für alles Weitere.
+- **Audit-Logs mit Akteur.** Selbst ohne echten `act`-Claim: Jeder Werkzeugaufruf wird mit Agent, Nutzer, Task-ID und Parametern protokolliert.
+- **Human-in-the-Loop im Framework** für die irreversiblen Stufen – *wohl wissend*, dass das noch keine Durchsetzung ist. Es ist der Zwischenschritt, bis das Gateway steht.
+
+### Sobald der Agent schreibt oder Kundendaten liest
+
+Ab hier wird es Entwicklungsarbeit, typischerweise Wochen, und ab hier gibt es keine Ausreden mehr:
+
+- **Ein Tool-Gateway als einziger PEP.** Ohne diesen Punkt lässt sich nichts durchsetzen. Der Aufwand ist überschaubar, wenn man ein bestehendes API-Gateway oder einen MCP-Proxy erweitert, und groß, wenn jedes Team seinen eigenen baut – also: einer, zentral betrieben.
+- **Delegation mit `act`.** Die ehrliche Einschränkung: Die Unterstützung für Token Exchange ist bei den IdPs sehr ungleich. Entra hat den On-Behalf-Of-Flow, Keycloak beherrscht RFC 8693, andere Anbieter nur teilweise oder in Vorschau. Prüfe *vor* der Architekturentscheidung, was der eigene IdP wirklich kann – und baue keinen eigenen Authorization Server, das geht praktisch immer schief.
+- **HITL vom PEP erzwungen.** Zunächst reicht eine Auflage im Gateway plus ein Freigabe-Workflow; CIBA oder Step-Up kommen, wenn der IdP sie anbietet.
+- **RAG mit Berechtigungsfilter.** Der günstigste Weg: die Berechtigungen der Quelle (SharePoint, Drive, Confluence) beim Indexieren als Metadaten mitnehmen und beim Abruf filtern. Ein eigener ReBAC-Store ist *nicht* Voraussetzung – wo die Plattform die Berechtigungen bereits kennt (Microsoft Graph, Google Drive), nutzt man sie.
+- **Ein Token-Broker**, damit Refresh-Tokens und Drittanbieter-Credentials nie im Agenten liegen. Gemietet (AgentCore Identity, Auth0) ist das ein Nachmittag; selbst gebaut eine Wartungsverpflichtung.
+
+### Gut überlegen – teuer, und oft gibt es einen einfacheren Weg
+
+- **Zanzibar selbst betreiben.** OpenFGA oder SpiceDB sind exzellent, aber der Betrieb ist ein Projekt: Konsistenzmodell, die Pipeline, die Beziehungen aus den Quellsystemen synchron hält, Latenz auf jedem Aufruf. Lohnt sich, wenn man eine *eigene* Anwendung mit Freigaben und Hierarchien baut. Lohnt sich nicht, um Berechtigungen zu spiegeln, die SharePoint oder Drive schon kennen. Die gemietete Variante (Auth0 FGA, Verified Permissions) verschiebt die Kosten vom Betrieb in die Rechnung pro Prüfung – ab einigen Millionen Checks im Monat wird auch das ein Posten.
+- **SSF/CAEP über Anbietergrenzen.** Innerhalb von Entra ist CAE ein Schalter. Zwischen verschiedenen Anbietern ist das Ökosystem noch lückenhaft; kurze Laufzeiten plus Introspection für die kritischen Aufrufe erreichen 80 % des Effekts.
+- **Ein eigener Agenten-Identitätstyp.** Wenn der IdP ihn anbietet, nehmen. Selbst bauen: nein – ein Service Account mit sauberer Governance ist besser als ein Eigenbau-Identitätstyp, den kein Conditional Access kennt.
+- **IGA-Anbindung aller Agenten.** Inventar und Eigentümer: sofort. Vollständige Verwaltung im IGA: nur für die Stufe 3 aus Abschnitt 14.3. Wer alle Agenten durch den Antragsprozess schickt, erstickt die Fachbereiche und produziert Schatten-Agenten.
+
+### Kann warten – oder ist ein Werkzeug für Spezialfälle
+
+- **DPoP** ist konzeptionell richtig, die Client-Unterstützung aber uneinheitlich; mTLS am Gateway erreicht dasselbe mit weniger Reibung, wenn man die Zertifikate ohnehin hat.
+- **Rich Authorization Requests** setzen einen Authorization Server voraus, der sie versteht – das sind noch wenige. Bis dahin: RAR-artige Details in der Freigabe-Auflage des PDP abbilden.
+- **Macaroons und Biscuit** sind elegant für Werkzeugketten, aber ein Nischenwissen im Team. Ohne jemanden, der sie wirklich versteht, lieber Token Exchange.
+- **Transaction Tokens, AuthZEN, die Agenten-Entwürfe der IETF**: verfolgen, nicht darauf bauen. Sie ändern sich noch.
+
+### Was in der Praxis regelmäßig schiefgeht
+
+Aus Gesprächen und Reviews die Muster, die immer wiederkehren – nicht, weil die Beteiligten unfähig wären, sondern weil sie unter Zeitdruck naheliegend sind:
+
+1. **„Vorübergehend" Token-Passthrough.** Das Nutzer-Token wird ans nächste Werkzeug durchgereicht, „bis der Exchange steht". Der Exchange steht dann nie.
+2. **Der RAG-Index ohne Berechtigungen, „das ergänzen wir später".** Später ist der Index in Produktion, und niemand weiß mehr, welche Chunks aus welchen Dokumenten stammen.
+3. **Copilot-Studio-Agenten mit Maker-Anmeldedaten.** Der Ersteller hat weite Rechte, der Agent erbt sie, und jede Nutzerin bekommt Antworten aus Daten, die sie nie sehen dürfte.
+4. **Human-in-the-Loop nur im Prompt.** Funktioniert in der Demo, fällt beim ersten Red-Team-Test.
+5. **Ein „Admin-Agent" für die Automatisierung des Betriebs.** Der Agent hat mehr Rechte als jeder Mensch, weil das bequemer war als Token Exchange.
+6. **Governance als Bremse gebaut.** Jeder Agent durch das volle IGA-Verfahren – Ergebnis sind Agenten, die niemand registriert.
+
+Die Kostenfrage ehrlich beantwortet: Das teuerste an Agenten-IAM sind nicht die Werkzeuge, sondern zwei Dinge – der **Rollenkatalog** (welche technische Gruppe bedeutet welche Geschäftsfunktion, in jeder Umgebung) und die **Disziplin**, keine Ausnahmen zuzulassen. Beides ist Organisationsarbeit. Die Technik aus diesem Beitrag ist zum größten Teil Konfiguration bestehender Plattformen; die Lizenzen für IGA und Governance-Funktionen sind der sichtbare Posten, und sie sind es wert, sobald der erste Agent schreibend arbeitet.
+
+---
+
+## 16. Fazit
+
+KI-Agenten erfinden das IAM nicht neu – sie bestrafen nur gnadenlos jede Abkürzung, die man bisher nehmen konnte. Die Antwort ist auch keine neue Technologie, sondern Disziplin bei den bekannten: **Delegation statt Impersonation**, damit jeder Aufruf Mensch *und* Maschine benennt. **Rechte, die entlang der Kette nur fallen**, per Token Exchange, Session Policies oder Capabilities. **Ein PDP außerhalb des Modells**, der pro Werkzeugaufruf und pro Dokument entscheidet – und der Freigaben durch Menschen *verlangt*, statt darauf zu hoffen, dass der Agent fragt. **Kurze Laufzeiten und Signale**, damit ein Widerruf in Sekunden wirkt. Und **eine echte Identität für den Agenten**, ob als markierter Service Account oder als eigener Typ, mit Eigentümer, Lebenszyklus und Inventar – eingebettet in eine Governance, die über alle Umgebungen hinweg weiß, wer was darf, und es wieder wegnehmen kann.
 
 Wer diese fünf Dinge hat, kann einem Agenten Schreibrechte geben und trotzdem ruhig schlafen. Wer sie nicht hat, sollte dem Agenten vorerst nur zuhören.
 
@@ -636,9 +856,9 @@ Du planst KI-Agenten in deiner Organisation und willst das Berechtigungsmodell e
 
 ---
 
-## 15. Quellen
+## 17. Quellen
 
-Jede Quelle ist mit ihrem **Veröffentlichungsdatum** und dem **Abrufdatum (11.09.2026)** versehen. Internet-Drafts der IETF sind als Entwürfe gekennzeichnet und können sich noch ändern; die Herstellerdokumentation der Cloud-Anbieter ändert sich laufend – im Zweifel die aktuelle Fassung heranziehen.
+Jede Quelle ist mit ihrem **Veröffentlichungsdatum** und dem **Abrufdatum (11. bzw. 12.09.2026)** versehen. Internet-Drafts der IETF sind als Entwürfe gekennzeichnet und können sich noch ändern; die Herstellerdokumentation der Cloud-Anbieter ändert sich laufend – im Zweifel die aktuelle Fassung heranziehen.
 
 [^owasp-llm06]: OWASP GenAI Security Project, „LLM06:2025 Excessive Agency", *OWASP Top 10 for LLM Applications 2025*. *Veröffentlicht November 2024; abgerufen 11.09.2026.* <https://genai.owasp.org/llmrisk/llm062025-excessive-agency/>
 
@@ -749,3 +969,33 @@ Jede Quelle ist mit ihrem **Veröffentlichungsdatum** und dem **Abrufdatum (11.0
 [^iaag]: IETF Internet-Draft *Identity Assertion Authorization Grant* (draft-ietf-oauth-identity-assertion-authz-grant) – **Entwurf**; Grundlage von Oktas „Cross App Access". *Laufend aktualisiert; abgerufen 11.09.2026.* <https://datatracker.ietf.org/doc/draft-ietf-oauth-identity-assertion-authz-grant/>
 
 [^oauth-agents-draft]: IETF Internet-Draft *OAuth 2.0 Extension: On-Behalf-Of User Authorization for AI Agents* (draft-oauth-ai-agents-on-behalf-of-user) – **individueller Entwurf**, benennt den Agenten bereits im Authorization-Code-Flow als Akteur. *Erstfassung 2025; abgerufen 11.09.2026.* <https://datatracker.ietf.org/doc/draft-oauth-ai-agents-on-behalf-of-user/>
+
+[^scim]: IETF RFC 7643 und RFC 7644, *System for Cross-domain Identity Management (SCIM): Core Schema* und *Protocol*. *Veröffentlicht September 2015; abgerufen 12.09.2026.* <https://www.rfc-editor.org/rfc/rfc7644>
+
+[^entra-hybrid]: Microsoft Learn, *What is hybrid identity with Microsoft Entra ID?* (Entra Connect Sync und Cloud Sync). *Laufend aktualisiert; abgerufen 12.09.2026.* <https://learn.microsoft.com/en-us/entra/identity/hybrid/whatis-hybrid-identity>
+
+[^entra-governance]: Microsoft Learn, *What is Microsoft Entra ID Governance?* (Entitlement Management mit Access Packages, Access Reviews, Lifecycle Workflows). *Laufend aktualisiert; abgerufen 12.09.2026.* <https://learn.microsoft.com/en-us/entra/id-governance/identity-governance-overview>
+
+[^aws-identity-center]: AWS IAM Identity Center User Guide, *Using Microsoft Entra ID as an identity source* (SAML-Föderation und SCIM-Provisionierung). *Laufend aktualisiert; abgerufen 12.09.2026.* <https://docs.aws.amazon.com/singlesignon/latest/userguide/idp-microsoft-entra.html>
+
+[^gcp-entra]: Google Cloud Architecture Center, *Federating Google Cloud with Microsoft Entra ID* (Provisionierung und Single Sign-on). *Laufend aktualisiert; abgerufen 12.09.2026.* <https://cloud.google.com/architecture/identity/federating-gcp-with-azure-ad-configuring-provisioning-and-single-sign-on>
+
+[^entra-consent]: Microsoft Learn, *Introduction to permissions and consent* (Delegated vs. Application Permissions, Admin Consent). *Laufend aktualisiert; abgerufen 12.09.2026.* <https://learn.microsoft.com/en-us/entra/identity-platform/permissions-consent-overview>
+
+[^copilot-studio-sec]: Microsoft Learn, *Copilot Studio security and governance* sowie *Configure user authentication* (Maker- vs. Nutzer-Authentifizierung bei Konnektoren). *Laufend aktualisiert; abgerufen 12.09.2026.* <https://learn.microsoft.com/en-us/microsoft-copilot-studio/security-and-governance>
+
+[^pp-dlp]: Microsoft Learn, *Data policies* in der Power Platform (Data Loss Prevention für Konnektoren). *Laufend aktualisiert; abgerufen 12.09.2026.* <https://learn.microsoft.com/en-us/power-platform/admin/wp-data-loss-prevention>
+
+[^iso27001]: ISO/IEC 27001:2022, *Information security, cybersecurity and privacy protection – Information security management systems – Requirements*, Anhang A: 5.15 Zugangssteuerung, 5.16 Identitätsmanagement, 5.18 Zugangsrechte. *Veröffentlicht Oktober 2022; abgerufen 12.09.2026.* <https://www.iso.org/standard/27001>
+
+[^dora]: Verordnung (EU) 2022/2554 über die digitale operationale Resilienz im Finanzsektor (DORA), insbesondere Artikel 9 – Schutz und Prävention (Zugriffsverwaltung). *Anwendbar seit 17.01.2025; abgerufen 12.09.2026.* <https://eur-lex.europa.eu/eli/reg/2022/2554/oj>
+
+[^aws-scp]: AWS Organizations User Guide, *Service control policies (SCPs)*. *Laufend aktualisiert; abgerufen 12.09.2026.* <https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html>
+
+[^gcp-orgpolicy]: Google Cloud, *Restricting service account usage* (Organisationsrichtlinie `iam.disableServiceAccountKeyCreation`). *Laufend aktualisiert; abgerufen 12.09.2026.* <https://cloud.google.com/resource-manager/docs/organization-policy/restricting-service-accounts>
+
+[^nist-80053]: NIST Special Publication 800-53 Rev. 5, *Security and Privacy Controls for Information Systems and Organizations* – AC-5 Separation of Duties, AC-6 Least Privilege. *Veröffentlicht September 2020, Update 1 Dezember 2020; abgerufen 12.09.2026.* <https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final>
+
+[^entra-pim]: Microsoft Learn, *What is Microsoft Entra Privileged Identity Management?* (Just-in-time-Aktivierung privilegierter Rollen). *Laufend aktualisiert; abgerufen 12.09.2026.* <https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure>
+
+[^entra-appproxy-kcd]: Microsoft Learn, *Kerberos Constrained Delegation for single sign-on to your apps with Application Proxy*. *Laufend aktualisiert; abgerufen 12.09.2026.* <https://learn.microsoft.com/en-us/entra/identity/app-proxy/how-to-configure-sso-with-kcd>
