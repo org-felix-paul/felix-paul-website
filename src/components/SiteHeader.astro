@@ -10,30 +10,14 @@
 // Scroll-spy tracks `spy` (a home-page section id), not `href`. The two differ
 // for "Blog": it links to /blog/ but marks the blog teaser while you scroll
 // past it. A group lights up when any of its children is the current section.
-
-interface NavItem {
-  href: string;
-  label: string;
-  labelEn?: string;
-  spy?: string;
-  /** Ziel gibt es nur in der anderen Sprache. */
-  fremdsprachig?: boolean;
-  /** Verlässt diese Domain. */
-  external?: boolean;
-}
-
-interface NavGroup {
-  label: string;
-  labelEn?: string;
-  items: readonly NavItem[];
-}
-
-type NavEntry = NavItem | NavGroup;
-const isGroup = (e: NavEntry): e is NavGroup => "items" in e;
+import ThemeToggle from "./ThemeToggle.astro";
+import LanguageLink from "./LanguageLink.astro";
+import { isGroup, type NavEntry } from "../consts";
+import { uebersetzer, type Sprache } from "../i18n/ui";
 
 interface Props {
   /** Sprache der Seite. Steuert Beschriftungen, nicht die Struktur. */
-  lang?: "de" | "en";
+  lang?: Sprache;
   /** Where the brand mark links — the section root. */
   home: string;
   /**
@@ -105,9 +89,6 @@ const zielAttribute = (e: { external?: boolean }) =>
 
 const linkClass =
   "border-b-2 border-transparent pb-0.5 transition-colors hover:text-brand-700 aria-[current]:border-brand-600 aria-[current]:text-brand-700";
-import ThemeToggle from "./ThemeToggle.astro";
-import { uebersetzer } from "../i18n/ui";
-import LanguageLink from "./LanguageLink.astro";
 const t = uebersetzer(lang);
 ---
 

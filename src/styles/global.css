@@ -1,4 +1,6 @@
-@import "tailwindcss";
+/* Nur src/ nach Klassennamen durchsuchen. Ohne die Einschränkung liest
+   Tailwind auch README und docs/ und nimmt Wörter wie "outline" ins CSS auf. */
+@import "tailwindcss" source("../");
 
 @theme {
   /* Die Paletten sind hier nur als Referenz auf CSS-Variablen definiert. Die

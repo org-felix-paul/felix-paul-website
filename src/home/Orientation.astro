@@ -1,0 +1,105 @@
+---
+// Orientierungsleiste oben auf der Seite: eine Zeile pro Bereich, kein
+// Verkaufen. Die Inhalte stehen weiter unten (#speaking, #bildung …) — hier
+// wird nur sortiert, damit klar ist, was es gibt und wo es weitergeht.
+import Section from "../components/Section.astro";
+import type { Sprache } from "../i18n/ui";
+
+interface Props {
+  lang?: Sprache;
+}
+const { lang = "de" } = Astro.props;
+
+const de = {
+  eyebrow: "Überblick",
+  title: "Was ich mache",
+  bereiche: [
+    {
+      label: "Keynotes & Fachvorträge",
+      line: "Vorträge und Beratung zu KI, IT-Sicherheit, Cloud, IAM und Kryptographie.",
+      href: "#speaking",
+      bar: "bg-brand-500",
+    },
+    {
+      label: "Bildungsangebote",
+      line: "Workshops und Fortbildungen für Unternehmen, Schulen und Privatpersonen.",
+      href: "#bildung",
+      bar: "bg-emerald-500",
+    },
+    {
+      label: "Software",
+      line: "Lauffähige Software und Projekte über dSolve.",
+      href: "#software",
+      bar: "bg-amber-500",
+    },
+    {
+      // Kein Angebot, deshalb optisch zurückgenommen (graue Marke statt
+      // Akzentfarbe). Wie die anderen Zeilen ein Anker auf den Abschnitt
+      // weiter unten, nicht direkt auf /blog/ — der Absprung steht dort.
+      label: "Blog",
+      line: "Beiträge zu Themen die mich beschäftigen wie KI, IT-Sicherheit und schulische Bildung.",
+      href: "#blog",
+      bar: "bg-ink-300",
+    },
+  ],
+};
+
+const en: typeof de = {
+  eyebrow: "Overview",
+  title: "What I do",
+  bereiche: [
+    {
+      label: "Keynotes & talks",
+      line: "Talks and consulting on AI, IT security, cloud, IAM and cryptography.",
+      href: "#speaking",
+      bar: "bg-brand-500",
+    },
+    {
+      label: "Training & workshops",
+      line: "Workshops and professional training for companies, schools and individuals.",
+      href: "#bildung",
+      bar: "bg-emerald-500",
+    },
+    {
+      label: "Software",
+      line: "Working software and projects, built through dSolve.",
+      href: "#software",
+      bar: "bg-amber-500",
+    },
+    {
+      label: "Blog",
+      line: "Posts on what occupies me: AI, IT security and technology in education.",
+      href: "#blog",
+      bar: "bg-ink-300",
+    },
+  ],
+};
+
+const T = lang === "en" ? en : de;
+---
+
+<Section id="saeulen" eyebrow={T.eyebrow} title={T.title}>
+  <ul class="mx-auto max-w-3xl divide-y divide-ink-100 overflow-hidden rounded-2xl border border-ink-200 bg-surface shadow-sm">
+    {
+      T.bereiche.map((o) => (
+        <li>
+          <a href={o.href} class="group flex items-center gap-4 px-5 py-4 transition hover:bg-ink-50 sm:px-6">
+            <span class={`h-8 w-1 shrink-0 rounded-full ${o.bar}`} aria-hidden="true" />
+            <span class="flex-1">
+              <span class="block font-semibold text-ink-900">{o.label}</span>
+              <span class="block text-sm leading-relaxed text-ink-600">{o.line}</span>
+            </span>
+            <svg
+              class="h-4 w-4 shrink-0 text-ink-400 transition group-hover:translate-x-0.5 group-hover:text-brand-700"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Section>

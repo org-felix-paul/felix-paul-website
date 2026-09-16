@@ -7,12 +7,12 @@
 // blue is Keynotes & Fachvorträge (where the company topics live), amber is
 // Software / the third pillar. Colour on white rather than coloured text on a
 // coloured ground — the previous emerald-on-emerald version was hard to read.
-import { PATHS } from "../../consts";
-import { lokalisiere, nurDeutsch } from "../../i18n/pages.mjs";
-import type { Sprache } from "../../i18n/ui";
+import { PATHS } from "../consts";
+import { lokalisiere, nurDeutsch } from "../i18n/pages.mjs";
+import type { Sprache } from "../i18n/ui";
 
 interface Props {
-  /** Home page uses the tighter version; /education/ the full one. */
+  /** Home page uses the tighter version; /schools/ the full one. */
   compact?: boolean;
   lang?: Sprache;
 }

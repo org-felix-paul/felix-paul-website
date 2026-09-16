@@ -1,9 +1,8 @@
-// Site-wide identity. felix-paul.de is now ONE origin serving three sections
-// (main site at "/", blog at "/blog", education at "/education") plus the
-// untouched reference projects under "/projects". Everything that describes
-// *the domain* — name, author, address, social profiles — lives here exactly
-// once; anything that describes a single section lives in that section's own
-// consts file (src/blog/consts.ts, src/education/consts.ts).
+// Site-wide identity. felix-paul.de is ONE origin serving the main site at
+// "/", the blog at "/blog/" and the school offers at "/schools/". Everything
+// that describes *the domain* — name, author, address, social profiles — lives
+// here exactly once; anything that describes a single section lives in that
+// section's own consts file (src/blog/consts.ts, src/schools/consts.ts).
 export const SITE = {
   name: "Felix Paul",
   tagline: "Keynotes, Bildungsangebote & IT-Beratung",
@@ -45,23 +44,17 @@ export const PATHS = {
   // the terms German visitors and authorities look for, and the content slugs
   // under /schools/workshops/ are the offers' own names.
   schools: "/schools/",
-  /** Vergangene Schul-Workshops und was daraus entstanden ist. Gehört zur
-   *  Schul-Seite und wird bewusst nur von dort verlinkt — die Seite zeigt
-   *  Schul-Workshops, nicht die Bildungsangebote insgesamt. */
-  pastWorkshops: "/schools/insights/",
   companies: "/companies/",
   individuals: "/individuals/",
   impressum: "/impressum/",
   datenschutz: "/datenschutz/",
   /** The one contact form on the domain: the #kontakt block on the home page.
-   *  The education section used to carry a second copy at /schools/kontakt/. */
+   *  The schools section used to carry a second copy at /schools/kontakt/. */
   kontakt: "/#kontakt",
   /** Home-page anchors that the rest of the site links back to. */
   speaking: "/#speaking",
   software: "/#software",
   bildung: "/#bildung",
-  ueberMich: "/#ueber-mich",
-  publikationen: "/#publikationen",
   /** The one confirmation page every form returns to. */
   thankYou: "/thank-you/",
 } as const;
@@ -78,10 +71,7 @@ export const FAVICONS = {
  *  werden dort auch veröffentlicht — diese Seite verlinkt sie nur noch. */
 export const GITHUB_PAGES = "https://github.felix-paul.de";
 
-// Referenzprojekte. Bis September 2026 lagen sie als Kopien in
-// public/projects/ (36 MB, drei Viertel der Auslieferung) und wurden bei
-// jedem Deploy erneut hochgeladen, obwohl sie sich nie ändern. Jetzt zeigen
-// die Links auf die GitHub Pages der jeweiligen Repositories.
+// Referenzprojekte, verlinkt auf ihre GitHub Pages (siehe docs/adr/0005).
 //
 // Achtung bei NECK: der Pfad ist GROSSGESCHRIEBEN. GitHub Pages unterscheidet
 // Groß- und Kleinschreibung, /neck/ liefert dort einen 404.
@@ -182,7 +172,10 @@ export interface NavGroup {
   items: readonly NavItem[];
 }
 
-export const NAV: readonly (NavItem | NavGroup)[] = [
+export type NavEntry = NavItem | NavGroup;
+export const isGroup = (e: NavEntry): e is NavGroup => "items" in e;
+
+export const NAV: readonly NavEntry[] = [
   { href: "#speaking", label: "Keynotes & Fachvorträge", labelEn: "Keynotes & talks", spy: "speaking" },
   {
     label: "Bildungsangebote",

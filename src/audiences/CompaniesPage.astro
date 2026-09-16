@@ -1,0 +1,283 @@
+---
+// Bildungsangebote für Unternehmen & Universitäten. Drei Zuschnitte, weil
+// sich die Frage je nach Größe der Organisation grundlegend unterscheidet:
+// die einzelne Rolle, das ganze Unternehmen, oder ein konkreter Engpass im
+// Konzern. Bewusst ohne Pakete, Dauer oder Preise — das entsteht im Gespräch.
+//
+// Die englischen Texte sind neu formuliert, nicht Wort für Wort übersetzt:
+// die deutsche Seite siezt und arbeitet mit Komposita, beides trägt im
+// Englischen nicht.
+import Layout from "../layouts/Layout.astro";
+import Section from "../components/Section.astro";
+import CtaBanner from "../components/CtaBanner.astro";
+import { PATHS } from "../consts";
+import { lokalisiere } from "../i18n/pages.mjs";
+import type { Sprache } from "../i18n/ui";
+
+interface Props {
+  lang?: Sprache;
+}
+const { lang = "de" } = Astro.props;
+
+type Accent = "brand" | "emerald" | "amber";
+interface Zuschnitt {
+  label: string;
+  title: string;
+  text: string;
+  accent: Accent;
+  wide?: boolean;
+}
+interface Thema {
+  title: string;
+  text: string;
+  items?: { name: string; was: string }[];
+}
+
+const de = {
+  metaTitle: "Bildungsangebote für Unternehmen & Universitäten",
+  metaDescription:
+    "Workshops für Unternehmen und Universitäten – zugeschnitten auf die eigene Rolle, das ganze Unternehmen oder einen konkreten Engpass. Auf Anfrage.",
+  eyebrow: "Bildungsangebote",
+  title: "Für Unternehmen & Universitäten",
+  lead: "Workshops, Vorträge und Fortbildungen, zugeschnitten auf Ihre Organisation und Rolle.",
+  zuschnitte: [
+    {
+      label: "Einzelpersonen & Führungskräfte",
+      title: "Die eigene Rolle",
+      text: "Eine arbeits- und rollenspezifische Analyse: Wo macht KI die eigenen Abläufe effizienter, wo lassen sie sich neu denken, und was lässt sich sinnvoll automatisieren? Für einzelne Führungskräfte ebenso wie für ein kleines Leitungsteam.",
+      accent: "brand",
+    },
+    {
+      label: "Kleine & mittelständische Unternehmen",
+      title: "Der Blick aufs Ganze",
+      text: "In dieser Größe ist der ganzheitliche Blick noch möglich: Prozesse, Werkzeuge und Verantwortlichkeiten gemeinsam durchgehen und entscheiden, wo KI wirklich hilft – und wo sie keinen Mehrwert schafft.",
+      accent: "emerald",
+    },
+    {
+      label: "Großkonzerne",
+      title: "Ein Engpass, konkret",
+      text: "Statt der Gesamtschau eine gezielte Analyse des tatsächlichen Schmerzpunkts – meist die Frage, wie sich KI über viele Bereiche hinweg skalieren lässt: Integrationspattern, Verfügbarkeit und Auswahl von Werkzeugen, Governance und Kostentransparenz.",
+      accent: "amber",
+      wide: true,
+    },
+  ] as Zuschnitt[],
+  grundlagenTitel: "Grundlagen, die fast immer dazugehören",
+  // Als HTML, damit einzelne Begriffe fett stehen können.
+  grundlagen: [
+    `Die <strong>Lethal Trifecta</strong> (Simon Willison): Ein Agent wird gefährlich, sobald Zugriff auf sensible Daten, ungeprüfte Inhalte und ein Kanal nach außen zusammenkommen – und wie man diese Kombination in der eigenen Landschaft risiko- und mehrwertabhängig mitigiert.`,
+    `<strong>Identity &amp; Access Management im KI-Umfeld:</strong> Wie authentifizieren sich KI Agenten? Wird Impersonation oder nur Delegation akzeptiert und wie erkennt man Live riskante Zugriffskombinationen?`,
+    `<strong>Überblick behalten:</strong> Welche Werkzeuge, MCP-Server und Agenten gibt es überhaupt, wer betreibt sie, wer darf sie nutzen, und wie kommen neue kontrolliert dazu?`,
+    `<strong>Integrationspattern:</strong> wann eine API reicht, wann ein MCP Server und wann man einen A2A Agent benötigt. Und wann KI die falsche Antwort ist.`,
+    `<strong>Governance, die mitwächst</strong> statt zu bremsen – Leitplanken, die auch dann noch funktionieren, wenn nicht mehr eine Handvoll Teams beteiligt sind.`,
+    `<strong>Kostenmanagement:</strong> Verbrauch sichtbar machen, skaliert über das gesamte Unternehmen, indem man Anwendungen und Modellbezug entkoppelt.`,
+    `<strong>Schatten-IT:</strong> warum sie im KI-Kontext besonders schnell entsteht und wie man ihr begegnet, ohne Innovation zu verhindern.`,
+  ],
+  hochschulen: {
+    badge: "Für Universitäten und Hochschulen",
+    title: "Vorlesungen, Seminare und Gastvorträge",
+    text: "Tiefe Einblicke in die zugrundeliegende Technik – auf Vorlesungsniveau. Für Architektur- und Plattformteams in techaffinen Unternehmen auch verfügbar.",
+  },
+  // Fachlich tiefe Themen: Titel, ein Satz Einordnung, und wo es sich lohnt
+  // eine Unterliste — als Fließtext wurden die Aufzählungen darin unlesbar.
+  tiefe: [
+    {
+      title: "Identity & Access Management von den Grundlagen her",
+      text: "Authentifizierung, Autorisierung und Federation Basics – Definition der Begriffe, Sicherheitsprinzipien und Autorisierungsmodellen. Anschließend OAUTH2 Tokenflows im Detail",
+      items: [
+        { name: "Authorization Code mit PKCE", was: "der Standardfall für Anwendungen mit Nutzerinteraktion" },
+        { name: "Client Credentials", was: "Service to Service, ohne Nutzerinteraktion" },
+        { name: "Device Authorization Flow", was: "Geräte ohne Browser und ohne Tastatur" },
+        { name: "Impersonation, Delegation und Token Exchange (RFC 8693)", was: "im Auftrag eines Users weitere Dienste aufrufen" },
+        { name: "Weitere spezifische Tokenflows:", was: "RAR, PAR, JAR, JWE" },
+      ],
+    },
+    {
+      title: "Die Protokolllandschaft rund um Agenten",
+      text: "Übersicht über die Protokolle und deren Einsatzbereiche",
+      items: [
+        { name: "REST APIs", was: "Agent zu Werkzeugen und Daten?" },
+        { name: "MCP", was: "Agent zu Werkzeugen und Daten" },
+        { name: "A2A", was: "Agent zu Agent, seit 2025 bei der Linux Foundation" },
+        { name: "A2UI, AG-UI", was: "was ein Agent auf der Oberfläche rendern darf" },
+        { name: "AP2/ x402", was: "Mandat, Freigabe und Nachweis bei agentischen Zahlungen" },
+        { name: "UCP", was: "agentischer Onlinehandel" },
+      ],
+    },
+    {
+      title: "Skalierungsprobleme aus echten Umgebungen",
+      text: "Warum KI-Integrationen an Identität, Governance und Integration oftmals scheitern und wie man Agentic Systeme sicher baut (OWASP Top 10 for Agentic Applications).",
+    },
+  ] as Thema[],
+  cta: {
+    title: "Sie wollen direkt buchen oder ein individuelles Angebot?",
+    text: "Schreiben Sie mir formlos – ich melde mich werktags innerhalb von 48 Stunden zurück. Zuschnitt, Umfang und Preis ergeben sich aus Ihrem Ziel.",
+    label: "Jetzt anfragen",
+  },
+};
+
+const en: typeof de = {
+  metaTitle: "Training for companies and universities",
+  metaDescription:
+    "Workshops for companies and universities – shaped around your own role, the organisation as a whole, or one specific bottleneck. On request.",
+  eyebrow: "Training & workshops",
+  title: "For companies and universities",
+  lead: "Workshops, talks and training, shaped around your organisation and your role.",
+  zuschnitte: [
+    {
+      label: "Individuals & leadership",
+      title: "Your own role",
+      text: "A close look at how you actually work: where AI makes your existing processes faster, where they are worth rethinking, and what is genuinely worth automating. For a single leader as much as for a small leadership team.",
+      accent: "brand",
+    },
+    {
+      label: "Small & mid-sized companies",
+      title: "The whole picture",
+      text: "At this size you can still see everything at once. We go through processes, tools and responsibilities together and decide where AI genuinely helps — and where it adds nothing.",
+      accent: "emerald",
+    },
+    {
+      label: "Large enterprises",
+      title: "One bottleneck, in depth",
+      text: "Instead of the full survey, a targeted look at the real pain point. Usually that means scaling AI across many business units: integration patterns, availability and choice of tooling, governance, and cost transparency.",
+      accent: "amber",
+      wide: true,
+    },
+  ],
+  grundlagenTitel: "Fundamentals that come up almost every time",
+  grundlagen: [
+    `The <strong>lethal trifecta</strong> (Simon Willison): an agent turns dangerous the moment access to sensitive data, untrusted content and an outbound channel come together — and how to mitigate that combination in your own landscape, weighed against risk and value.`,
+    `<strong>Identity and access management for AI:</strong> how do AI agents authenticate? Do you accept impersonation or only delegation, and how do you spot risky combinations of access as they happen?`,
+    `<strong>Keeping an overview:</strong> which tools, MCP servers and agents exist in the first place, who runs them, who is allowed to use them, and how new ones are added under control.`,
+    `<strong>Integration patterns:</strong> when an API is enough, when you need an MCP server, and when it has to be an A2A agent. And when AI is the wrong answer.`,
+    `<strong>Governance that grows with you</strong> instead of slowing you down — guard rails that still work once more than a handful of teams are involved.`,
+    `<strong>Cost management:</strong> making consumption visible across the entire company by decoupling applications from model access.`,
+    `<strong>Shadow IT:</strong> why it appears particularly fast around AI, and how to meet it without shutting innovation down.`,
+  ],
+  hochschulen: {
+    badge: "For universities and higher education",
+    title: "Lectures, seminars and guest talks",
+    text: "A deep look at the technology underneath, at lecture level. Also available to architecture and platform teams at engineering-led companies.",
+  },
+  tiefe: [
+    {
+      title: "Identity and access management from the ground up",
+      text: "Authentication, authorization and federation basics — what the terms actually mean, the security principles behind them, and the common authorization models. Then OAuth 2 token flows in detail.",
+      items: [
+        { name: "Authorization Code with PKCE", was: "the standard case wherever a user is present" },
+        { name: "Client Credentials", was: "service to service, with no user involved" },
+        { name: "Device Authorization Flow", was: "devices with neither a browser nor a keyboard" },
+        { name: "Impersonation, delegation and token exchange (RFC 8693)", was: "calling further services on a user's behalf" },
+        { name: "More specialised flows:", was: "RAR, PAR, JAR, JWE" },
+      ],
+    },
+    {
+      title: "The protocol landscape around agents",
+      text: "An overview of the protocols and what each one is actually for.",
+      items: [
+        { name: "REST APIs", was: "agent to tools and data?" },
+        { name: "MCP", was: "agent to tools and data" },
+        { name: "A2A", was: "agent to agent, with the Linux Foundation since 2025" },
+        { name: "A2UI, AG-UI", was: "what an agent is allowed to render in the interface" },
+        { name: "AP2 / x402", was: "mandate, approval and proof for agentic payments" },
+        { name: "UCP", was: "agentic commerce" },
+      ],
+    },
+    {
+      title: "Scaling problems from real environments",
+      text: "Why AI integrations so often fail on identity, governance and integration — and how to build agentic systems safely (OWASP Top 10 for Agentic Applications).",
+    },
+  ],
+  cta: {
+    title: "Ready to book, or would you like a tailored proposal?",
+    text: "Just drop me a line — I reply within 48 hours on working days. Format, scope and price all follow from what you want to achieve.",
+    label: "Get in touch",
+  },
+};
+
+const T = lang === "en" ? en : de;
+
+const styles: Record<Accent, { bar: string; chip: string }> = {
+  brand: { bar: "bg-brand-500", chip: "bg-brand-50 text-brand-800" },
+  emerald: { bar: "bg-emerald-500", chip: "bg-emerald-50 text-emerald-800" },
+  amber: { bar: "bg-amber-500", chip: "bg-amber-50 text-amber-800" },
+};
+---
+
+<Layout lang={lang} title={T.metaTitle} description={T.metaDescription}>
+  <Section as="h1" eyebrow={T.eyebrow} title={T.title} lead={T.lead}>
+    <div class="grid gap-6 md:grid-cols-2">
+      {
+        T.zuschnitte.map((z) => {
+          const s = styles[z.accent];
+          return (
+            <article
+              class:list={[
+                "relative flex flex-col overflow-hidden rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm",
+                z.wide && "md:col-span-2",
+              ]}
+            >
+              <span class={`absolute inset-x-0 top-0 h-1 ${s.bar}`} aria-hidden="true" />
+              <span class={`inline-flex w-fit rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider ${s.chip}`}>
+                {z.label}
+              </span>
+              <h2 class="mt-3 text-lg font-semibold text-ink-900">{z.title}</h2>
+              <p class="mt-2 text-sm leading-relaxed text-ink-600">{z.text}</p>
+            </article>
+          );
+        })
+      }
+    </div>
+
+    {/* Gilt für alle drei Zuschnitte oben. */}
+    <div class="mt-6 rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
+      <h2 class="text-sm font-semibold uppercase tracking-wider text-ink-500">{T.grundlagenTitel}</h2>
+      <ul class="mt-4 space-y-2 text-sm text-ink-700">
+        {
+          T.grundlagen.map((g) => (
+            <li class="flex items-start gap-2">
+              <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-brand-500" aria-hidden="true" />
+              <span set:html={g} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    {/* Deutlich abgesetzt: dieser Teil richtet sich an Hochschulen, nicht an
+        Unternehmen. Eigene Farbfläche, Badge und Rahmen, damit beim Scrollen
+        niemand die beiden Listen für eine hält. */}
+    <section class="mt-10 overflow-hidden rounded-2xl border-2 border-brand-300 bg-brand-50/60">
+      <div class="border-b border-brand-200 bg-brand-100/70 px-6 py-4">
+        <span class="inline-flex w-fit rounded-full bg-brand-700 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-on-accent">
+          {T.hochschulen.badge}
+        </span>
+        <h2 class="mt-3 font-display text-xl font-bold text-brand-900">{T.hochschulen.title}</h2>
+        <p class="mt-2 max-w-2xl text-sm leading-relaxed text-brand-900">{T.hochschulen.text}</p>
+      </div>
+
+      <ul class="space-y-6 px-6 py-6 text-sm text-ink-700">
+        {
+          T.tiefe.map((t) => (
+            <li>
+              <h3 class="font-semibold text-ink-900">{t.title}</h3>
+              <p class="mt-1 leading-relaxed text-ink-600">{t.text}</p>
+              {t.items && (
+                <ul class="mt-2 ml-1 space-y-1 border-l-2 border-brand-300 pl-4">
+                  {t.items.map((i) => (
+                    <li class="leading-relaxed text-ink-600">
+                      <strong class="font-semibold text-ink-900">{i.name}</strong>
+                      {" – "}
+                      {i.was}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <CtaBanner class="mt-10" title={T.cta.title} text={T.cta.text} label={T.cta.label} href={lokalisiere(PATHS.kontakt, lang)} />
+  </Section>
+</Layout>

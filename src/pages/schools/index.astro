@@ -1,12 +1,13 @@
 ---
 import { getCollection } from "astro:content";
-import Layout from "../../education/EduLayout.astro";
-import Hero from "../../education/components/Hero.astro";
-import Section from "../../education/components/Section.astro";
-import AngebotCard from "../../education/components/AngebotCard.astro";
-import ZielgruppenHinweis from "../../education/components/ZielgruppenHinweis.astro";
+import Layout from "../../schools/SchoolsLayout.astro";
+import Hero from "../../schools/components/Hero.astro";
+import Section from "../../components/Section.astro";
+import CtaBanner from "../../components/CtaBanner.astro";
+import AngebotCard from "../../schools/components/AngebotCard.astro";
+import ZielgruppenHinweis from "../../components/ZielgruppenHinweis.astro";
 import { SITE, PATHS } from "../../consts";
-import { EDU_PATHS, angebotPath } from "../../education/consts";
+import { SCHOOLS_PATHS, workshopPath } from "../../schools/consts";
 
 const angebote = (await getCollection("angebote")).sort(
   (a, b) => a.data.order - b.data.order,
@@ -28,7 +29,7 @@ const angebote = (await getCollection("angebote")).sort(
       {
         angebote.map((angebot) => (
           <AngebotCard
-            href={angebotPath(angebot.id)}
+            href={workshopPath(angebot.id)}
             title={angebot.data.title}
             subtitle={angebot.data.subtitle}
             zielgruppe={angebot.data.zielgruppe}
@@ -47,7 +48,7 @@ const angebote = (await getCollection("angebote")).sort(
     <p class="mx-auto mt-10 max-w-2xl rounded-2xl border border-brand-200 bg-brand-50 px-6 py-5 text-center text-sm leading-relaxed text-brand-900">
       Sie suchen ein Thema, das hier nicht dabei ist?
       <strong>Neue Workshops erstelle ich gerne auf Anfrage</strong> – passgenau für Ihre Schule, Klassenstufe und Ihren Zeitrahmen.
-      <a href={EDU_PATHS.kontakt} class="font-medium text-brand-700 underline">Schreiben Sie mir kurz.</a>
+      <a href={SCHOOLS_PATHS.kontakt} class="font-medium text-brand-700 underline">Schreiben Sie mir kurz.</a>
     </p>
   </Section>
 
@@ -72,7 +73,7 @@ const angebote = (await getCollection("angebote")).sort(
             angebote.filter((a) => !a.data.preview).map((angebot) => (
               <tr>
                 <td class="px-5 py-3">
-                  <a href={angebotPath(angebot.id)} class="hover:text-brand-700">{angebot.data.title}</a>
+                  <a href={workshopPath(angebot.id)} class="hover:text-brand-700">{angebot.data.title}</a>
                 </td>
                 <td class="px-5 py-3 text-ink-600">{angebot.data.dauer}</td>
                 <td class="px-5 py-3 whitespace-nowrap font-medium">{angebot.data.preis}</td>
@@ -195,7 +196,7 @@ const angebote = (await getCollection("angebote")).sort(
     </h3>
 
     <a
-      href={EDU_PATHS.insights}
+      href={SCHOOLS_PATHS.insights}
       class="group mt-4 flex items-center gap-4 rounded-2xl border border-brand-200 bg-brand-50 px-6 py-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md"
     >
       <span class="flex-1 text-sm leading-relaxed text-brand-900">
@@ -212,23 +213,11 @@ const angebote = (await getCollection("angebote")).sort(
   </Section>
 
   <Section background="muted">
-    <div class="grid items-center gap-10 rounded-3xl bg-gradient-to-br from-brand-700 to-brand-900 p-8 text-on-accent md:grid-cols-[2fr_1fr] md:p-12">
-      <div>
-        <h2 class="font-display text-3xl font-bold leading-tight md:text-4xl">
-          Sie wollen einen Termin oder ein Angebot?
-        </h2>
-        <p class="mt-3 max-w-xl text-brand-100">
-          Schreiben Sie mir formlos – ich melde mich werktags innerhalb von 48 Stunden mit einem Vorschlag zurück.
-        </p>
-      </div>
-      <div class="flex md:justify-end">
-        <a
-          href={EDU_PATHS.kontakt}
-          class="inline-flex items-center justify-center rounded-lg bg-surface px-6 py-3 text-sm font-medium text-brand-800 shadow-sm transition hover:bg-brand-50"
-        >
-          Jetzt anfragen
-        </a>
-      </div>
-    </div>
+    <CtaBanner
+      title="Sie wollen einen Termin oder ein Angebot?"
+      text="Schreiben Sie mir formlos – ich melde mich werktags innerhalb von 48 Stunden mit einem Vorschlag zurück."
+      label="Jetzt anfragen"
+      href={SCHOOLS_PATHS.kontakt}
+    />
   </Section>
 </Layout>

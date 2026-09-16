@@ -1,0 +1,54 @@
+---
+// Die Startseite, in beiden Sprachen aus denselben Bausteinen: ein Abschnitt
+// pro Datei in diesem Ordner, jeder kennt seine deutschen und englischen
+// Texte selbst. Die Route-Dateien (src/pages/index.astro, src/pages/en/
+// index.astro) wählen nur die Sprache.
+//
+// Die Reihenfolge hier ist die Reihenfolge auf der Seite. Die Abschnitts-IDs
+// (#speaking, #bildung, #kontakt …) stehen in den Abschnitten selbst; die
+// Navigation in src/consts.ts (NAV, AREAS) verlinkt darauf, in beiden
+// Sprachen gleich.
+import Layout from "../layouts/Layout.astro";
+import type { Sprache } from "../i18n/ui";
+import Hero from "./Hero.astro";
+import Orientation from "./Orientation.astro";
+import About from "./About.astro";
+import Speaking from "./Speaking.astro";
+import Education from "./Education.astro";
+import Software from "./Software.astro";
+import Publications from "./Publications.astro";
+import BlogTeaser from "./BlogTeaser.astro";
+import Contact from "./Contact.astro";
+import Press from "./Press.astro";
+
+interface Props {
+  lang?: Sprache;
+}
+const { lang = "de" } = Astro.props;
+const en = lang === "en";
+---
+
+<Layout
+  lang={lang}
+  title={en ? "Felix Paul – Keynotes, training and software" : undefined}
+  description={
+    en
+      ? "Talks, training and consulting on AI, IAM, IT security and cryptography – for companies, universities, schools and individuals. Solution Architect at Atruvia."
+      : undefined
+  }
+>
+  <Hero lang={lang} />
+  <Orientation lang={lang} />
+  <About lang={lang} />
+  <Speaking lang={lang} />
+  <Education lang={lang} />
+  <Software lang={lang} />
+  <Publications lang={lang} />
+  {/* "Aktuelles" ist ausgeblendet, bis es genug Einträge gibt. Zum
+      Einblenden: `import NewsLog from "../news/NewsLog.astro";` oben ergänzen
+      und hier `<NewsLog lang={lang} />` einfügen – der Menüpunkt in NAV
+      (src/consts.ts) muss dann mit zurückkommen. */}
+  <BlogTeaser lang={lang} />
+  <Contact lang={lang} />
+  <Press lang={lang} />
+</Layout>

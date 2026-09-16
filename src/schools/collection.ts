@@ -1,9 +1,10 @@
-// Content collection definition for the education section.
-import { defineCollection, z } from "astro:content";
+// Content collection definition for the schools section (the workshop offers).
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 
 export const angebote = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/education/content/angebote" }),
+  loader: glob({ pattern: "**/*.md", base: "./src/schools/content/angebote" }),
   schema: z.object({
     title: z.string(),
     subtitle: z.string(),

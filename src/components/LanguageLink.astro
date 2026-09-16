@@ -2,16 +2,11 @@
 // Zeigt den Sprachwechsel nur dort, wo es wirklich eine übersetzte Seite gibt.
 // Ein Link auf eine Rückfall-URL wäre eine Lüge: dahinter stünde derselbe
 // deutsche Text unter einer englischen Adresse.
-import { echteEnglischeRouten } from "../i18n/pages.mjs";
+import { echteEnglischeRouten, gegenstueck } from "../i18n/pages.mjs";
 
-const uebersetzt = echteEnglischeRouten();
 const pfad = Astro.url.pathname;
-const istEnglisch = uebersetzt.has(pfad);
-const ziel = istEnglisch
-  ? pfad.replace(/^\/en\//, "/")
-  : uebersetzt.has(`/en${pfad}`)
-    ? `/en${pfad}`
-    : null;
+const istEnglisch = echteEnglischeRouten().has(pfad);
+const ziel = gegenstueck(pfad);
 ---
 
 {
