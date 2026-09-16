@@ -143,21 +143,7 @@ directly; delete branches after merging. `main` is what is live.
 
 ## History
 
-Everything before September 2026 lived in four repositories and four
-subdomains. What happened since, condensed:
-
-| When | What | Why |
-|---|---|---|
-| 2026-09-10 | Four sites merged into one Astro project, one domain | Authority collects on one domain; one identity in schema.org instead of three competing ones |
-| 2026-09-10 | Shared header, footer, contact form, legal pages, portrait | Each existed several times; single copies cannot drift |
-| 2026-09-10 | Home page restructured, audience pages `/schools/`, `/companies/`, `/individuals/` | The offer is meant to cover adult education, not only schools |
-| 2026-09-10 | English route segments, link checker, pre-push hook | Folders without `index.html` were served as 404 and slipped through naive checks |
-| 2026-09-10 | Environment banner on preview deployments | The old `int` branch carried a source change and drifted from `main` |
-| 2026-09-10 | Dark mode via colour tokens | About 590 colour classes; token switching needs no `dark:` variants |
-| 2026-09-10 | `/en/` with German fallback | Complete English URL tree from day one; every translation replaces a fallback |
-| 2026-09-10 | Reference projects moved out to GitHub Pages | 36 MB of never-changing copies were three quarters of every deploy |
-| 2026-09-11 | Contrast fixes, Astro 7, tables and diagrams that fit on a phone | Measured, not guessed: `check-contrast.mjs`, headless Chrome measurements |
-| 2026-09-11 | Repo cleanup: home and audience pages exist once, folder `src/schools/`, `docs/` | Every layout change had to be made twice, docs described an older state |
+The history can be viewed in git. 
 
 The reasoning behind each structural decision is in
 [`docs/adr/`](docs/adr/README.md).
