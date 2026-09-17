@@ -133,9 +133,11 @@ export default function remarkFigures() {
           // line, is swallowed by GFM as one more row with empty cells. Catch
           // the typical shape of that mistake instead of publishing it.
           const rows = table[0].children;
+          const columns = rows[0]?.children.length ?? 0;
           const last = rows[rows.length - 1];
           const lastCells = last?.children ?? [];
-          if (rows.length > 1 && lastCells.length > 1 && lastCells.slice(1).every((c) => toString(c).trim() === "")) {
+          const filled = lastCells.filter((c) => toString(c).trim() !== "").length;
+          if (rows.length > 1 && columns > 1 && filled === 1 && toString(lastCells[0]).trim() !== "") {
             return fail(`${where()}:::table{#${id}}: the last table row has only its first cell filled ("${toString(lastCells[0]).slice(0, 40)}…"). If that is the description, put a blank line between the table and the description.`) ?? child;
           }
           labels.set(id, `${TABLE} ${n}`);
