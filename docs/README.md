@@ -8,6 +8,7 @@ question is.
 | make my first change and see it live, step by step | [tutorials/first-change.md](tutorials/first-change.md) |
 | add a blog post, a workshop or a news entry | [how-to/add-content.md](how-to/add-content.md) |
 | write a blog post: voice, structure, sources, diagrams, demos | [how-to/write-a-blog-post.md](how-to/write-a-blog-post.md) |
+| put a quiz, form or classifier into a post, or build a new one | [how-to/write-an-interactive-blog-post.md](how-to/write-an-interactive-blog-post.md) |
 | change a text, the menu, a URL, show or hide a section | [how-to/change-text-and-navigation.md](how-to/change-text-and-navigation.md) |
 | translate a page into English | [how-to/translate-a-page.md](how-to/translate-a-page.md) |
 | change colours, dark mode, fonts | [how-to/change-design.md](how-to/change-design.md) |

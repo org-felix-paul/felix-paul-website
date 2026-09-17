@@ -14,6 +14,8 @@ one.
 | [0005](0005-reference-projects-on-github-pages.md) | Reference projects live on GitHub Pages, this site only links | accepted 2026-09-10 |
 | [0006](0006-dark-mode-via-colour-tokens.md) | Dark mode by switching colour tokens, not `dark:` variants | accepted 2026-09-10 |
 | [0007](0007-link-checker-and-pre-push-hook.md) | Own link checker, run by a tracked pre-push hook | accepted 2026-09-10 |
+| [0008](0008-repo-made-public.md) | Repository made public, content under CC BY 4.0 | accepted 2026-09-17 |
+| [0009](0009-include-websites-in-posts.md) | Interactive elements in posts: one generic frame, one widget module per element | accepted 2026-09-17 |
 
 Template for a new record:
 

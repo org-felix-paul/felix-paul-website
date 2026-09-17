@@ -94,20 +94,17 @@ is small; longer needs a reason.
   an alt text that states what the image shows, not "Screenshot".
 - Tables are fine; the layout wraps them for small screens.
 
-## Interactive demos inside a post
+## Interactive elements inside a post
 
-A small static app can live with the post, as the drone comparison in
-`how-to-mislead-ai.md` does:
+A form, quiz or classifier inside the text is one line in an `.mdx` post:
+`<Interactive widget="eu-ai-act" id="interaktiv-1" title="…" />`. The frame,
+the view switch, the JavaScript notice and the colours are defined once for
+all elements; the element's own logic is one file. How to use one and how to add
+one: [write-an-interactive-blog-post.md](write-an-interactive-blog-post.md).
 
-- Put the files (plain HTML, CSS, JS, relative paths only, no build step,
-  no keys) under `public/blog/demos/<post-slug>/`.
-- Link to it from the text, or embed it in place with
-  `<iframe src="/blog/demos/<post-slug>/" title="…" loading="lazy"></iframe>`.
-  Raw HTML is allowed in the Markdown.
-- The demo needs its own `index.html` with a short explanation, because
-  people share the demo URL without the post.
-- Content that must be found by search engines stays in the post text, not
-  in the demo.
+A whole standalone page (a demo site of its own, like the drone shops in
+`how-to-mislead-ai.md`) stays under `public/blog/demos/<post-slug>/` and is
+linked from the text. That is for sites, not for elements in the text.
 
 ## Before it goes live
 

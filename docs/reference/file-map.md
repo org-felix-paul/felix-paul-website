@@ -15,7 +15,8 @@ the content lives where the second column says.
 | `/schools/insights/` | `src/pages/schools/insights.astro` | that file; links from `PROJECTS` in `consts.ts` |
 | `/schools/workshops/<slug>/` | `src/pages/schools/workshops/[slug].astro` | `src/schools/content/angebote/<slug>.md` |
 | `/blog/` | `src/pages/blog/index.astro` | list, filters and search; posts from `src/blog/content/posts/` |
-| `/blog/<slug>/` | `src/pages/blog/[slug].astro` | `src/blog/content/posts/<slug>.md` |
+| `/blog/<slug>/` | `src/pages/blog/[slug].astro` | `src/blog/content/posts/<slug>.md`, or `.mdx` when it embeds an interactive element |
+| interactive element in a post | `src/blog/interactive/Interactive.astro` | `registry.ts` names it, `widgets/<name>.ts` is the element, `ui.ts` its classes |
 | `/impressum/`, `/datenschutz/`, `/thank-you/`, `/404` | `src/pages/*.astro` | those files (English in `src/pages/en/`) |
 | `/en/<anything else>/` | none | Astro fallback: German content, canonical to the German URL |
 | `/sitemap-index.xml` | `@astrojs/sitemap` in `astro.config.mjs` | filter excludes thank-you pages and fallback pages |

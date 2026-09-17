@@ -41,6 +41,7 @@ everywhere it belongs (list page, detail page, home page teaser, sitemap).
 | What | Where | Details |
 |---|---|---|
 | Blog post | `src/blog/content/posts/<slug>.md` | [how-to](docs/how-to/add-content.md#blog-post) |
+| Interactive element in a post (quiz, form, classifier) | `src/blog/interactive/widgets/<name>.ts` + one line in `registry.ts`; the post is `.mdx` | [how-to](docs/how-to/write-an-interactive-blog-post.md) |
 | School workshop | `src/schools/content/angebote/<slug>.md` | [how-to](docs/how-to/add-content.md#school-workshop) |
 | News entry ("Aktuelles") | `src/news/content/<slug>.md`, copy `_vorlage.md` | [how-to](docs/how-to/add-content.md#news-entry) — section currently hidden |
 | Images, PDFs, downloads | `public/…` | served verbatim at the same path |

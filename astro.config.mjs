@@ -7,6 +7,8 @@ import rehypeTableWrap from "./src/blog/plugins/rehype-table-wrap.mjs";
 import remarkMermaid from "./src/blog/plugins/remark-mermaid.mjs";
 import { echteEnglischeRouten } from "./src/i18n/pages.mjs";
 
+import mdx from "@astrojs/mdx";
+
 // Ein Origin für alles: Hauptseite unter "/", Blog unter "/blog/", Schul-
 // angebote unter "/schools/". Die Referenzprojekte liegen als GitHub Pages
 // unter github.felix-paul.de — siehe PROJECTS in src/consts.ts.
@@ -34,20 +36,18 @@ export default defineConfig({
     },
     fallback: { en: "de" },
   },
-  integrations: [
-    sitemap({
-      // Form confirmation pages are dead ends with no search value and would
-      // only dilute the crawl budget.
-      filter: (page) =>
-        !page.endsWith("/thank-you/") &&
-        // Rückfall-Seiten unter /en/ zeigen deutschen Text und kanonisieren
-        // auf die deutsche URL. Sie in die Sitemap zu schreiben, wäre
-        // widersprüchlich: sie sagen selbst, sie seien nicht das Original.
-        // Echt übersetzte /en/-Seiten stehen dagegen drin — und zwar
-        // automatisch, sobald die Datei unter src/pages/en/ liegt.
-        (!page.includes("/en/") || uebersetzt.has(new URL(page).pathname)),
-    }),
-  ],
+  integrations: [sitemap({
+    // Form confirmation pages are dead ends with no search value and would
+    // only dilute the crawl budget.
+    filter: (page) =>
+      !page.endsWith("/thank-you/") &&
+      // Rückfall-Seiten unter /en/ zeigen deutschen Text und kanonisieren
+      // auf die deutsche URL. Sie in die Sitemap zu schreiben, wäre
+      // widersprüchlich: sie sagen selbst, sie seien nicht das Original.
+      // Echt übersetzte /en/-Seiten stehen dagegen drin — und zwar
+      // automatisch, sobald die Datei unter src/pages/en/ liegt.
+      (!page.includes("/en/") || uebersetzt.has(new URL(page).pathname)),
+  }), mdx()],
   markdown: {
     // Seit Astro 6 läuft die Markdown-Pipeline über unified(); die früheren
     // Schlüssel remarkPlugins/rehypePlugins sind veraltet. Astros Standards
