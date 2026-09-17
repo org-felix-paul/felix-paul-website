@@ -28,6 +28,9 @@ Body in Markdown. Raw HTML is allowed.
 It appears at `/blog/<slug>/`, in the list at `/blog/`, and the three newest
 posts show on the home page.
 
+How the text itself is written (voice, structure, sources, diagrams, demos):
+[write-a-blog-post.md](write-a-blog-post.md).
+
 - **Images** go to `public/blog/…` or `src/blog/content/posts/img/` and are
   referenced with an absolute path (`/blog/img/…`). Give every image an alt
   text.
