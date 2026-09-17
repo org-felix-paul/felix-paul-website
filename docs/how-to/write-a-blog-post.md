@@ -10,8 +10,8 @@ alike; an AI session reads it before touching `src/blog/content/posts/`.
 
 A post explains one thing so well that the given audience understands it. (professionals,  teachers, parents or pupil).
 If prior knowledge is assumed state it concrete. 
-It is the proof of expertise behind the workshops. It sells nothing. The workshop
-offer is one paragraph at the end, never woven into the text.
+It is sometimes the proof of expertise behind a workshops but it sells nothing. The workshop offer is one paragraph at the end, never woven into the text.
+But blog posts unrelated to specific workshops also exist.
 
 ## Voice
 
@@ -53,8 +53,9 @@ Every post has, in this order:
    what distinguishes the post from a summary.
 7. **`## Einen Workshop buchen`**: one paragraph, links to the offer. The only
    place the workshops are mentioned.
-8. **`## Quellen`**: footnotes, see below. The feedback and license note is
-   added by the template automatically; do not write it into the post.
+8. **`## Quellen`**: footnotes, see below. The lists of figures and tables,
+   the feedback note and the license line are added by the template
+   automatically; do not write them into the post.
 
 Length: most posts are 1,500 to 3,500 words. Shorter is fine when the topic
 is small; longer needs a reason.
@@ -80,19 +81,110 @@ is small; longer needs a reason.
 - The intro to `## Quellen` states the common access date and any caveat
   about the source mix.
 
-## Graphics and diagrams
+## Figures, tables, anchors and references
+
+Like `\label` and `\ref` in LaTeX: every figure and table has an id and a
+number, the text refers to it by id, the number is filled in at build time,
+and the post ends with a list of figures and a list of tables. A reference
+to an id that does not exist fails the build.
+
+### Figure
+
+The description stands **before** the image. `short` is the caption line and
+the entry in the list of figures; the paragraphs inside are the long
+description. Exactly one image or one Mermaid block per figure.
+
+```md
+:::figure{#abb-ki-nutzung short="Anteil der Lehrkräfte, die KI im Unterricht nutzen"}
+Balkendiagramm aus der JIM-Studie 2025, n = 1.200 Lehrkräfte. Die Frage lautete …
+![Balkendiagramm: 62 % nutzen KI wöchentlich, 21 % monatlich, 17 % nie](/blog/img/ki-nutzung.png)
+:::
+```
+
+Rendered: `<figure id="abb-ki-nutzung">` with "**Abbildung 1: Anteil der Lehrkräfte, die KI im Unterricht nutzen.** Balkendiagramm aus …" above the image.
+The alt text of the image stays what a screen reader hears: what the image
+shows, in one sentence. The caption is not repeated in the alt text.
+
+A diagram is a figure too:
+
+```md
+:::figure{#abb-pipeline short="Die vier Stufen der Google-Suche"}
+Vereinfachte Darstellung nach der Google-Dokumentation; Ranking-Signale ausgelassen.
+```mermaid
+flowchart LR
+  A[Crawling] --> B[Indexierung] --> C[Ranking] --> D[Ausspielung]
+```
+:::
+```
+
+### Table
+
+The caption stands **after** the table. Same attributes, exactly one table
+inside.
+
+```md
+:::table{#tab-honorare short="Honorare nach Format, Direktbuchung"}
+| Format | Honorar |
+|---|---|
+| Schülerworkshop 90 Min | 250–450 € |
+| Pädagogischer Ganztag | 1.500–2.500 € |
+
+Richtwerte 2026, ohne Reisekosten. Quelle: eigene Preisliste[^preise].
+:::
+```
+
+Rendered: the table, then "**Tabelle 1: Honorare nach Format, Direktbuchung.** Richtwerte 2026, …".
+The **blank line between the table and the description is required**;
+without it Markdown reads the description as one more table row. The build
+catches the usual shape of that mistake and says so.
+
+### Anchor at an arbitrary point
+
+```md
+Der entscheidende Satz ist :anchor[dieser hier]{#kernaussage}.
+```
+
+Rendered as `<span id="kernaussage">dieser hier</span>`. The bracket text is
+also the label a reference shows.
+
+### References in the text
+
+An empty link to an id is filled with the right label at build time:
+
+| You write | Rendered | Target |
+|---|---|---|
+| `[](#abb-ki-nutzung)` | Abbildung 1 | a `:::figure` |
+| `[](#tab-honorare)` | Tabelle 1 | a `:::table` |
+| `[](#kernaussage)` | dieser hier | an `:anchor` |
+| `[](#2-stufe-1--crawling)` | 2. Stufe 1 – Crawling | a heading, id as `npm run slug` prints it |
+| `[](#interaktiv-1)` | Interaktiv 1 | an `<Interactive id="interaktiv-1">` in an `.mdx` post |
+
+Write the reference in the sentence before the element appears: "… wie
+[](#abb-ki-nutzung) zeigt." A link with your own text, `[der Abbildung oben](#abb-ki-nutzung)`,
+is left as written. Numbers are never typed by hand.
+
+### Lists of figures and tables
+
+Generated automatically at the end of the post, after the sources:
+"Abbildungsverzeichnis" and "Tabellenverzeichnis", one line per element with
+its number and `short`, linked to the element. Nothing to write. A post
+without figures has no list.
+
+Ids: `abb-<wort>` for figures, `tab-<wort>` for tables, descriptive words,
+never the number (`abb-1` breaks as soon as a figure is inserted before it).
+
+### Images and diagrams, the rules that remain
 
 - A diagram earns its place when it shows a mechanism, a sequence or a
   comparison that the text would need a paragraph for. Decorative graphics
   are not used.
-- Use **Mermaid** in a fenced ```` ```mermaid ```` block. It renders in the
-  browser, in light and dark mode, only on pages that contain one. Keep
-  diagrams narrow enough for a phone: flowcharts top to bottom, few words per
-  node.
-- Screenshots and images go to `src/blog/content/posts/img/` or
-  `public/blog/img/`, are compressed (AVIF or WebP where possible), and have
-  an alt text that states what the image shows, not "Screenshot".
-- Tables are fine; the layout wraps them for small screens.
+- Mermaid renders in the browser, in light and dark mode, only on pages that
+  contain one. Keep diagrams narrow enough for a phone: flowcharts top to
+  bottom, few words per node.
+- Image files go to `src/blog/content/posts/img/` or `public/blog/img/`,
+  compressed (AVIF or WebP where possible). Every image has an alt text that
+  states what the image shows, not "Screenshot".
+- Tables wrap on small screens; nothing to do.
 
 ## Interactive elements inside a post
 

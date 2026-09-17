@@ -5,6 +5,8 @@ import { unified } from "@astrojs/markdown-remark";
 import rehypeSlug from "rehype-slug";
 import rehypeTableWrap from "./src/blog/plugins/rehype-table-wrap.mjs";
 import remarkMermaid from "./src/blog/plugins/remark-mermaid.mjs";
+import remarkDirective from "remark-directive";
+import remarkFigures from "./src/blog/plugins/remark-figures.mjs";
 import { echteEnglischeRouten } from "./src/i18n/pages.mjs";
 
 import mdx from "@astrojs/mdx";
@@ -54,7 +56,10 @@ export default defineConfig({
     // (GFM, SmartyPants, Shiki) bleiben aktiv, die Plugins kommen obendrauf
     // und gelten für alle Markdown-Collections.
     processor: unified({
-      remarkPlugins: [remarkMermaid],
+      // remark-directive liefert die :::figure / :::table / :anchor-Syntax,
+      // remark-figures macht daraus nummerierte Abbildungen, Tabellen, Anker
+      // und füllt leere Verweise [](#id) – siehe docs/how-to/write-a-blog-post.md.
+      remarkPlugins: [remarkDirective, remarkMermaid, remarkFigures],
       // rehype-slug gibt jeder Überschrift eine GitHub-artige Anker-ID, damit
       // Inhaltsverzeichnisse auf Abschnitte springen können.
       rehypePlugins: [rehypeSlug, rehypeTableWrap],

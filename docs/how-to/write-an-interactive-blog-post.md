@@ -18,7 +18,7 @@ design changes, `ui.ts` and `Interactive.astro` change; every post follows.
 
 Provided once, never written by a post or a widget:
 
-- **Collapsible box** with the caption "Interaktiv: <title>" and an anchor `id`, collapsed by default, `open` on request.
+- **Collapsible box** with the caption "Interaktiv: `<title>`" and an anchor `id`, collapsed by default, `open` on request.
 - **View switch** "Schritt für Schritt / Alles auf einmal", shown only if the widget declares more than one mode; the frame calls the widget's `setMode` and marks the active button.
 - **Lazy loading**: the widget's code is loaded only on pages that use it, after the page is shown.
 - **Re-mounting after page transitions** (`astro:page-load`), and a guard so nothing mounts twice.
@@ -52,14 +52,16 @@ Text after.
 |---|---|---|
 | `widget` | yes | Name from `registry.ts`. An unknown name fails the build. |
 | `id` | yes | Anchor. Number them per post: `interaktiv-1`, `interaktiv-2`. |
-| `title` | yes | Caption; shown as "Interaktiv: <title>". |
+| `title` | yes | Caption; shown as "Interaktiv: title>'". |
 | `mode` | no | Initial view, `steps` or `all`; default is the widget's first mode. |
 | `open` | no | Expanded on load. Default collapsed. |
 
 Conventions:
 
-- Reference the element from the text like a figure, before it appears:
-  "Siehe [Interaktiv 1](#interaktiv-1)."
+- Reference the element from the text like a figure, before it appears, with
+  an empty link that is filled at build time: "Siehe [](#interaktiv-1)."
+  renders as "Siehe Interaktiv 1." (see the references section in
+  [write-a-blog-post.md](write-a-blog-post.md#references-in-the-text)).
 - The element supports the text; the argument stays in the text, where
   search engines read it.
 - MDX is stricter than Markdown: a bare `{` or `<` in prose breaks the build.
@@ -108,7 +110,7 @@ Conventions:
 
 - A new element means exactly two changes: the widget file (plus its data
   file) and one line in the registry. Nothing in `Interactive.astro`,
-  `ui.ts`, the post template or `global.css`.
+  `ui.ts`, the post template or `global.css` if not necessary. Ask the user beforde especially if an element in ui.ts is missing.
 - Never write `<details>`, classes or notice text into a post. If the frame
   needs something new, change the frame once and say so.
 - Reuse an existing widget before writing a new one; a second post may embed

@@ -34,6 +34,9 @@ How the text itself is written (voice, structure, sources, diagrams, demos):
 - **Images** go to `public/blog/…` or `src/blog/content/posts/img/` and are
   referenced with an absolute path (`/blog/img/…`). Give every image an alt
   text.
+- **Figures, tables, anchors and references** use the `:::figure`, `:::table`,
+  `:anchor` and `[](#id)` syntax from `remark-figures`; numbering and the
+  lists at the end are automatic. Syntax and rules: [write-a-blog-post.md](write-a-blog-post.md#figures-tables-anchors-and-references).
 - **Diagrams**: a fenced code block with the language `mermaid` is rendered
   in the browser, in light and dark mode. See the existing posts for
   examples.
