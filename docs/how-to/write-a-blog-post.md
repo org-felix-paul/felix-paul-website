@@ -8,9 +8,9 @@ alike; an AI session reads it before touching `src/blog/content/posts/`.
 
 ## What a post is for
 
-A post explains one thing so well that a teacher, parent or pupil understands
-it without prior knowledge, and a professional still learns something. It is
-the proof of expertise behind the workshops. It sells nothing. The workshop
+A post explains one thing so well that the given audience understands it. (professionals,  teachers, parents or pupil).
+If prior knowledge is assumed state it concrete. 
+It is the proof of expertise behind the workshops. It sells nothing. The workshop
 offer is one paragraph at the end, never woven into the text.
 
 ## Voice
