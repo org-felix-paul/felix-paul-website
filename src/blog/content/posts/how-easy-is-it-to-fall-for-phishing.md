@@ -29,6 +29,11 @@ Eine E-Mail von „deiner Bank", ein Link, eine Login-Seite, die *exakt* aussieh
 
 Phishing ist kein Randthema, sondern einer der **wichtigsten Einstiegspunkte** für Angriffe. Der *Verizon Data Breach Investigations Report 2025* (DBIR) – einer der meistzitierten Lageberichte der Branche – nennt für die untersuchten Datenpannen folgende Einstiegswege:[^dbir]
 
+[](#abb-einstiegswege) zeigt, wie nah Phishing an den anderen Einstiegswegen liegt.
+
+:::figure{#abb-einstiegswege short="Häufigste Einstiegswege bei Datenpannen"}
+Anteil der Datenpannen nach erstem Angriffsweg laut Verizon Data Breach Investigations Report: gestohlene Zugangsdaten, ausgenutzte Schwachstellen, Phishing.
+
 ```mermaid
 xychart-beta
     title "Häufigste Einstiegswege bei Datenpannen (Verizon DBIR 2025, in %)"
@@ -36,6 +41,7 @@ xychart-beta
     y-axis "Anteil der Pannen (%)" 0 --> 30
     bar [22, 20, 16]
 ```
+:::
 
 Phishing liegt mit **16 %** der Einstiegswege auf einem der vordersten Plätze – und ist eng mit dem Spitzenreiter verzahnt: Die meisten **gestohlenen Zugangsdaten (22 %)** stammen letztlich aus Phishing oder ähnlichem Datendiebstahl.[^dbir] Anders gesagt: Phishing ist oft der erste Dominostein.
 
@@ -49,11 +55,17 @@ Für Deutschland ordnet das **BSI** in seinem *Lagebericht 2025* (Berichtszeitra
 
 Phishing zielt nicht auf die Technik, sondern auf den **Menschen**. Es nutzt drei psychologische Hebel:
 
+[](#tab-hebel) nennt die drei Hebel mit Masche und Beispiel.
+
+:::table{#tab-hebel short="Die drei psychologischen Hebel des Phishings"}
 | Hebel | Masche | Beispiel |
 |---|---|---|
 | **Autorität** | Eine vermeintliche Respektsperson oder Institution fordert etwas | „Ihre Bank", „die IT-Abteilung", „das Finanzamt" |
 | **Dringlichkeit** | Künstlicher Zeitdruck schaltet das kritische Denken aus | „Ihr Konto wird in 24 h gesperrt!" |
 | **Vertrauen** | Vertrautes Aussehen, bekannter Absender, Logo, Anrede | perfekt kopiertes Layout, korrekter Name |
+
+Autorität, Dringlichkeit und Vertrauen mit der typischen Masche und je einem Beispiel.
+:::
 
 Die gefährliche Kombination ist *Autorität + Dringlichkeit*: Wer glaubt, eine wichtige Stelle verlange sofortiges Handeln, prüft den Link nicht mehr. Genau hier setzt gute Aufklärung an – nicht beim „Klick nicht drauf", sondern beim Erkennen des Musters.
 
@@ -77,6 +89,11 @@ Um sich zu schützen, hilft es zu verstehen, **wie wenig Aufwand** so eine Seite
 
 **Schritt 5 – Fertige Baukästen (Phishing-Kits).** Das alles gibt es als vorgefertigte Pakete, die Klone, Formular-Logik und Datensammlung mitbringen. Phishing ist dadurch leider keine Frage von Expertenwissen mehr.
 
+[](#abb-ablauf) zeigt die fünf Schritte in einem Bild.
+
+:::figure{#abb-ablauf short="Ablauf eines Phishing-Angriffs"}
+Von der Köder-Mail über die Lookalike-Domain mit gültigem Zertifikat und der geklonten Login-Seite bis zu den Zugangsdaten beim Angreifer.
+
 ```mermaid
 flowchart LR
     A[Köder-Mail<br/>Autorität + Dringlichkeit] --> B[Klick auf Link]
@@ -86,6 +103,7 @@ flowchart LR
     E --> F[Daten an Angreifer]
     F --> G[Weiterleitung zur echten Seite<br/>Opfer merkt nichts]
 ```
+:::
 
 ---
 
@@ -109,6 +127,11 @@ Schutz funktioniert in Schichten – keine einzelne Maßnahme reicht.
 
 **1. Die Domain prüfen, nicht das Design.** Das Aussehen lässt sich perfekt fälschen, die Adresse nicht. Schau auf die **eigentliche Domain** (den Teil direkt vor dem ersten einzelnen `/`): Ist es wirklich `sparkasse.de` – oder `sparkasse.de.sicher-login.com`? Letzteres gehört zu `sicher-login.com`.
 
+[](#abb-pruefung) fasst die Schichten als Prüfschema zusammen.
+
+:::figure{#abb-pruefung short="Prüfschema vor jeder Eingabe von Zugangsdaten"}
+Drei Fragen in dieser Reihenfolge: Wurde ungefragt nach einem Login verlangt? Stimmt die echte Domain exakt? Wurde die Seite über den eigenen Bookmark oder die App geöffnet?
+
 ```mermaid
 flowchart TD
     A[Link / Mail erhalten] --> B{Wurde ungefragt<br/>nach Login/Daten gefragt?}
@@ -119,6 +142,7 @@ flowchart TD
     E -- Nein --> F[Lieber selbst hintippen<br/>oder Lesezeichen nutzen]
     E -- Ja --> G[✅ Vergleichsweise sicher]
 ```
+:::
 
 **2. Passwort-Manager als Frühwarnsystem.** Ein Passwort-Manager füllt Zugangsdaten nur auf der **exakt passenden Domain** automatisch aus. Schlägt das Autofill auf der vermeintlichen Bank-Seite fehl, ist das ein starkes Warnsignal: Die Domain stimmt nicht. Nebenbei verhindert er auch, dass dasselbe Passwort überall benutzt wird.
 
@@ -132,6 +156,11 @@ Hier kommt die wirklich gute Nachricht. **Passkeys** (auf Basis von WebAuthn/FID
 
 Das Prinzip: Beim Einrichten erzeugt dein Gerät ein Schlüsselpaar. Der private Schlüssel verlässt dein Gerät nie; der öffentliche liegt beim Dienst. Entscheidend ist die **Origin-Bindung**: Der Passkey ist kryptografisch an die **exakte Domain** gebunden, für die er angelegt wurde. Ein Passkey für `bank.de` **funktioniert auf `bаnk.de` (gefälscht) nicht** – der Browser bzw. die Authentisierung verweigert schlicht die Signatur, weil die Domain nicht passt.[^passkeys]
 
+[](#abb-passkey) zeigt, an welcher Stelle der Angriff ins Leere läuft.
+
+:::figure{#abb-passkey short="Warum ein Passkey auf einer Phishing-Seite scheitert"}
+Ablauf zwischen Nutzer:in, Phishing-Seite und Authenticator: Die Signatur ist an die echte Domain gebunden, für die Fälschung existiert kein Schlüssel.
+
 ```mermaid
 sequenceDiagram
     participant U as Nutzer:in
@@ -142,6 +171,7 @@ sequenceDiagram
     Note over A: Passkey gilt nur für<br/>echte Domain "bank.de"
     A-->>U: ❌ Signatur verweigert – Domain passt nicht
 ```
+:::
 
 Der Clou: Selbst wenn das Opfer **alles richtig falsch macht** – auf den Link klickt, der Seite glaubt, sich anmelden will –, kann es seine Zugangsdaten gar nicht herausgeben, weil es keine eintippbaren Daten mehr gibt und der Schlüssel auf der falschen Domain nicht greift. Das hebelt auch das Echtzeit-Phishing aus Abschnitt 5 aus. Genau deshalb empfehlen Behörden und regulierte Branchen den Umstieg auf phishing-resistente Verfahren.[^passkeys]
 

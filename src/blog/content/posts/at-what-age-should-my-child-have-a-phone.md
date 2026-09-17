@@ -41,6 +41,11 @@ Bei den Jugendlichen ist das Smartphone dann praktisch universell. Die JIM-Studi
 - **93 %** der Jugendlichen besitzen ein eigenes Smartphone.
 - **96 %** nutzen WhatsApp täglich oder mehrmals pro Woche.
 
+[](#abb-smartphone-besitz) zeigt, wie steil der Anstieg zwischen Grundschule und Sekundarstufe ist.
+
+:::figure{#abb-smartphone-besitz short="Smartphone-Besitz nach Altersgruppe"}
+Anteil der Kinder und Jugendlichen mit eigenem Smartphone; die Werte für 6 bis 13 Jahre stammen aus der KIM-Studie 2024, der Wert für 12 bis 19 Jahre aus der JIM-Studie 2024.
+
 ```mermaid
 xychart-beta
     title "Smartphone-Besitz nach Alter (KIM 2024 / JIM 2024)"
@@ -48,6 +53,7 @@ xychart-beta
     y-axis "Anteil mit eigenem Smartphone (%)" 0 --> 100
     bar [11, 63, 79, 93]
 ```
+:::
 
 Die Kurve sagt das Entscheidende: **Zwischen etwa neun und zwölf wechselt das Smartphone vom Ausnahme- zum Normalfall.** Genau in diesem Fenster fällt die Entscheidung – und genau hier ist der soziale Druck am größten (Abschnitt 5).
 
@@ -76,6 +82,11 @@ Haidt hält dem entgegen, er und sein Mitautor hätten neben Korrelationsstudien
 
 ### 2.3 Was bleibt als ehrliches Fazit?
 
+[](#abb-debatte) fasst die beiden Positionen und ihren gemeinsamen Nenner zusammen.
+
+:::figure{#abb-debatte short="Die Debatte um Smartphones und psychische Gesundheit"}
+Die Beobachtung, die beiden Deutungen von Haidt und Odgers und der gemeinsame Nenner, auf den sich beide Seiten einigen können.
+
 ```mermaid
 flowchart TD
     A[Beobachtung: Psychische Probleme<br/>Jugendlicher steigen seit ca. 2010] --> B{Sind Smartphones<br/>die Ursache?}
@@ -84,6 +95,7 @@ flowchart TD
     C --> E[Gemeinsamer Nenner:<br/>spätere, begleitete,<br/>maßvolle Nutzung schadet nicht<br/>– und kann helfen]
     D --> E
 ```
+:::
 
 Mein Standpunkt als Praktiker: Auch wenn die starke Kausalbehauptung *nicht* bewiesen ist, ist der vorsichtige, gestufte Weg klug – nicht aus Angst, sondern weil er **kein nennenswertes Risiko birgt** und nebenbei Schlaf, Konzentration und Familienzeit schützt. „Später, begleitet und maßvoll" ist eine Empfehlung, die beide Seiten der Debatte mittragen können.
 
@@ -91,11 +103,17 @@ Mein Standpunkt als Praktiker: Auch wenn die starke Kausalbehauptung *nicht* bew
 
 Der häufigste Denkfehler: alles in einen Topf zu werfen. Es sind drei verschiedene Entscheidungen mit drei verschiedenen Risikoprofilen.
 
+[](#tab-stufen) trennt die drei Entscheidungen, die im Alltag oft in einen Topf geworfen werden.
+
+:::table{#tab-stufen short="Tastenhandy, Smartphone und Social Media im Vergleich"}
 | Stufe | Was es kann | Hauptrisiko | Sinnvoll ab |
 |---|---|---|---|
 | **Tasten-/„Dumbphone"** | Anrufen, SMS, ggf. Notruf | praktisch keins | Grundschulalter, bei Bedarf (Schulweg) |
 | **Smartphone *ohne* Social Media** | Apps, Messenger, Internet, Kamera | offenes Internet, Messenger-Kontakte | ca. 11–13, mit Kindersicherung |
 | **Social-Media-Konten** | öffentliche Profile, Algorithmus-Feeds | Vergleichsdruck, Inhalte, Kontakte | ab 14–16, begleitet |
+
+Drei getrennte Entscheidungen mit jeweils eigenem Hauptrisiko und einem Alter, ab dem sie sinnvoll sind. Die Altersangaben sind Orientierung, keine Grenze.
+:::
 
 ### 3.1 Die Rechtslage in Deutschland
 
@@ -134,6 +152,11 @@ Bis die Regulierung greift, sind die **Bordmittel der Plattformen** dein wichtig
 
 Statt eines Stichtags hilft ein Stufenmodell. Es orientiert sich an internationalen Empfehlungen und an der deutschen Rechtslage – und ist bewusst als *Korridor*, nicht als Gesetz gedacht.
 
+[](#abb-korridor) zeigt den Korridor als Zeitstrahl.
+
+:::figure{#abb-korridor short="Ein gestufter Korridor nach Alter"}
+Empfehlung als Zeitstrahl: von möglichst bildschirmfreien ersten Jahren über Tastenhandy und Smartphone ohne Social Media bis zum ersten eigenen Smartphone um 14. Ein Rahmen, kein Dogma.
+
 ```mermaid
 timeline
     title Ein gestufter Korridor (kein Dogma)
@@ -143,6 +166,7 @@ timeline
     ca. 14 : erstes eigenes Smartphone üblich : Messenger mit Begleitung
     ab 16 : Social Media (DSGVO-konform) : kritische Nutzung im Vordergrund
 ```
+:::
 
 Die Empfehlungen für die Kleinsten sind dabei die am besten abgesicherten:
 
@@ -161,6 +185,11 @@ Die Lösung ist meist *nicht*, als Einzelfamilie nachzugeben oder hart zu verbie
 
 In Deutschland organisiert das z. B. die Initiative **„Smarter Start ab 14"** mit einem freiwilligen **Elternpakt**: Eltern vereinbaren gemeinsam das erste eigene Smartphone nicht vor 14 und eigene Social-Media-Konten nicht vor 16.[^smarterstart] Ob man genau diese Grenzen zieht, ist zweitrangig – der Mechanismus ist der Punkt.
 
+[](#abb-kollektiv) stellt beide Wege gegenüber.
+
+:::figure{#abb-kollektiv short="Allein Nein sagen oder gemeinsam die Norm verschieben"}
+Warum eine einzelne Familie unter Druck gerät und mehrere Familien zusammen die Norm verschieben, sodass niemand das einzige Kind ohne Smartphone ist.
+
 ```mermaid
 flowchart LR
     A[Einzelne Familie<br/>sagt Nein] --> B[Kind fühlt sich<br/>ausgeschlossen]
@@ -168,6 +197,7 @@ flowchart LR
     D[Mehrere Familien<br/>sprechen sich ab] --> E[Norm verschiebt sich<br/>für die ganze Klasse]
     E --> F[Niemand ist<br/>der/die Einzige]
 ```
+:::
 
 > **💡 Tipp:** Bring das Thema beim nächsten Elternabend auf. Ein kurzer Konsens – „Wir geben Smartphones in unserer Klasse eher später" – nimmt allen einzelnen Familien den Druck. Das ist der wirksamste Hebel, den du hast.
 
@@ -210,6 +240,11 @@ Unter diesem Druck reagieren inzwischen auch die Anbieter. Meta kündigte im Jul
 
 > **Hinweis:** Wenn es deinem Kind oder dir schlecht geht, findest du in Deutschland rund um die Uhr Hilfe bei der TelefonSeelsorge (0800 1110111, kostenfrei) und bei der „Nummer gegen Kummer" – Kinder- und Jugendtelefon 116 111. In Österreich hilft „Rat auf Draht" unter 147, in der Schweiz Pro Juventute ebenfalls unter 147.
 
+[](#abb-ki-rollen) trennt die beiden Rollen, die KI im Alltag von Kindern einnimmt.
+
+:::figure{#abb-ki-rollen short="KI als Werkzeug oder als Gefährte"}
+Zwei Rollen von KI im Kinderalltag mit ihren Risiken: Werkzeug zum Erklären und Üben, Companion als vermeintlicher Freund, Partnerin oder Therapeut.
+
 ```mermaid
 flowchart TD
     KI([KI im Kinderalltag]) --> W[Werkzeug<br/>Erklären, Üben, Recherchieren]
@@ -217,6 +252,7 @@ flowchart TD
     W --> WG[Risiko: Halluzinationen,<br/>Abhängigkeit vom Denken<br/>→ kritische Nutzung lehren]
     C --> CG[Risiko: parasoziale Bindung,<br/>Verdrängung realer Kontakte<br/>→ für Kinder ungeeignet!]
 ```
+:::
 
 ### 7.3 Ab welchem Alter, mit welcher Begleitung?
 
@@ -231,6 +267,11 @@ Der rote Faden ist derselbe wie bei der Online-Sicherheit: **kritische Nutzung l
 
 Statt aufs Alter zu starren, hilft ein Blick auf die *Reife* und auf gemeinsame Regeln. Diese kleine Hilfe ersetzt kein Gespräch, ordnet aber die Entscheidung:
 
+[](#abb-entscheidung) führt durch die drei Fragen.
+
+:::figure{#abb-entscheidung short="Entscheidungshilfe: Ist mein Kind bereit?"}
+Drei Fragen nach Regeltreue, konkretem Bedarf und gemeinsam vereinbarten Regeln. Jedes Nein führt zu „noch warten“ oder zum Tastenhandy.
+
 ```mermaid
 flowchart TD
     A[Mein Kind möchte ein Smartphone] --> B{Hält es sich an<br/>Absprachen?}
@@ -243,6 +284,7 @@ flowchart TD
     F -- Ja, und unter 16 --> G[Smartphone OHNE Social Media;<br/>Konten erst ab 16 / mit Einwilligung]
     F -- Nein / ab 16 --> H[Smartphone mit klaren Regeln;<br/>regelmäßig im Gespräch bleiben]
 ```
+:::
 
 > **💡 Tipp:** Die beste „Kindersicherung" ist das Gespräch. Vereinbart von Anfang an: Wenn online etwas schiefgeht, gibt es zu Hause Hilfe, keine Bestrafung. Kinder, die fürchten, ihr Handy zu verlieren, verstecken Probleme, bis sie groß geworden sind.
 

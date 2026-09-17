@@ -9,9 +9,9 @@ alike; an AI session reads it before touching `src/blog/content/posts/`.
 ## What a post is for
 
 A post explains one thing so well that the given audience understands it. (professionals,  teachers, parents or pupil).
-If prior knowledge is assumed state it concrete. 
-It is sometimes the proof of expertise behind a workshops but it sells nothing. The workshop offer is one paragraph at the end, never woven into the text.
-But blog posts unrelated to specific workshops also exist.
+If prior knowledge is assumed state it very shortly.
+The blog is sometimes the proof of expertise behind a workshops but it sells nothing. The workshop offer is one paragraph at the end, never woven into the text.
+But blog posts unrelated to specific workshops also exist just to discuss topics.
 
 ## Voice
 
@@ -29,6 +29,7 @@ But blog posts unrelated to specific workshops also exist.
 - **Honest about limits.** Where evidence is thin or comes from industry
   analyses rather than primary sources, say so in the text, not only in the
   source list.
+  - **Use graphics and tables**: Use graphics and tables to give an overview about the most important topics. The goal is that readers can understand the main messages by just looking at graphics and tables. Do not render unnecessary common knowledge. 
 
 ## Structure
 
@@ -90,6 +91,7 @@ to an id that does not exist fails the build.
 
 ### Figure
 
+Use figures to illustrate the main messages.
 The description stands **before** the image. `short` is the caption line and
 the entry in the list of figures; the paragraphs inside are the long
 description. Exactly one image or one Mermaid block per figure.
@@ -120,7 +122,7 @@ flowchart LR
 ### Table
 
 The caption stands **after** the table. Same attributes, exactly one table
-inside.
+inside. Use latex principles for tables. Avoid vertical lines, avoid boxing cells, i funcertain align left, use usually three horizontal lines - above, below and after heading
 
 ```md
 :::table{#tab-honorare short="Honorare nach Format, Direktbuchung"}

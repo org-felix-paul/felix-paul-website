@@ -30,6 +30,11 @@ Fast jede:r tippt täglich etwas in ein Suchfeld – aber kaum jemand weiß, was
 
 Google beschreibt die eigene Suche selbst als einen Prozess in drei Phasen – Crawling, Indexierung und Ausspielung der Ergebnisse.[^how-search-works] Ich trenne hier die Ausspielung gedanklich in *Ranking* (Sortieren) und *Serving* (Anzeigen), weil das didaktisch klarer ist:
 
+[](#abb-stufen) zeigt die vier Stufen und wo der Index sitzt.
+
+:::figure{#abb-stufen short="Die vier Stufen der Google-Suche"}
+Crawling, Indexierung, Ranking und Ausspielung mit dem Index als Datenbank dazwischen. Vereinfachte Darstellung nach der Google-Dokumentation.
+
 ```mermaid
 flowchart LR
     W[Das offene Web] --> C[1 · Crawling<br/>Googlebot lädt Seiten]
@@ -39,15 +44,22 @@ flowchart LR
     DB --> R
     R --> S[4 · Ausspielung<br/>Titel + Snippet, AI Overview]
 ```
+:::
 
 Wichtig vorweg, weil es ein hartnäckiger Mythos ist: **Man kann sich bei Google nicht in die organischen Ergebnisse einkaufen.** Crawling, Indexierung und das klassische Ranking sind kostenlos; bezahlt werden nur die als „Anzeige" gekennzeichneten Plätze. Ob eine Seite gut rankt, hängt am Inhalt – nicht am Geldbeutel.[^how-search-works]
 
+[](#tab-stellschrauben) ordnet jeder Stufe deine Stellschraube zu.
+
+:::table{#tab-stellschrauben short="Stellschrauben pro Stufe"}
 | Stufe | Frage, die Google beantwortet | Stellschraube für dich |
 |---|---|---|
 | Crawling | „Gibt es diese Seite, darf ich sie laden?" | robots.txt, Sitemap, Verlinkung, Servergeschwindigkeit |
 | Indexierung | „Worum geht es, ist das ein Duplikat?" | Title, Überschriften, strukturierte Daten, `noindex` |
 | Ranking | „Welche Seite passt am besten zur Anfrage?" | Relevanz, Qualität/E-E-A-T, Links, Aktualität, Usability |
 | Ausspielung | „Wie zeige ich das an?" | Title-Tag, Meta-Description, Rich Results, AI Overview |
+
+Welche Frage Google auf jeder Stufe beantwortet und was du selbst beeinflussen kannst.
+:::
 
 ---
 
@@ -64,6 +76,11 @@ Drei nüchterne Fakten dazu:
 - **`robots.txt` steuert den Zugriff.** Diese Datei im Wurzelverzeichnis sagt Crawlern, welche Pfade sie abrufen dürfen. Wichtig und oft missverstanden: `robots.txt` verhindert das *Crawlen*, ist aber **kein** zuverlässiges Mittel, um eine Seite aus dem *Index* herauszuhalten – dafür braucht es ein `noindex`-Tag.[^crawling]
 - **Hinter Logins kommt Googlebot nicht.** Inhalte, die eine Anmeldung erfordern, sieht der Crawler in der Regel nicht.
 
+[](#abb-crawling) zeigt den Abruf als Sequenz.
+
+:::figure{#abb-crawling short="Wie Googlebot eine Seite abruft"}
+Ablauf zwischen Googlebot, Webserver und Rendering-Dienst: robots.txt lesen, Seite abrufen, JavaScript rendern.
+
 ```mermaid
 sequenceDiagram
     participant G as Googlebot
@@ -77,6 +94,7 @@ sequenceDiagram
     R-->>G: fertige Seite + entdeckte Links
     Note over G: neue Links → weitere Crawls
 ```
+:::
 
 ---
 
@@ -95,6 +113,11 @@ Nach dem Laden versucht Google zu *verstehen*, worum es auf der Seite geht. Dabe
 
 Tippt jemand eine Anfrage ein, durchsucht Google den Index nach passenden Seiten und sortiert sie nach **Relevanz und Qualität**. Google sagt selbst, dass dabei *hunderte* Faktoren zusammenspielen und keine einzelne „magische Zahl" existiert.[^how-search-works] Die wichtigsten Faktorgruppen lassen sich aber sauber benennen:
 
+[](#abb-ranking) zeigt die Faktoren, die in die Sortierung einfließen.
+
+:::figure{#abb-ranking short="Wie Google eine Anfrage in eine Rangfolge übersetzt"}
+Anfrage verstehen, passende Seiten aus dem Index holen und nach Relevanz, Qualität, Links, Nutzbarkeit und Kontext sortieren.
+
 ```mermaid
 flowchart TD
     Q[Suchanfrage] --> A[Anfrage verstehen<br/>Synonyme, Tippfehler, Absicht]
@@ -106,6 +129,7 @@ flowchart TD
     M --> F5[Usability<br/>mobil, sicher, Core Web Vitals]
     F1 & F2 & F3 & F4 & F5 --> RANK[sortierte Ergebnisliste]
 ```
+:::
 
 - **Relevanz.** Der einfachste Faktor: Kommen die Suchbegriffe – und ihr *Sinn* – auf der Seite vor? Google erweitert die Anfrage dabei um Synonyme und gleicht sie semantisch ab, statt nur Wörter zu zählen.[^how-search-works]
 - **Qualität und E-E-A-T.** Google bewertet Inhalte daran, ob sie hilfreich und „people-first" sind. Als Orientierung dient das Konzept **E-E-A-T** – *Experience, Expertise, Authoritativeness, Trustworthiness* (Erfahrung, Expertise, Autorität, Vertrauenswürdigkeit).[^helpful] Wichtig zur Einordnung: **E-E-A-T ist selbst kein direkter Ranking-Faktor.** Es ist das Raster, mit dem geschulte *Quality Rater* die Ergebnisse beurteilen; deren Bewertungen fließen nicht direkt ins Ranking, sondern helfen, die Algorithmen zu *trainieren*.[^eeat] Bei Themen rund um Gesundheit, Finanzen oder Sicherheit („YMYL") gewichtet Google Vertrauenssignale besonders stark.[^eeat]
@@ -148,6 +172,11 @@ SEO (Suchmaschinenoptimierung) ist kein Trickbeutel, sondern das Aufräumen entl
 
 Seit Google **AI Overviews** ausrollt – eine generative Zusammenfassung über den klassischen Treffern – verschiebt sich die Frage von „Auf welchem Platz stehe ich?" zu „Werde ich von der KI *zitiert*?". Daneben treten reine Antwortmaschinen (ChatGPT mit Suche, Perplexity u. a.), die gar keine Linkliste mehr zeigen, sondern eine Antwort mit ein paar Quellenverweisen.
 
+[](#abb-ki-suche) stellt beide Wege nebeneinander.
+
+:::figure{#abb-ki-suche short="Klassische Suche und KI-Antwort-Suche im Vergleich"}
+Links zehn blaue Links und ein Klick; rechts zerlegt ein Sprachmodell die Anfrage in Teilfragen, holt Quellen und fasst zusammen, oft ohne Klick.
+
 ```mermaid
 flowchart TB
     subgraph K[Klassische Suche]
@@ -159,6 +188,7 @@ flowchart TB
         A3 --> A4[generierte Antwort<br/>+ wenige Zitatlinks]
     end
 ```
+:::
 
 Wie eine KI-Antwortmaschine ihre Quellen auswählt, ist *nicht* offiziell dokumentiert; das Folgende stammt aus Branchenanalysen und ist entsprechend mit Vorsicht zu lesen:[^aio-whitepeak][^aio-ahrefs]
 
@@ -216,7 +246,13 @@ Wer eine eigene Website betreibt, bekommt die offizielle Innensicht über die ko
 
 Wie schnell und stabil eine Seite *tatsächlich* lädt – die Core Web Vitals aus Abschnitt 4 –, misst Googles kostenloses Werkzeug **[PageSpeed Insights](https://pagespeed.web.dev/)**. Hier der Mobil-Bericht für eine andere meiner Seiten (d-solve.de):
 
+[](#abb-pagespeed) zeigt den Bericht für meine eigene Seite.
+
+:::figure{#abb-pagespeed short="PageSpeed-Insights-Bericht für d-solve.de"}
+Mobile Messung mit den vier Kategorien Performance, Accessibility, Best Practices und SEO sowie den Core Web Vitals LCP, CLS und Total Blocking Time. Gemessen im Juni 2026.
+
 ![PageSpeed-Insights-Bericht (mobil) für d-solve.de: Performance 100, Accessibility 96, Best Practices 100, SEO 100; LCP 1,2 s, CLS 0,001, Total Blocking Time 0 ms](img/d-solve-mobile-report.png)
+:::
 
 Was man hier abliest:
 

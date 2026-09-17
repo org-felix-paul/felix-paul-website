@@ -30,6 +30,11 @@ Wenn du eine beliebige Nachrichtenseite öffnest, lädst du nicht *eine* Website
 
 Google und Meta verdienen ihr Geld fast vollständig mit Werbung. Der Wert dieser Werbung steigt mit der Treffsicherheit: Wer genau weiß, *wer* du bist und *wofür* du dich interessierst, kann dir Anzeigen zeigen, die mit höherer Wahrscheinlichkeit klicken. Daten sind also kein Nebenprodukt, sondern der Rohstoff. Der oft zitierte Satz „Wenn du nicht für das Produkt bezahlst, bist du das Produkt" ist hier wörtlich gemeint: Verkauft wirst nicht *du*, sondern dein **Aufmerksamkeits-Slot** an Werbetreibende.
 
+[](#abb-geschaeftsmodell) zeigt den Kreislauf.
+
+:::figure{#abb-geschaeftsmodell short="Das Geschäftsmodell der Werbeplattformen"}
+Kreislauf aus kostenloser Nutzung, gesammeltem Verhalten, Profil, bezahlter zielgenauer Werbung und Umsatz der Plattform.
+
 ```mermaid
 flowchart LR
     U[Du nutzt Dienst<br/>gratis] --> D[Plattform sammelt<br/>Verhaltensdaten]
@@ -38,6 +43,7 @@ flowchart LR
     A --> R[Umsatz der Plattform]
     R --> U
 ```
+:::
 
 ---
 
@@ -45,11 +51,22 @@ flowchart LR
 
 Ein **Cookie** ist eine kleine Textdatei, die eine Website in deinem Browser ablegt und beim nächsten Besuch wieder ausliest. Der entscheidende Unterschied liegt darin, *wer* das Cookie setzt:
 
+[](#tab-cookies) stellt die beiden Arten gegenüber.
+
+:::table{#tab-cookies short="First-Party- und Third-Party-Cookies im Vergleich"}
 | | First-Party-Cookie | Third-Party-Cookie |
 |---|---|---|
 | Gesetzt von | der Seite in der Adresszeile | einer eingebundenen Fremddomain |
 | Typischer Zweck | Login, Warenkorb, Spracheinstellung | seitenübergreifendes Tracking, Werbung |
 | Sichtbar für | nur diese Seite | das Werbenetzwerk über *viele* Seiten hinweg |
+
+Wer den Cookie setzt, wofür er typischerweise dient und wer ihn sieht.
+:::
+
+[](#abb-third-party) zeigt den Mechanismus an zwei Seiten.
+
+:::figure{#abb-third-party short="Wie ein Third-Party-Cookie dich über Seiten hinweg wiedererkennt"}
+Zwei Besuche auf verschiedenen Seiten; das Werbenetzwerk setzt auf beiden denselben Cookie und verbindet die Besuche zu einem Profil.
 
 ```mermaid
 flowchart TB
@@ -64,6 +81,7 @@ flowchart TB
     T1 -. gleiche ID .-> ADN[adnetz.com erkennt:<br/>derselbe Browser<br/>war auf shop.de UND news.de]
     T2 -. gleiche ID .-> ADN
 ```
+:::
 
 Der Trick der Third-Party-Cookies: Wenn `adnetz.com` auf tausenden Seiten eingebunden ist, setzt und liest es überall *dasselbe* Cookie und erkennt deinen Browser so über alle diese Seiten hinweg wieder. Das ist die klassische Grundlage von Cross-Site-Tracking.
 
@@ -81,6 +99,11 @@ Der **Google-Tag / Google Analytics** funktioniert nach demselben Prinzip: ein e
 
 Wichtig ist die jüngere Entwicklung weg vom Browser hin zum Server: Neben dem browserseitigen Pixel betreibt man heute oft die **Conversions API (CAPI)** – einen serverseitigen Kanal, über den der *Server* des Betreibers die Ereignisse direkt an Meta schickt.[^pixel] Das umgeht Browser-Blocker, weil die Daten gar nicht erst über dein Gerät an Meta fließen, sondern über den Webserver.
 
+[](#abb-pixel) zeigt den Ablauf als Sequenz.
+
+:::figure{#abb-pixel short="Was passiert, wenn eine Seite ein Tracking-Pixel einbettet"}
+Ablauf zwischen Browser, Webseite und Meta oder Google: Die Seite liefert das Skript mit, der Browser meldet den Besuch an die Plattform, zusätzlich meldet der Server der Seite direkt.
+
 ```mermaid
 sequenceDiagram
     participant B as Dein Browser
@@ -93,6 +116,7 @@ sequenceDiagram
     W->>M: serverseitig (Conversions API)<br/>umgeht Browser-Blocker
     M-->>W: Verknüpfung mit Anzeigenklick,<br/>Optimierung der Kampagne
 ```
+:::
 
 ---
 
@@ -156,6 +180,11 @@ In der EU ist dieses Sammeln nicht unreguliert. Zwei Regelwerke greifen ineinand
 
 Dass das ernst gemeint ist, zeigen reale Bußgelder:
 
+[](#abb-bussgelder) listet die größten Entscheidungen auf einem Zeitstrahl.
+
+:::figure{#abb-bussgelder short="Ausgewählte Datenschutz-Entscheidungen gegen Google und Meta"}
+Zeitstrahl der Bußgelder der französischen CNIL und der irischen Datenschutzbehörde mit Betrag und Grund.
+
 ```mermaid
 timeline
     title Ausgewählte Datenschutz-Entscheidungen
@@ -163,6 +192,7 @@ timeline
     Mai 2023 : Irische DPC : 1,2 Mrd. € gegen Meta : unzulässiger Datentransfer in die USA
     Sep 2025 : CNIL : 325 Mio. € gegen Google : Cookies & Werbung in Gmail
 ```
+:::
 
 - **CNIL gegen Google und Facebook (Januar 2022):** 150 Mio. € bzw. 60 Mio. €, weil das *Ablehnen* von Cookies schwerer gemacht wurde als das Annehmen.[^cnil2022]
 - **Irische DPC gegen Meta (Mai 2023):** **1,2 Mrd. €** – das bis dahin höchste DSGVO-Bußgeld – wegen unzulässiger Übermittlung personenbezogener Daten aus der EU in die USA (Verstoß gegen Art. 46 DSGVO).[^meta12]
@@ -176,6 +206,11 @@ timeline
 
 Vollständige Unsichtbarkeit ist illusorisch – aber man kann den Großteil des Trackings mit wenig Aufwand abstellen. Vom größten Hebel zum kleinsten:
 
+[](#abb-schutz) fasst die vier Maßnahmen zusammen.
+
+:::figure{#abb-schutz short="Vier Maßnahmen gegen Tracking"}
+Tracker-blockierende Erweiterung, Browser mit eingebautem Schutz, bewusstes Ablehnen von Cookie-Bannern und Datenschutzeinstellungen im Konto. Zusammen decken sie den Großteil ab.
+
 ```mermaid
 flowchart TD
     A[Tracker-blockierende Erweiterung<br/>uBlock Origin] --> E[deutlich weniger Tracking]
@@ -183,6 +218,7 @@ flowchart TD
     C[Cookie-Banner: bewusst ablehnen<br/>nicht reflexhaft &quot;Akzeptieren&quot;] --> E
     D[Konto-Datenschutzeinstellungen<br/>Werbe-Personalisierung aus] --> E
 ```
+:::
 
 - **uBlock Origin** (quelloffen, kostenlos) blockiert Tracker und Werbeskripte zuverlässig und ist der wirksamste Einzelschritt. Es blockt die Skripte aus Abschnitt 6, bevor sie feuern.
 - **Browserwahl:** **Firefox** blockiert seitenübergreifende Tracker standardmäßig (Enhanced Tracking Protection); **Brave** bringt Tracker- und Werbeblocker von Haus aus mit. Beide haben außerdem Schutzmaßnahmen gegen Fingerprinting.
