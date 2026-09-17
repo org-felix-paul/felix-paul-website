@@ -125,8 +125,7 @@ automatically (`src/deploy.ts`). Details and the manual SEO review in
 
 ## Branching
 
-Work on feature branches; one commit per feature; never commit to `main`
-directly; delete branches after merging. `main` is what is live.
+Work on feature branches; one commit per feature; never commit to `main` without asking; delete branches after merging. `main` is what is live.
 
 ## Tech stack
 
@@ -147,6 +146,12 @@ The history can be viewed in git.
 
 The reasoning behind each structural decision is in
 [`docs/adr/`](docs/adr/README.md).
+
+## License
+
+Code: MIT. Blog posts (`src/blog/content/`): CC BY 4.0. Other media: all rights
+reserved. Details in [`LICENSE`](LICENSE). Every post ends with a note that
+invites issues and pull requests against its source file.
 
 ## Known gaps
 

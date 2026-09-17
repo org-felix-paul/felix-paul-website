@@ -19,6 +19,11 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 
+// Feedback on a post goes through the public repo; the source file is linked
+// so a reader can open a pull request against exactly this text.
+const REPO = "https://github.com/org-felix-paul/felix-paul-website";
+const SOURCE = `${REPO}/blob/main/src/blog/content/posts/${post.id}.md`;
+
 const dateFmt = new Intl.DateTimeFormat("de-DE", {
   year: "numeric",
   month: "long",
@@ -110,6 +115,17 @@ const schema = [
           </a>
         </div>
       </div>
+
+      <aside class="mt-10 border-t border-ink-200 pt-6 text-sm text-ink-700">
+        <p>
+          Verbesserungsvorschläge, Feedback oder Fragen zu dem Blogpost? Erstelle einen Issue oder Pull Request direkt
+          <a href={SOURCE} class="font-medium text-brand-700 hover:text-brand-900">hier</a> im GitHub-Repo oder
+          <a href={`mailto:${SITE.email}`} class="font-medium text-brand-700 hover:text-brand-900">schreib mir per Mail</a>.
+        </p>
+        <p class="mt-2">
+          Text und Bilder dieses Beitrags: <a href="https://creativecommons.org/licenses/by/4.0/deed.de" rel="license" class="font-medium text-brand-700 hover:text-brand-900">CC BY 4.0</a>, Felix Paul. Weiterverwenden erlaubt, Namensnennung und Link genügen.
+        </p>
+      </aside>
 
       <div class="mt-12">
         <a href={BLOG.base} class="text-sm font-medium text-brand-700 hover:text-brand-900">← Alle Beiträge</a>
