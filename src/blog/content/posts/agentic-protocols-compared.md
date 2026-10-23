@@ -27,7 +27,7 @@ Dieser Beitrag sortiert das. Er erklärt, was die einzelnen Protokolle ausmacht,
 9. [Querschnittsthemen: Authentifizierung, Autorisierung und die anderen Pain Points](#9-querschnittsthemen-authentifizierung-autorisierung-und-die-anderen-pain-points)
 10. [Entscheidungsbaum: Wann nutze ich was?](#10-entscheidungsbaum-wann-nutze-ich-was)
 11. [Fazit](#11-fazit)
-12. [Quellen](#12-quellen)
+12. [Quellen](#quellen)
 
 ---
 
@@ -92,6 +92,11 @@ Ein paar Anmerkungen zu den Ebenen:
 
 Bevor es in die einzelnen Protokolle geht, hilft eine Landkarte. Die agentischen Protokolle lassen sich am besten danach sortieren, **welche zwei Parteien** sie verbinden. Genau das ist auch die Logik, mit der die Projekte sich selbst voneinander abgrenzen: MCP verbindet einen Agenten mit Tools und Daten („vertikal“), A2A verbindet Agenten untereinander („horizontal“).[^a2a-mcp] AG-UI und A2UI verbinden den Agenten mit der UI vor dem Menschen. AP2, ACP und UCP verbinden Agenten mit Händlern (Merchants) und Payment Service Providern (PSPs), x402 einen aufrufenden Agenten mit einer bezahlpflichtigen Ressource.
 
+[](#abb-landkarte) ordnet die Protokolle nach diesen Paaren.
+
+:::figure{#abb-landkarte short="Landkarte der agentischen Protokolle: wer mit wem spricht"}
+Ein Orchestrator-Agent in der Host-Anwendung delegiert per A2A an Spezialist-Agenten, greift per MCP auf Tools zu und erreicht über AP2, ACP, UCP und x402 Händler und bezahlpflichtige APIs. Die MCP-Server sitzen vor den klassischen APIs.
+
 ```mermaid
 flowchart TB
     U([Mensch]) -->|"AG-UI / A2UI / MCP Apps<br/>Events & UI"| H
@@ -109,6 +114,7 @@ flowchart TB
     S2 -->|"AP2 / ACP / UCP<br/>Mandat, Warenkorb, Zahlung"| P["Händler (Merchants) &<br/>PSPs"]
     S2 -->|"x402<br/>Bezahlen pro Aufruf"| X[(Bezahlpflichtige API)]
 ```
+:::
 
 Die Grafik zeigt das typische Zusammenspiel: Ein Mensch redet mit einer Host-Anwendung, in der ein Orchestrator-Agent läuft. Der delegiert Teilaufgaben per A2A an spezialisierte Agenten – die können intern völlig anders gebaut sein, von einem anderen Anbieter kommen und auf einer anderen Plattform laufen. Jeder Agent greift per MCP auf seine Tools zu. Die MCP-Server wiederum sind meist nur dünne Adapter vor den klassischen APIs, die es schon gab. Events aus den Bestandssystemen kommen per Webhook oder Queue zurück. Und sobald Geld fließt, kommen die Handels- und Zahlungsprotokolle ins Spiel.
 
@@ -283,6 +289,11 @@ Die Nutzungszahlen in den Steckbriefen stammen aus Postmans „State of the API�
 
 Ein wiederkehrendes Muster in allen Protokollen ist die Frage, wer den Anstoß gibt. REST, SOAP, GraphQL und gRPC sind **Pull**: Der Client fragt, der Server antwortet. Webhooks, Message Queues und Push Notifications sind **Push**: Der Server meldet sich, wenn etwas passiert ist. Streaming über SSE oder WebSocket liegt dazwischen: Der Client öffnet den Kanal, der Server schickt, sobald er etwas hat.
 
+[](#abb-pull-push) zeigt die drei Muster an einem Auftrag.
+
+:::figure{#abb-pull-push short="Pull, Streaming und Push im Vergleich"}
+Derselbe lange laufende Auftrag dreimal: Der Client fragt wiederholt nach (Pull), hält einen SSE-Kanal offen (Streaming) oder lässt sich per signiertem Webhook zurückrufen (Push).
+
 ```mermaid
 sequenceDiagram
     participant C as Client / Agent
@@ -302,6 +313,7 @@ sequenceDiagram
     S-->>C: 202 Accepted
     S->>C: POST https://client/hook (signiert)
 ```
+:::
 
 Agenten arbeiten oft lange: Ein Task kann Sekunden oder Stunden dauern. Deshalb enthalten MCP und A2A alle drei Muster. MCP streamt Antworten per SSE und hat mit der Tasks-Extension ein Polling-Modell für lange Aufrufe; A2A kennt Polling (`GetTask`), Streaming (`SendStreamingMessage`) und Push Notifications an eine Webhook-URL.[^a2a-streaming] Wer die klassischen Muster versteht, erkennt sie in den neuen Protokollen wieder.
 
@@ -323,6 +335,11 @@ Die Spezifikation wird datiert versioniert. Aktuell gilt die Revision **2026-07-
 
 MCP hat drei Rollen. Der **Host** ist die Anwendung, in der das Modell läuft (Claude Desktop, ein IDE, ein eigener Agent). Der Host erzeugt pro Verbindung einen **Client**, der genau mit einem **Server** spricht. Ein Server stellt Capabilities bereit: einen Datei-Zugriff, ein CRM, eine Datenbank, eine Suche. Der Host kann viele Server gleichzeitig eingebunden haben; das Modell sieht deren Tools in einer gemeinsamen Liste.
 
+[](#abb-mcp-architektur) zeigt einen Host mit zwei Servern.
+
+:::figure{#abb-mcp-architektur short="MCP-Architektur: Host, Clients und Server"}
+Der Host erzeugt pro Server einen Client. Ein lokaler Server spricht per stdio, ein entfernter per Streamable HTTP, beide über JSON-RPC 2.0. Per Elicitation kann ein Server beim Nutzer nachfragen.
+
 ```mermaid
 flowchart LR
     subgraph HOST[Host-Anwendung z. B. IDE, Chat-App, eigener Agent]
@@ -338,16 +355,21 @@ flowchart LR
     S2 -->|REST| D2[(CRM-API)]
     S2 -. "Elicitation: Rückfrage<br/>an den Nutzer" .-> HOST
 ```
+:::
 
 ### Die Primitives: Was MCP ausmacht
 
-Das Herz von MCP sind drei **Server-Primitives**, die sich darin unterscheiden, *wer* sie steuert:[^mcp-spec]
+Das Herz von MCP sind drei **Server-Primitives**, die sich darin unterscheiden, *wer* sie steuert ([](#tab-mcp-primitives)):[^mcp-spec]
 
+:::table{#tab-mcp-primitives short="Die drei Server-Primitives von MCP"}
 | Primitive | Wer steuert | Was es ist | Beispiel |
 |---|---|---|---|
 | **Tools** | das Modell | Funktionen mit JSON-Schema-Eingabe (und optional -Ausgabe), die das Modell selbst aufruft | `create_ticket`, `search_customers` |
 | **Resources** | die Anwendung | Inhalte mit URI, die der Host als Kontext bereitstellt – Dateien, Datensätze, Logs | `file:///projekt/README.md`, `crm://kunde/4711` |
 | **Prompts** | der Mensch | vorbereitete Prompt-Templates, die der Nutzer auswählt, oft mit Parametern | „Erstelle einen Wochenbericht für Kunde X“ |
+
+Tools, Resources und Prompts unterscheiden sich darin, wer sie steuert: das Modell, die Anwendung oder der Mensch.
+:::
 
 Dazu kommt auf der Client-Seite die **Elicitation**: Ein Server kann während eines Aufrufs strukturierte Rückfragen an den Nutzer stellen („Welches Konto meinst du?“), seit der Revision 2025-11-25 auch als *URL-Modus*, der den Nutzer für einen Login oder ein Approval in den Browser schickt.[^mcp-2025-11] Zwei weitere Client-Primitives der Anfangszeit, **Roots** (welche Verzeichnisse darf der Server sehen) und **Sampling** (der Server bittet das Modell des Hosts um eine Completion), sind seit 2026-07-28 als *deprecated* markiert – mit mindestens zwölf Monaten Übergangsfrist.[^mcp-2026-07]
 
@@ -384,7 +406,10 @@ Für die Praxis heißt das: MCP ist reifer geworden und lässt sich hinter API-G
 
 ### Autorisierung: der am stärksten standardisierte Teil
 
-Kein anderes Protokoll in diesem Beitrag legt Authentifizierung und Autorisierung so genau fest wie MCP. Für HTTP-Transporte ist **OAuth 2.1** Pflicht, und zwar mit einer Kette bekannter IETF-Bausteine:[^mcp-auth]
+Kein anderes Protokoll in diesem Beitrag legt Authentifizierung und Autorisierung so genau fest wie MCP. Für HTTP-Transporte ist **OAuth 2.1** Pflicht, und zwar mit einer Kette bekannter IETF-Bausteine, die [](#abb-mcp-oauth) in ihrer Reihenfolge zeigt:[^mcp-auth]
+
+:::figure{#abb-mcp-oauth short="Autorisierung eines MCP-Clients nach OAuth 2.1"}
+Vom 401 ohne Token über Protected Resource Metadata (RFC 9728) und die Discovery des Authorization Servers (RFC 8414) zum Authorization Code Flow mit PKCE und Resource Indicator (RFC 8707). Das Token gilt nur für diesen MCP-Server.
 
 ```mermaid
 sequenceDiagram
@@ -405,6 +430,7 @@ sequenceDiagram
     C->>S: POST /mcp, Authorization: Bearer …
     S-->>C: 200 + Ergebnis
 ```
+:::
 
 Die Regeln im Einzelnen: Der MCP-Server ist ein *Resource Server* und muss **Protected Resource Metadata (RFC 9728)** veröffentlichen, in der steht, welche Authorization Server für ihn zuständig sind. Der Client muss beide Discovery-Verfahren beherrschen (RFC 8414 und OpenID Connect Discovery), muss **PKCE** verwenden, muss per **Resource Indicator (RFC 8707)** sagen, für welchen Server das Token bestimmt ist – damit ein Token für Server A nicht bei Server B funktioniert –, und muss den `iss`-Parameter nach RFC 9207 prüfen. Für die Registration unbekannter Clients ist seit 2026-07-28 das **Client ID Metadata Document** der bevorzugte Weg: Die `client_id` ist eine HTTPS-URL, unter der der Client seine Metadaten veröffentlicht. Die ältere Dynamic Client Registration (RFC 7591) ist als deprecated markiert.[^mcp-auth] Für stdio-Server gilt das alles nicht: Sie holen Credentials aus der Umgebung, etwa aus Umgebungsvariablen.[^mcp-auth]
 
@@ -423,6 +449,11 @@ Das **Agent2Agent Protocol** hat Google am 9. April 2025 mit über fünfzig Part
 Der Grundgedanke: Agenten sind **opak**. Sie tauschen Tasks und Ergebnisse aus, aber nicht ihre Gedanken, Pläne oder Tools. Ein Reise-Agent von Anbieter A kann einen Spesen-Agenten von Anbieter B beauftragen, ohne zu wissen, mit welchem Modell oder Framework der gebaut ist.[^a2a-spec]
 
 ### Die Kernkonzepte: Agent Card, Skills, Tasks, Artifacts
+
+[](#abb-a2a-konzepte) zeigt, wie die Konzepte zusammenhängen.
+
+:::figure{#abb-a2a-konzepte short="Agent Card und Task in A2A"}
+Der Client-Agent liest die Agent Card, schickt Messages an eine Task und erhält Status und Artifacts per Streaming oder Push zurück.
 
 ```mermaid
 flowchart TB
@@ -444,12 +475,16 @@ flowchart TB
     end
     AR -.->|"3 · Streaming SSE oder<br/>Push an Webhook"| CL
 ```
+:::
 
 Die **Agent Card** ist die Visitenkarte: ein JSON-Dokument unter `/.well-known/agent-card.json`, das Name, Beschreibung, Anbieter, die angebotenen Interfaces (URL, Binding, Protokollversion), die Capabilities und die Security Schemes nennt. Sie kann per JWS signiert sein, damit ein Client prüfen kann, dass sie wirklich vom genannten Anbieter stammt, und es gibt eine **erweiterte Agent Card**, die erst nach Authentifizierung mehr Details preisgibt.[^a2a-spec]
 
 **Skills** beschreiben, *was* ein Agent kann – mit ID, Name, Beschreibung, Tags, Beispielen und den unterstützten Ein- und Ausgabemodi. Das ist das Gegenstück zu MCP-Tools, aber gröber: Ein Skill ist „Reisen buchen“, kein einzelner Function Call mit Schema. Der Client-Agent entscheidet anhand der Skills, welchem Agenten er einen Task gibt, und formuliert den Task dann in natürlicher Sprache.
 
-Die **Task** ist die Arbeitseinheit. Sie hat einen Lifecycle mit festen States:[^a2a-spec]
+Die **Task** ist die Arbeitseinheit. Sie hat einen Lifecycle mit festen States ([](#abb-a2a-lifecycle)).[^a2a-spec]
+
+:::figure{#abb-a2a-lifecycle short="Lifecycle einer A2A-Task"}
+Von SUBMITTED über WORKING, mit Unterbrechungen für Eingaben oder Authentifizierung, zu einem der Endzustände COMPLETED, FAILED, CANCELED oder REJECTED.
 
 ```mermaid
 stateDiagram-v2
@@ -468,6 +503,7 @@ stateDiagram-v2
     CANCELED --> [*]
     REJECTED --> [*]
 ```
+:::
 
 Innerhalb einer Task fließen **Messages**, die aus **Parts** bestehen – Text, Dateien oder strukturierte Daten; seit 1.0 ein vereinheitlichter Part-Typ. Ergebnisse kommen als **Artifacts** zurück, ebenfalls aus Parts. Fortschritt bekommt der Client auf drei Wegen: Polling per `GetTask`, Streaming per SSE oder **Push Notifications** an eine Webhook-URL, die er beim Start mitgibt.[^a2a-streaming] Version 1.0 hat außerdem `tasks/list` mit Cursor-Pagination und Multi-Tenancy ergänzt.[^a2a-v1]
 
@@ -502,6 +538,9 @@ Diese Flexibilität ist Stärke und Schwäche zugleich. Zwischen zwei Unternehme
 
 Die Projekte selbst beschreiben das Verhältnis so: MCP gibt einem Agenten *Tiefe* (Zugriff auf Tools), A2A gibt einem System *Reichweite* (Zusammenarbeit zwischen Agenten).[^a2a-mcp] In der Praxis stellt sich aber meist eine dritte Frage: Braucht es überhaupt eines von beiden, oder reicht die vorhandene API?
 
+[](#tab-api-mcp-a2a) stellt die drei Wege nebeneinander.
+
+:::table{#tab-api-mcp-a2a short="Direkte API, MCP und A2A im Vergleich"}
 | Frage | REST/GraphQL/gRPC direkt | MCP | A2A |
 |---|---|---|---|
 | Wer ruft auf? | ein Programm, das genau weiß, was es will | ein LLM, das zur Laufzeit auswählt | ein Agent, der einen Task delegiert |
@@ -511,11 +550,19 @@ Die Projekte selbst beschreiben das Verhältnis so: MCP gibt einem Agenten *Tief
 | Gegenstelle ist … | ein System | ein Adapter vor Systemen | ein eigenständiger, opaker Agent |
 | Typische Latenz | Millisekunden | Sekunden (Modell + Tool) | Sekunden bis Stunden |
 
+Wer aufruft, was ausgetauscht wird, wer den State hält und welche Latenz typisch ist.
+:::
+
 Drei Faustregeln, die sich aus der Tabelle ergeben:
 
 1. **Ein Tool, das genau eine Sache tut, ist ein MCP-Tool, kein Agent.** Wer „Ticket anlegen“ als A2A-Agent baut, hat einen Agenten ohne Entscheidungsspielraum – teurer, langsamer und schwerer zu testen als ein Tool.
 2. **Ein A2A-Agent lohnt sich, wenn die Gegenstelle selbst überlegt, mehrere Schritte braucht oder einem anderen Team gehört.** Die Opazität ist dann kein Nachteil, sondern das Interface: Das andere Team darf seinen Agenten umbauen, solange die Skills gleich bleiben.
 3. **Ein MCP-Server ist fast immer ein Adapter vor einer bestehenden API.** Er ersetzt REST nicht, sondern übersetzt: aus zwanzig Endpoints werden fünf gut beschriebene Tools, aus Fehlercodes werden Texte, die ein Modell versteht, aus Pagination wird ein einziger Aufruf. Wer seine REST-API nur eins zu eins spiegelt, überfordert das Modell mit Auswahl und bekommt schlechtere Ergebnisse als mit einer kuratierten Tool-Menge.
+
+[](#abb-teams) zeigt das an zwei Teams.
+
+:::figure{#abb-teams short="Zwei Teams, verbunden über A2A"}
+Jedes Team betreibt einen Agenten mit eigenen MCP-Servern vor eigenen Systemen. Die Agenten tauschen Tasks und Artifacts per A2A aus.
 
 ```mermaid
 flowchart LR
@@ -532,6 +579,7 @@ flowchart LR
     A1 <-->|"A2A: Task „Angebot für Kunde 4711“<br/>Artifact: Angebots-PDF"| B1
     CRM -.->|Webhook: Kunde geändert| A1
 ```
+:::
 
 Die Grafik zeigt das Muster, das sich in großen Organisationen durchsetzt: Jedes Team betreibt seinen Agenten mit eigenen MCP-Servern vor eigenen Systemen. Die Teams verbinden sich über A2A, und die Agent Card ist dabei das, was früher das WSDL oder die OpenAPI-Datei war: der Vertrag, den man veröffentlicht, ohne Interna preiszugeben.
 
@@ -583,7 +631,10 @@ Die Unterschiede sind leicht zu merken: AG-UI standardisiert den **Strom** zwisc
 
 Sobald ein Agent nicht nur sucht, sondern *kauft*, stellt sich jede Frage aus Abschnitt 9 doppelt: Wer ist der Agent? In wessen Auftrag handelt er? Hat der Mensch genau *das* gewollt? Wer haftet, wenn nicht? Und wer ist Händler – der Shop oder die Plattform, in der der Agent läuft? Die Zahlungsprotokolle sind der Versuch, diese Fragen maschinenlesbar zu beantworten. Es sind vier Ansätze mit unterschiedlicher Herkunft, die sich seit Mitte 2026 gegenseitig annähern.
 
-Zur Orientierung, wo die vier ansetzen:
+Zur Orientierung zeigt [](#abb-payments-landkarte), wo die vier ansetzen.
+
+:::figure{#abb-payments-landkarte short="Wo x402, AP2, ACP und UCP ansetzen"}
+Ein Shopping-Agent spricht ACP oder UCP mit Händlern, holt per AP2 signierte Mandate beim Credentials Provider und bezahlt per x402 pro Aufruf an einer API.
 
 ```mermaid
 flowchart LR
@@ -594,10 +645,16 @@ flowchart LR
     CP --> NET[Kartennetzwerk / Bank /<br/>Stablecoin-Netz]
     SA -->|"x402: HTTP 402,<br/>bezahlen pro Aufruf"| API[(Bezahlpflichtige API<br/>oder Inhalt)]
 ```
+:::
 
 ### 8.1 x402 – Bezahlen per HTTP-Statuscode
 
 HTTP hat seit den Neunzigern einen reservierten Statuscode **402 Payment Required**, der nie standardisiert wurde. Coinbase hat ihn im Mai 2025 mit x402 wiederbelebt, gemeinsam mit AWS, Anthropic, Circle und NEAR als Startpartnern.[^x402-launch] Die Idee ist bestechend einfach: Ein Client fragt eine Ressource an, der Server antwortet mit 402 und maschinenlesbaren Payment Requirements, der Client signiert eine Zahlung und wiederholt die Anfrage, ein **Facilitator** prüft die Signatur und wickelt die Zahlung ab – und der Server liefert.[^x402-spec]
+
+[](#abb-x402) zeigt den Ablauf.
+
+:::figure{#abb-x402 short="Ablauf einer x402-Zahlung"}
+Der Server antwortet mit 402 und seinen Zahlungsbedingungen, der Agent signiert eine Payment Authorization, der Facilitator prüft und wickelt on-chain ab, dann liefert der Server den Inhalt.
 
 ```mermaid
 sequenceDiagram
@@ -617,6 +674,7 @@ sequenceDiagram
     F-->>R: Settlement
     R-->>A: 200 OK + Header PAYMENT-RESPONSE + Inhalt
 ```
+:::
 
 Was x402 ausmacht:
 
@@ -641,6 +699,11 @@ Das **Agent Payments Protocol** hat Google am 16. September 2025 mit über sechz
 
 Der Kern von AP2 sind **Mandate**: kryptografisch signierte, überprüfbare Nachweise darüber, was der Nutzer erlaubt hat. In der Startversion hießen sie Intent Mandate (Vorab-Auftrag mit Grenzen, für den Fall „Human Not Present“), Cart Mandate (der Nutzer signiert den exakten Warenkorb) und Payment Mandate (verknüpft die Zahlungsart mit dem Kauf).[^ap2-launch] Die aktuelle Spezifikation v0.2 vom April 2026 hat das Modell auf zwei Mandate-Typen zusammengezogen, jeweils in einem *offenen* State (open: mit Bedingungen, vom Nutzer signiert) und einem *geschlossenen* State (closed: final): das **Checkout Mandate** als Nachweis gegenüber dem Händler und das **Payment Mandate** als Nachweis gegenüber Wallet, Zahlungsnetz und Payment Processor des Händlers. Technisch sind es SD-JWT Verifiable Credentials mit Key Binding, wie sie aus der digitalen Identität bekannt sind.[^ap2-spec]
 
+[](#abb-ap2) zeigt einen Kauf, bei dem der Mensch nicht dabei ist.
+
+:::figure{#abb-ap2 short="AP2-Kauf mit offenem und geschlossenem Checkout Mandate"}
+Human Not Present: Der Mensch signiert vorab die Bedingungen, der Agent prüft das Angebot des Händlers dagegen, schließt das Mandat und legt Checkout und Payment Mandate beim Kauf als Beleg vor.
+
 ```mermaid
 sequenceDiagram
     participant U as Nutzer:in (Trusted Surface)
@@ -661,6 +724,7 @@ sequenceDiagram
     M-->>SA: Bestellbestätigung
     SA-->>U: „Gekauft: 139 € bei Händler B“
 ```
+:::
 
 Was AP2 ausmacht: Es beantwortet die Frage nach **Autorisierung, Authentizität und Verantwortlichkeit** mit einem nicht abstreitbaren Beleg, den alle Beteiligten – Händler, Wallet, Kartennetzwerk, Bank – prüfen können. Der Unterschied „Human Present“ (der Nutzer bestätigt den finalen Warenkorb) versus „Human Not Present“ (der Agent schließt innerhalb vorab signierter Grenzen selbst ab) ist explizit im Protokoll abgebildet.[^ap2-spec] Und AP2 ist kein eigener Transport, sondern läuft als Extension über A2A, MCP oder UCP.
 
@@ -676,6 +740,11 @@ ACP besteht aus mehreren Teilen, die zusammen den Weg von der Product Discovery 
 - Eine **Checkout-API** mit Checkout Sessions: create, update, complete, cancel – der Händler bleibt Betreiber des Checkouts und **Merchant of Record**; die Plattform ist nie Vertragspartner des Kaufs.
 - **Delegated Payment**: Der PSP des Nutzers stellt ein einmal nutzbares, auf Betrag, Währung, Händler, Session und Ablaufzeit begrenztes Token aus (bei Stripe „Shared Payment Token“), das der Händler über seinen eigenen PSP einlöst. Die Kartendaten verlassen die Wallet nie.
 - Seit 2026: Discovery über `/.well-known/acp.json`, verpflichtender Idempotency-Key, Cart-API, 3-D-Secure-Delegation, Order-Objekte mit Refunds und Returns und eine **MCP-Binding** mit fünf Checkout-Tools.
+
+[](#abb-acp) zeigt einen Kauf von Anfang bis Ende.
+
+:::figure{#abb-acp short="ACP-Checkout mit delegiertem Zahlungstoken"}
+Die KI-Plattform legt beim Händler eine Checkout Session an, holt beim PSP ein einmaliges, begrenztes Token und schließt damit ab. Der Händler löst es über seinen eigenen PSP ein.
 
 ```mermaid
 sequenceDiagram
@@ -694,6 +763,7 @@ sequenceDiagram
     M-)P: Webhook: order.updated (Versand, Rückgabe)
     P-->>U: Bestätigung
 ```
+:::
 
 Der wichtigste Punkt für die Einordnung: Das Protokoll lebt, das Produkt hat sich verändert. Im März 2026 hat OpenAI Instant Checkout zurückgenommen – die erste Version habe „nicht die Flexibilität geboten, die wir anstreben“ – und lässt Händler seitdem ihre eigene Checkout-Erfahrung in ChatGPT einbetten, während OpenAI sich auf die Product Discovery konzentriert.[^acp-retire] Berichte nennen als Gründe eine geringe Zahl angebundener Händler und schwache Abschlussquoten; das sind Sekundärquellen. Die ACP-Spezifikation ist danach trotzdem weiter gewachsen (die Revision 2026-04-17 kam nach der Rücknahme), PayPal hat sich per Partnerschaft angebunden, Händler wie Target und Sephora nutzen ACP Berichten zufolge für die Product Discovery, und Visa hat im Juni 2026 eine Zusammenarbeit mit OpenAI angekündigt, die Ausgabenlimits und Merchant-Whitelists des Nutzers in ChatGPT bringen soll.[^paypal-acp]
 
@@ -713,6 +783,9 @@ Parallel zu den Protokollen der Plattformen bauen die Kartennetzwerkwerke ihre e
 
 ### 8.6 Vergleich und Einordnung
 
+[](#tab-payments) stellt die vier nebeneinander.
+
+:::table{#tab-payments short="x402, AP2, ACP und UCP im Vergleich"}
 | | x402 | AP2 | ACP | UCP |
 |---|---|---|---|---|
 | **Governance** | x402 Foundation (Linux Foundation), von Coinbase | FIDO Alliance, von Google | OpenAI + Stripe | Google + Shopify, Etsy, Wayfair, Target, Walmart |
@@ -723,6 +796,9 @@ Parallel zu den Protokollen der Plattformen bauen die Kartennetzwerkwerke ihre e
 | **Streitfälle** | keine, endgültig | bestehende Netzwerk-Regeln, Mandate als Beweis | bestehende Card-Network-Regeln, Refund- und Return-Objekte | bestehende Regeln, Bestell-Capability |
 | **Transport** | HTTP-Header; Bindings für MCP, A2A | Extension über A2A, MCP, UCP | REST + Webhooks; MCP-Binding | REST, MCP, A2A |
 | **Reife (Sep 2026)** | produktiv für Mikrozahlungen, geringe Volumina, Facilitator-Angriffe belegt | v0.2, Standardisierung bei FIDO begonnen | Spezifikation aktiv, Vorzeigeprodukt zurückgenommen | produktiv in Google-Surfaces (USA), schnelle Breaking Changes |
+
+Governance, Zweck, Zahlungsmittel, Merchant of Record, Nachweis der Absicht, Streitfälle, Transport und Reife, Stand September 2026.
+:::
 
 Meine Einordnung: Die vier stehen weniger in Konkurrenz, als es die Ankündigungen vermuten lassen. x402 und AP2 lösen orthogonale Probleme (Zahlen ohne Konto versus Beweis der Absicht) und werden gemeinsam eingesetzt. ACP und UCP sind die Handelsprotokolle *der jeweiligen Plattform* – wer in ChatGPT verkaufen will, kommt an ACP nicht vorbei, wer in Google-Surfaces verkaufen will, nicht an UCP. Die PSPs überbrücken das: PayPal und Stripe sprechen beide,[^paypal-acp] Visa und Mastercard sitzen in allen Gremien. Für ein Unternehmen, das heute plant, ist deshalb nicht die Protokollwahl entscheidend, sondern die Frage, ob der eigene Checkout, der Katalog und die Bestellprozesse **so gebaut sind, dass sich jede dieser Bindings als dünne Schicht davorlegen lässt**: sauber getrennte Preisberechnung, idempotente Bestellanlage, Zahlungstoken statt Kartendaten, ein Bestellstatus, der per Webhook nach außen geht. Genau das sind die klassischen API-Tugenden aus Abschnitt 3.
 
@@ -736,8 +812,9 @@ Egal welches Protokoll: In der Praxis scheitern Integrationen selten an der Nach
 
 Der Standard für Autorisierung im Web ist seit 2012 **OAuth 2.0** (RFC 6749) mit Bearer-Tokens (RFC 6750).[^oauth2] Über die Jahre kam eine Familie von Ergänzungen dazu: PKCE gegen das Abfangen von Authorization Codes (RFC 7636), Discovery-Metadaten (RFC 8414), Resource Indicators (RFC 8707), Token Exchange (RFC 8693), DPoP für an Schlüssel gebundene Tokens (RFC 9449) und zuletzt Protected Resource Metadata (RFC 9728, April 2025).[^oauth-family] **OAuth 2.1** fasst die Best Practices zusammen – PKCE Pflicht, Implicit- und Password-Flow gestrichen –, ist aber bis heute ein Internet-Draft (Stand: Entwurf 16 vom 2. September 2026) und kein RFC.[^oauth21] Für Authentifizierung, also die Frage *wer* jemand ist, liegt darüber **OpenID Connect**.[^oidc]
 
-So setzen die Protokolle das um:
+[](#tab-auth) zeigt, wie die Protokolle das umsetzen.
 
+:::table{#tab-auth short="Authentifizierung und Autorisierung je Protokoll"}
 | Protokoll | Was der Standard vorschreibt | Typische Praxis |
 |---|---|---|
 | **REST / GraphQL** | nichts – OpenAPI kann Schemata *beschreiben* (apiKey, http, oauth2, openIdConnect, mutualTLS) | OAuth 2.0 Bearer-Tokens, API-Keys, mTLS zwischen Diensten |
@@ -752,6 +829,9 @@ So setzen die Protokolle das um:
 | **ACP** | Bearer-Tokens zwischen Plattform und Händler; delegierte Zahlungstoken mit Allowance[^acp-repo] | API-Keys pro Händler, Webhook-Signaturen |
 | **UCP** | Identity Linking per OAuth 2.0 (Scopes); Signaturen für Nachrichten[^ucp-repo] | Google-Konto ↔ Händlerkonto |
 | **Web Bot Auth / Visa TAP** | RFC 9421 HTTP Message Signatures mit veröffentlichtem Schlüssel[^webbotauth] | Cloudflare-Verifikation, Visa-Key Directory |
+
+Was der jeweilige Standard vorschreibt und was in der Praxis üblich ist.
+:::
 
 Der Befund ist eindeutig: **MCP ist das am stärksten standardisierte Protokoll dieser Liste**, was Authentifizierung angeht. Es schreibt nicht nur OAuth vor, sondern legt bis ins Detail fest, wie Discovery, Client Registration und Token-Binding funktionieren. Das ist ein Grund, warum MCP in Unternehmensumgebungen so schnell akzeptiert wurde: Die IAM-Abteilung erkennt jeden Baustein wieder. A2A ist flexibler, verlagert aber die Verantwortung auf den Implementierer. Und die klassischen Protokolle haben nie etwas vorgeschrieben – REST-APIs mit Basic Auth und unbefristeten API-Keys gibt es bis heute zuhauf.
 
@@ -770,8 +850,9 @@ Genau hier setzt die aktuelle Standardisierungsarbeit an. Der IETF-Entwurf **Ide
 
 ### 9.3 Die übrigen Pain Points
 
-Sechs Themen, die jedes Protokoll treffen – und wie die neuen damit umgehen:
+Sechs Themen treffen jedes Protokoll. [](#tab-pain-points) zeigt, wie die neuen damit umgehen.
 
+:::table{#tab-pain-points short="Querschnittsthemen in klassischen Protokollen, MCP und A2A"}
 | Pain Point | Klassisch | MCP | A2A |
 |---|---|---|---|
 | **Discovery** – wie finde ich die Gegenstelle und ihren Vertrag? | OpenAPI-Datei, API-Portal, WSDL | `tools/list` u. a. zur Laufzeit; offizielle Registry (Preview); seit 2026-07-28 `server/discover`[^mcp-2026-07] | Agent Card unter `/.well-known/`; Registries sind außerhalb der Spezifikation |
@@ -781,6 +862,9 @@ Sechs Themen, die jedes Protokoll treffen – und wie die neuen damit umgehen:
 | **Observability** | Logs, Traces, Metriken pro Aufruf | `Mcp-Method`/`Mcp-Name`-Header für Gateways; sonst Sache des Hosts | Task-IDs und Kontext-IDs als Korrelation |
 | **Angriffsfläche** | Injection, BOLA (OWASP API Top 10)[^owasp-api] | Tool Poisoning, Rug Pulls, Prompt Injection über Ergebnisse[^invariant] | Goal Hijack, unsichere Agent-zu-Agent-Kommunikation, „Rogue Agents“ (OWASP Top 10 für agentische Anwendungen)[^owasp-agentic] |
 
+Discovery, lange laufende Operationen, Fehlerbehandlung, Versionierung, Observability und Angriffsfläche.
+:::
+
 Der letzte Punkt verdient einen Satz mehr. OWASP hat im Dezember 2025 eine eigene Top-10-Liste für agentische Anwendungen veröffentlicht; darin sind *unsichere Kommunikation zwischen Agenten* und *Rogue Agents* eigene Kategorien.[^owasp-agentic] Die klassischen Kontrollen – Netzsegmentierung, Least Privilege, Signaturen, Audit – gelten weiter. Neu ist, dass die *Inhalte* der Kommunikation Angriffsvektor sind, nicht nur der Kanal. Kein Protokoll dieser Liste kann das lösen; sie können nur dafür sorgen, dass ein Angriff nicht mehr Rechte bekommt, als die Aufgabe braucht.
 
 ---
@@ -789,7 +873,10 @@ Der letzte Punkt verdient einen Satz mehr. OWASP hat im Dezember 2025 eine eigen
 
 Der folgende Baum fasst die Empfehlungen dieses Beitrags zusammen. Er ist bewusst konservativ: Im Zweifel gewinnt das ältere, besser verstandene Protokoll. Er ist in zwei Teile geteilt, damit er auch auf dem Handy lesbar bleibt.
 
-**Teil 1 – kein LLM als Aufrufer:**
+[](#abb-entscheidung-klassisch) gilt, wenn kein LLM aufruft, [](#abb-entscheidung-llm), wenn ein LLM der Aufrufer ist.
+
+:::figure{#abb-entscheidung-klassisch short="Entscheidungsbaum, Teil 1: kein LLM als Aufrufer"}
+Von Echtzeit in beide Richtungen über Benachrichtigungen, internen Durchsatz und breite Datenmodelle bis zur Standardwahl REST mit OpenAPI.
 
 ```mermaid
 flowchart TD
@@ -808,8 +895,10 @@ flowchart TD
     Q6 -- Ja --> SOAP[SOAP – nur dann]
     Q6 -- Nein --> REST[REST + OpenAPI<br/>die Standardwahl]
 ```
+:::
 
-**Teil 2 – ein LLM ist der Aufrufer:**
+:::figure{#abb-entscheidung-llm short="Entscheidungsbaum, Teil 2: ein LLM als Aufrufer"}
+Zuerst die Frage, ob die Gegenstelle ein Tool oder ein Agent ist, danach die Fragen nach Geld und UI. Bei Käufen entscheidet die Plattform zwischen ACP, UCP und AP2.
 
 ```mermaid
 flowchart TD
@@ -827,6 +916,7 @@ flowchart TD
     Q10 -- Google --> UCP[UCP + AP2-Mandat]
     Q10 -- "eigene / mehrere" --> AP2[AP2-Mandate über A2A oder MCP<br/>+ PSP,<br/>der ACP und UCP spricht]
 ```
+:::
 
 Ein paar Ergänzungen zum Baum, die ein Diagramm nicht tragen kann:
 
@@ -857,7 +947,7 @@ Die Protokolllandschaft, die OAuth-Tokenflows im Detail und die Skalierungsprobl
 
 ---
 
-## 12. Quellen
+## Quellen
 
 Jede Quelle ist mit ihrem **Veröffentlichungsdatum** und dem **Abrufdatum (11.09.2026)** versehen. Bei Spezifikationen, die laufend überarbeitet werden, ist die zitierte Revision genannt. Das Feld bewegt sich schnell – im Zweifel die aktuelle Fassung heranziehen.
 
