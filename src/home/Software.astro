@@ -1,0 +1,52 @@
+---
+// Software: dSolve ist der Bereich. Ohne irgendein konkretes Beispiel wäre
+// der Abschnitt nur ein Link nach außen.
+import Section from "../components/Section.astro";
+import { SITE } from "../consts";
+import type { Sprache } from "../i18n/ui";
+
+interface Props {
+  lang?: Sprache;
+}
+const { lang = "de" } = Astro.props;
+
+const de = {
+  eyebrow: "Software",
+  title: "Was ich gebaut habe",
+  produkte: "Professionelle Softwareprodukte",
+  text: "Über dSolve entwickle und vertreibe ich Software. Von kleinen Automationen bis Enterprise Ready Anwendungen.",
+};
+
+const en: typeof de = {
+  eyebrow: "Software",
+  title: "What I have built",
+  produkte: "Professional software products",
+  text: "Through dSolve I build and sell software — from small automations to enterprise-ready applications.",
+};
+
+const T = lang === "en" ? en : de;
+---
+
+<Section id="software" eyebrow={T.eyebrow} title={T.title}>
+  <div class="mx-auto max-w-4xl">
+    <a
+      href={SITE.dSolveSite}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="group relative flex flex-col overflow-hidden rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md md:p-8"
+    >
+      <span class="absolute inset-x-0 top-0 h-1 bg-amber-500" aria-hidden="true" />
+      <span class="inline-flex w-fit rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-amber-800">
+        dSolve
+      </span>
+      <h3 class="mt-3 font-display text-2xl font-bold text-ink-900">{T.produkte}</h3>
+      <p class="mt-3 max-w-2xl leading-relaxed text-ink-600">{T.text}</p>
+      <span class="mt-5 inline-flex items-center gap-2 text-sm font-medium text-amber-800">
+        d-solve.de
+        <svg class="h-4 w-4 transition group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </span>
+    </a>
+  </div>
+</Section>

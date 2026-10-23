@@ -1,0 +1,109 @@
+---
+// Erwachsenenbildung für Einzelne und kleine Gruppen. Bewusst ohne Katalog:
+// der Zuschnitt entsteht im Gespräch, und der Ausgangspunkt ist bei jeder
+// Person ein anderer. Die englischen Texte sind neu formuliert, nicht
+// übersetzt.
+import Layout from "../layouts/Layout.astro";
+import Section from "../components/Section.astro";
+import CtaBanner from "../components/CtaBanner.astro";
+import { PATHS } from "../consts";
+import { lokalisiere } from "../i18n/pages.mjs";
+import type { Sprache } from "../i18n/ui";
+
+interface Props {
+  lang?: Sprache;
+}
+const { lang = "de" } = Astro.props;
+
+const de = {
+  metaTitle: "Erwachsenenbildung für Privatpersonen",
+  metaDescription:
+    "Individualberatung zu KI für Einzelne und kleine Gruppen: KI sinnvoll anwenden, in eigene Arbeitsabläufe integrieren, neue Wertschöpfung schaffen und Lösungen skalieren. Auf Anfrage.",
+  eyebrow: "Bildungsangebote",
+  title: "Für Privatpersonen",
+  lead: "Erwachsenenbildung für Einzelne und kleine Gruppen – individuell zugeschnitten.",
+  intro:
+    "KI veränder die Art und Weise wie wir arbeiten. Mit zielgerichteter Individualberatung bleiben Sie wettbewerbsfähig. Beschleunigen Sie nicht nur Einzelaufgaben oder manuelle Workflows, sondern denken Sie Wertschöpfungsketten neu. Dazu unterstütze ich gerne mit individueller Beratung.",
+  bausteine: [
+    {
+      title: "Einführung in KI Anwendungen",
+      text: "Wie kann ich KI wie ChatGPT, Claude, ... für mich sinnvoll nutzen? Hilfe für Anwender von KI Tools.",
+    },
+    {
+      title: "KI Lösungen in Arbeitsabläufe integrieren",
+      text: "Wie kann ich KI in meine Arbeitsabläufe mit meinen Tools und Daten integrieren, um echten Mehrwert zu schaffen.",
+    },
+    {
+      title: "Neue Wertschöpfung mittels KI schaffen",
+      text: "Wie kann ich KI nicht nur in meine Prozesse integrieren, sondern mit KI neue Produkte schaffen, die ich monetarisieren kann?",
+    },
+    {
+      title: "Skalierung eigener KI Lösungen",
+      text: "Wie kann ich mit KI nicht nur neue Produkte schaffen, sondern Produkte erzeugen, die selbst wiederum KI enthalten?",
+    },
+  ],
+  cta: {
+    title: "Jetzt individuelle Beratung anfragen",
+    text: "Schreiben Sie mir formlos – ich melde mich werktags innerhalb von 48 Stunden zurück. Umfang, Format und Preis hängen davon ab, worum es gehen soll und wie viele Teilnehmer Sie sind.",
+    label: "Jetzt anfragen",
+  },
+};
+
+const en: typeof de = {
+  metaTitle: "Coaching for individuals",
+  metaDescription:
+    "One-to-one AI coaching for individuals and small groups: using AI well, fitting it into your own workflows, creating new value, and scaling what you build. On request.",
+  eyebrow: "Training & workshops",
+  title: "For individuals",
+  lead: "Adult education for individuals and small groups — shaped around where you actually are.",
+  intro:
+    "AI is changing how we work. Focused one-to-one coaching is how you stay competitive through that. The goal is not just to speed up single tasks or manual workflows, but to rethink how value gets created in the first place — and that is what I am here to help with.",
+  bausteine: [
+    {
+      title: "Getting started with AI tools",
+      text: "How do I actually get something useful out of ChatGPT, Claude and the rest? For people who use AI tools rather than build them.",
+    },
+    {
+      title: "Bringing AI into how you work",
+      text: "How do I fit AI into my existing tools and data so that it creates real value instead of another tab I never open?",
+    },
+    {
+      title: "Building something new with AI",
+      text: "How do I go beyond speeding up what I already do, and create products with AI that I can actually sell?",
+    },
+    {
+      title: "Scaling your own AI products",
+      text: "How do I move from building products with AI to building products that contain AI themselves?",
+    },
+  ],
+  cta: {
+    title: "Ask about one-to-one coaching",
+    text: "Just drop me a line — I reply within 48 hours on working days. Scope, format and price depend on what you want to cover and how many of you there are.",
+    label: "Get in touch",
+  },
+};
+
+const T = lang === "en" ? en : de;
+---
+
+<Layout lang={lang} title={T.metaTitle} description={T.metaDescription}>
+  <Section as="h1" eyebrow={T.eyebrow} title={T.title} lead={T.lead}>
+    <div class="mx-auto max-w-3xl">
+      <p class="text-base leading-relaxed text-ink-700">{T.intro}</p>
+    </div>
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-2">
+      {
+        T.bausteine.map((b) => (
+          <article class="relative flex flex-col overflow-hidden rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm">
+            <span class="absolute inset-x-0 top-0 h-1 bg-amber-500" aria-hidden="true" />
+            <h2 class="text-lg font-semibold text-ink-900">{b.title}</h2>
+            <p class="mt-2 text-sm leading-relaxed text-ink-600">{b.text}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <CtaBanner class="mt-10" title={T.cta.title} text={T.cta.text} label={T.cta.label} href={lokalisiere(PATHS.kontakt, lang)} />
+  </Section>
+</Layout>

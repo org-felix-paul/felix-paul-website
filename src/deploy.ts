@@ -28,7 +28,7 @@ export const DEPLOY_BRANCH = branch ?? null;
 export const DEPLOY_ENV: { kind: "production" | "preview" | "dev"; label: string } =
   import.meta.env.DEV
     ? { kind: "dev", label: "Lokale Entwicklung" }
-    : branch && branch !== "main"
+    : branch && branch !== PRODUCTION_BRANCH
       ? { kind: "preview", label: `Vorschau · Branch ${branch}` }
       : { kind: "production", label: "Produktion" };
 

@@ -1,0 +1,35 @@
+---
+// Dominanter Abschluss-Aufruf am Ende der Zielgruppenseiten: das ist die
+// eigentliche Handlung der Seite, und ein blasser Kasten in Fließtextgröße
+// wurde ihr nicht gerecht. Gleiche Behandlung auf /schools/, /companies/
+// und /individuals/.
+interface Props {
+  title: string;
+  text: string;
+  label: string;
+  href: string;
+  /** Zusätzliche Klassen, z. B. "mt-10" für den Abstand nach oben. */
+  class?: string;
+}
+const { title, text, label, href, class: klasse } = Astro.props;
+---
+
+<div
+  class:list={[
+    "grid items-center gap-10 rounded-3xl bg-gradient-to-br from-brand-700 to-brand-900 p-8 text-on-accent md:grid-cols-[2fr_1fr] md:p-12",
+    klasse,
+  ]}
+>
+  <div>
+    <h2 class="font-display text-3xl font-bold leading-tight md:text-4xl">{title}</h2>
+    <p class="mt-3 max-w-xl text-brand-100">{text}</p>
+  </div>
+  <div class="flex md:justify-end">
+    <a
+      href={href}
+      class="inline-flex items-center justify-center rounded-lg bg-surface px-6 py-3 text-base font-semibold text-brand-800 shadow-sm transition hover:bg-brand-50"
+    >
+      {label}
+    </a>
+  </div>
+</div>

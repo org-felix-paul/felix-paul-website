@@ -76,3 +76,18 @@ export function nurDeutsch(href) {
   if (href.startsWith("/#")) return false;
   return lokalisiere(href, "en") === href;
 }
+
+/**
+ * Der Pfad in der jeweils anderen Sprache — oder null, wenn es ihn nicht gibt.
+ *
+ * Von einer echten englischen Seite aus ist das die deutsche (die gibt es
+ * immer), von einer deutschen aus die englische, sofern sie übersetzt wurde.
+ * Layout (hreflang) und Sprachumschalter brauchen exakt dieselbe Antwort;
+ * deshalb steht die Regel nur hier.
+ */
+export function gegenstueck(pfad) {
+  const routen = echteEnglischeRouten();
+  if (routen.has(pfad)) return pfad.replace(/^\/en\//, "/");
+  const englisch = pfad === "/" ? "/en/" : `/en${pfad}`;
+  return routen.has(englisch) ? englisch : null;
+}

@@ -1,0 +1,94 @@
+---
+// The one frame for every interactive element in a post: collapsible box,
+// caption, view switch, JavaScript notice, colour tokens, lazy mounting.
+// A post writes <Interactive widget="…" id="…" title="…" />; the element's
+// own logic lives in ./widgets/<name>.ts and is listed in ./registry.ts.
+import { WIDGETS, type WidgetName } from "./registry";
+import { MODE_LABELS, type Mode } from "./types";
+import { BTN_GHOST } from "./ui";
+
+interface Props {
+  /** Key in registry.ts. */
+  widget: WidgetName;
+  /** Anchor id, referenced from the text like a figure: "siehe [Interaktiv 1](#interaktiv-1)". */
+  id: string;
+  /** Caption after "Interaktiv:". */
+  title: string;
+  /** Initial view; defaults to the widget's first mode. */
+  mode?: Mode;
+  /** Expanded on page load. Default: collapsed. */
+  open?: boolean;
+}
+
+const { widget, id, title, mode, open = false } = Astro.props;
+const meta = WIDGETS[widget];
+if (!meta) {
+  throw new Error(`<Interactive widget="${widget}">: unknown widget. Add it to src/blog/interactive/registry.ts.`);
+}
+const modes = meta.modes;
+const initial: Mode = mode ?? modes[0];
+if (!modes.includes(initial)) {
+  throw new Error(`<Interactive widget="${widget}" mode="${initial}">: this widget supports ${modes.join(", ")}.`);
+}
+---
+
+<details
+  id={id}
+  class="my-8 rounded-2xl border border-ink-200 bg-surface"
+  open={open}
+  data-interactive={widget}
+  data-mode={initial}
+>
+  <summary class="cursor-pointer px-5 py-4 font-display text-lg font-bold text-ink-900">
+    Interaktiv: {title}
+  </summary>
+  <div class="px-5 pb-5">
+    {modes.length > 1 && (
+      <div class="mb-4 flex flex-wrap items-center gap-2 text-sm text-ink-700">
+        <span>Ansicht:</span>
+        {modes.map((m) => (
+          <button type="button" class={BTN_GHOST} data-mode-button={m} aria-pressed={m === initial}>
+            {MODE_LABELS[m]}
+          </button>
+        ))}
+      </div>
+    )}
+    <div data-widget-root>
+      <!-- Replaced by the widget on mount. Stays visible only without JavaScript. -->
+      <p class="text-sm text-ink-700">
+        Dieses interaktive Element kann nicht angezeigt werden, weil JavaScript in deinem Browser nicht verfügbar ist.
+      </p>
+    </div>
+  </div>
+</details>
+
+<script>
+  import { WIDGETS } from "./registry";
+  import type { Mode } from "./types";
+
+  async function init() {
+    for (const box of document.querySelectorAll<HTMLElement>("details[data-interactive]:not([data-mounted])")) {
+      box.dataset.mounted = "1";
+      const name = box.dataset.interactive as keyof typeof WIDGETS;
+      const root = box.querySelector<HTMLElement>("[data-widget-root]");
+      const meta = WIDGETS[name];
+      if (!root || !meta) continue;
+
+      const { mount } = await meta.load();
+      root.replaceChildren();
+      const handle = mount(root, { mode: (box.dataset.mode as Mode) ?? meta.modes[0] });
+
+      const buttons = box.querySelectorAll<HTMLButtonElement>("[data-mode-button]");
+      buttons.forEach((b) =>
+        b.addEventListener("click", () => {
+          const m = b.dataset.modeButton as Mode;
+          box.dataset.mode = m;
+          buttons.forEach((o) => o.setAttribute("aria-pressed", String(o === b)));
+          handle.setMode(m);
+        }),
+      );
+    }
+  }
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

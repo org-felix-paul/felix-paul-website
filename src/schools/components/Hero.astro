@@ -1,6 +1,6 @@
 ---
 import { SITE } from "../../consts";
-import { EDU, EDU_PATHS } from "../consts";
+import { SCHOOLS, SCHOOLS_PATHS } from "../consts";
 ---
 
 <section class="relative overflow-hidden bg-gradient-to-br from-brand-50 via-canvas to-canvas">
@@ -34,7 +34,7 @@ import { EDU, EDU_PATHS } from "../consts";
           Angebote ansehen
         </a>
         <a
-          href={EDU_PATHS.kontakt}
+          href={SCHOOLS_PATHS.kontakt}
           class="rounded-lg border border-ink-200 bg-surface px-5 py-3 text-sm font-medium text-ink-800 shadow-sm transition hover:border-brand-300 hover:text-brand-700"
         >
           Unverbindlich anfragen
@@ -60,7 +60,7 @@ import { EDU, EDU_PATHS } from "../consts";
     <div class="relative mx-auto w-full max-w-sm">
       <div class="absolute -inset-4 -z-10 rounded-[2rem] bg-gradient-to-br from-brand-200/50 to-brand-100/30 blur-2xl"></div>
       <img
-        src={EDU.portrait}
+        src={SCHOOLS.portrait}
         alt={`${SITE.author} – IT-Pädagoge für Vorträge und Workshops zu KI, Cybersicherheit und Medienkompetenz an Schulen`}
         width="800"
         height="800"

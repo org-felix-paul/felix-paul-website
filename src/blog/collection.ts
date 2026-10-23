@@ -1,12 +1,13 @@
 // Content collection definition for the blog. Kept inside the section folder
 // so src/content.config.ts stays a thin aggregator and the section can be
 // lifted out in one piece.
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 import { AUDIENCES, TOPICS } from "./consts";
 
 export const posts = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/blog/content/posts" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/blog/content/posts" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),

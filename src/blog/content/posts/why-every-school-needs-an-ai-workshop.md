@@ -45,7 +45,13 @@ Auf der anderen Seite des Pults sieht es zurückhaltender aus. Das *Deutsche Sch
 - **20 %** mehrmals im Monat, **9 %** mehrmals pro Woche, **2 %** täglich.
 - **62 %** fühlen sich im beruflichen Umgang mit KI **eher unsicher oder sehr unsicher**.
 
- ![Wie oft nutzen Lehrkräfte KI?](img/ki-nutzung-lehrer-haufigkeit.jpg)
+[](#abb-wie-oft) zeigt die Verteilung im Ganzen.
+
+:::figure{#abb-wie-oft short="Wie häufig Lehrkräfte KI-Tools nutzen"}
+Kreisdiagramm aus dem Deutschen Schulbarometer 2025 der Robert Bosch Stiftung, repräsentative Lehrkräftebefragung, veröffentlicht Juni 2025. Ein knappes Drittel nutzt KI nie, nur jede zehnte Lehrkraft mehrmals pro Woche oder öfter.
+
+![Kreisdiagramm: 31 % nie, 24 % seltener als einmal im Monat, 14 % einmal im Monat, 20 % mehrmals im Monat, 9 % mehrmals in der Woche, 2 % täglich](img/ki-nutzung-lehrer-haufigkeit.jpg)
+:::
 
 
 Bitkom kommt aus anderer Blickrichtung zu einem ähnlichen Bild: „bereits jede zweite Lehrkraft" habe KI schon einmal für die Schule genutzt.[^bitkom-lehrkraft] Die Zahlen widersprechen sich nicht – „schon einmal genutzt" ist etwas anderes als „nutzt regelmäßig".
@@ -59,6 +65,11 @@ Für Schüler:innen ist das stärkste Argument nicht die Hausaufgabe, sondern di
 - Bei rund **49 %** der untersuchten Berufe wurde KI für **mindestens ein Viertel** der Aufgaben eingesetzt.
 - Aber nur bei etwa **4 %** für **drei Viertel oder mehr** der Aufgaben.
 
+[](#abb-berufe) zeigt die beiden Anteile nebeneinander.
+
+:::figure{#abb-berufe short="Anteil der Berufe mit KI-Einsatz nach Aufgabenanteil"}
+Bei rund 49 % der untersuchten Berufe übernimmt KI mindestens ein Viertel der Aufgaben, bei etwa 4 % drei Viertel oder mehr.
+
 ```mermaid
 xychart-beta
     title "Anteil der Berufe, in denen KI ... der Aufgaben übernimmt (Anthropic, Nov 2025)"
@@ -66,6 +77,7 @@ xychart-beta
     y-axis "Anteil der Berufe (%)" 0 --> 60
     bar [49, 4]
 ```
+:::
 
 Daraus folgt die nüchterne Lesart: **KI berührt viele Berufe teilweise, aber nur sehr wenige vollständig.** Anthropic unterscheidet zwischen *Augmentation* (KI unterstützt den Menschen) und *Automation* (KI erledigt die Aufgabe weitgehend allein). Der automatisierende Anteil steigt – von rund 27 % auf 39 % innerhalb weniger Monate –, doch der größere Teil der Nutzung bleibt unterstützend.[^anthropic-index] Den größten Produktivitätsgewinn bringt KI bei komplexer Arbeit, gerade dort sinkt aber die Zuverlässigkeit – der **unersetzliche menschliche Wert liegt im Urteilen unter Unsicherheit und im Umgang mit den Fällen, in denen die KI versagt.**[^anthropic-labor]
 
@@ -93,6 +105,11 @@ Die Schlussfolgerung ist also nicht „KI meiden", sondern „KI beherrschen **u
 
 Dass dies keine Modeerscheinung ist, zeigt die Adoptionskurve von ChatGPT. Nach dem Start im November 2022 war es die am schnellsten wachsende Verbraucher-Anwendung der Geschichte. Die von OpenAI genannten **wöchentlich aktiven Nutzer**:[^openai-wau]
 
+[](#abb-chatgpt) zeigt die Adoptionskurve.
+
+:::figure{#abb-chatgpt short="Wöchentlich aktive Nutzer:innen von ChatGPT"}
+Angaben von OpenAI in Millionen, von Ende 2023 bis Oktober 2025.
+
 ```mermaid
 xychart-beta
     title "ChatGPT: wöchentlich aktive Nutzer (Mio.), Angaben OpenAI"
@@ -100,6 +117,7 @@ xychart-beta
     y-axis "Mio. Nutzer" 0 --> 900
     bar [100, 400, 700, 800]
 ```
+:::
 
 Im Oktober 2025 nannte OpenAI-Chef Sam Altman 800 Mio. wöchentlich aktive Nutzer.[^openai-wau] Für Anfang 2026 wurde darüber hinaus von rund 900 Mio. berichtet – diese jüngste Zahl ist nur über Sekundärquellen belegt und hier daher nur als Tendenz zu werten.[^openai-900] Entscheidend ist ohnehin nicht die exakte Zahl, sondern die **Steigung der Kurve**.
 
@@ -111,6 +129,11 @@ Im Oktober 2025 nannte OpenAI-Chef Sam Altman 800 Mio. wöchentlich aktive Nutze
 
 KI begegnet dir nicht in *einer*, sondern in fünf Rollen. Sie auseinanderzuhalten lohnt sich, weil für jede andere Regeln und Risiken gelten:
 
+[](#abb-rollen) zeigt die fünf Rollen im Überblick.
+
+:::figure{#abb-rollen short="Die fünf Rollen von KI im Schulalltag"}
+Hintergrundarbeit, Unterrichtsplanung, Klassenarbeiten, Werkzeug der Schüler:innen und Unterrichtsgegenstand, mit dem Hinweis, wo es rechtlich heikel wird.
+
 ```mermaid
 flowchart TD
     KI([KI im Schulalltag]) --> R1[1 · Eigene Hintergrundarbeit<br/>Mails, Planung, Briefe]
@@ -119,6 +142,7 @@ flowchart TD
     KI --> R4[4 · Werkzeug der Schüler:innen<br/>Hausaufgaben, Vorträge]
     KI --> R5[5 · Gegenstand des Unterrichts<br/>KI als Hilfsmittel oder Untersuchungsgegenstand]
 ```
+:::
 
 Die Rollen 1 und 2 sind weitgehend unbedenklich, Rolle 3 ist rechtlich sensibel (Abschnitt 4), die Rollen 4 und 5 betreffen den Umgang mit deinen Schüler:innen (Abschnitt 5).
 
@@ -150,6 +174,11 @@ Das ist alles kein Fehler, sondern das Wesen der Technik – und der Schlüssel 
 
 Ein großes Sprachmodell (LLM) ist kein Lexikon und keine Suchmaschine. Es wurde mit riesigen Textmengen trainiert und sagt immer nur **das nächste wahrscheinliche Token** (eine Wort- oder Silbeneinheit) voraus – Stück für Stück, bis eine Antwort entsteht:
 
+[](#abb-token) zeigt den Kreislauf.
+
+:::figure{#abb-token short="Wie ein Sprachmodell eine Antwort erzeugt"}
+Vom Prompt über die Zerlegung in Tokens zur Schätzung des nächsten wahrscheinlichen Tokens mit Zufallsauswahl, Token für Token bis zum Ende.
+
 ```mermaid
 flowchart LR
     P[Dein Prompt] --> T[Zerlegung in Tokens]
@@ -158,11 +187,15 @@ flowchart LR
     S --> O[Antwort, Token für Token]
     O -->|bis fertig| M
 ```
+:::
 
 Daraus folgt zweierlei: Das Modell „weiß" nichts und schlägt nichts nach (außer du gibst ihm ausdrücklich ein Such- oder anderes Werkzeug). Und weil bei der Auswahl bewusst ein Zufallselement mitspielt, fällt jede Antwort etwas anders aus. Weil es auf *Plausibilität* statt auf *Wahrheit* optimiert ist, kann es sehr überzeugend Falsches behaupten.
 
 ### 3.3 Die wichtigsten Begriffe in je einem Satz
 
+[](#tab-begriffe) erklärt die Begriffe, die im Text vorkommen.
+
+:::table{#tab-begriffe short="Die wichtigsten KI-Begriffe in je einem Satz"}
 | Begriff | Bedeutung |
 |---|---|
 | **Prompt** | Deine Eingabe an die KI – die Frage oder Anweisung. |
@@ -174,6 +207,9 @@ Daraus folgt zweierlei: Das Modell „weiß" nichts und schlägt nichts nach (au
 | **Multimodal** | Ein Modell, das nicht nur Text, sondern auch Bild, Ton oder Video verarbeitet. |
 | **Agent** | Eine KI, die nicht nur antwortet, sondern selbstständig Werkzeuge nutzt und Schritte ausführt. |
 | **MCP** | Ein offener Standard, über den KI an externe Werkzeuge angedockt wird (siehe Abschnitt 6). |
+
+Kurzdefinitionen zum Nachschlagen.
+:::
 
 ### 3.4 Was KI gut kann – und was nicht
 
@@ -219,6 +255,11 @@ Die einzige verlässliche Prüfung ist eine **externe**: eine zweite Quelle, dei
 
 Seit dem 1. August 2024 gilt die KI-Verordnung der EU (VO (EU) 2024/1689, „EU AI Act"), die KI nach Risiko reguliert.[^aiact-reg] Die Bundesnetzagentur ist in Deutschland zentrale Stelle und stellt die Systematik so dar:[^bnetza]
 
+[](#abb-risikostufen) ordnet die Stufen mit Beispielen aus der Schule.
+
+:::figure{#abb-risikostufen short="Die vier Risikostufen des EU AI Act"}
+Von verbotenen Praktiken über Hochrisiko-Systeme und Transparenzpflichten bis zu minimalem Risiko, mit Beispielen aus der Schule.
+
 ```mermaid
 flowchart TD
     A["🚫 Inakzeptables Risiko – VERBOTEN<br/>z. B. Social Scoring (seit 02.02.2025)"]
@@ -227,6 +268,7 @@ flowchart TD
     D["✅ Minimales Risiko – kaum Auflagen<br/>z. B. Spamfilter"]
     A --> B --> C --> D
 ```
+:::
 
 Zwei Punkte sind für Schule besonders wichtig:
 
@@ -238,6 +280,11 @@ Zwei Punkte sind für Schule besonders wichtig:
 
 Seit dem **2. Februar 2025** verpflichtet Artikel 4 des EU AI Act Anbieter *und Betreiber* von KI-Systemen, für ausreichende **KI-Kompetenz** ihres Personals zu sorgen.[^aiact-art4] Das gilt nicht nur für Hochrisiko-Systeme, sondern allgemein – und Schulen als Betreiber fallen darunter. Verlangt wird kein Zertifikat, sondern ein angemessenes, dokumentiertes Konzept; die nationale Durchsetzung läuft ab dem 2. August 2026 an.[^aiact-art4] Sich mit KI auszukennen ist also nicht mehr nur sinnvoll, sondern rechtlich erwartet.
 
+[](#abb-zeitplan) zeigt die Fristen.
+
+:::figure{#abb-zeitplan short="Geltung des EU AI Act"}
+Inkrafttreten und die gestaffelten Pflichten von August 2024 bis August 2026.
+
 ```mermaid
 timeline
     title Geltung des EU AI Act
@@ -246,6 +293,7 @@ timeline
     02.08.2025 : Pflichten für allgemeine KI-Modelle (GPAI)
     02.08.2026 : Hochrisiko-Regeln & nationale Durchsetzung
 ```
+:::
 
 ### 4.3 Datenschutz (DSGVO)
 
@@ -273,6 +321,9 @@ Eine ehrliche Einschätzung, die in keinem Werbeprospekt steht: **Gute Lehrkräf
 
 Es gibt nicht *das eine beste* Tool. Einordnung nach Einsatzzweck:
 
+[](#tab-tools) ordnet die verbreiteten Tools ein.
+
+:::table{#tab-tools short="KI-Tools für die Schule im Vergleich"}
 | Tool | Anbieter (Sitz) | Stärke | Für Schule |
 |---|---|---|---|
 | **ChatGPT** | OpenAI (USA) | Allrounder, größte Verbreitung | Guter Einstieg |
@@ -280,6 +331,9 @@ Es gibt nicht *das eine beste* Tool. Einordnung nach Einsatzzweck:
 | **Claude** | Anthropic (USA) | Schreiben, Code, sorgfältige Antworten | Gut für Texte & Informatik |
 | **NotebookLM** | Google (USA) | Arbeitet *nur* mit deinen Dokumenten | Ideal für eigene Materialien |
 | **Kling AI** | Kuaishou (China) | Videoerzeugung | Nur Medienprojekte, Datenschutz beachten |
+
+Anbieter mit Sitz, Stärke und Eignung für den Schuleinsatz.
+:::
 
 **NotebookLM** ist für Lehrkräfte oft unterschätzt: Du lädst eigene Materialien hoch, und es antwortet nur auf deren Basis – das senkt das Halluzinationsrisiko, weil der Kontext fest steht.
 
@@ -305,6 +359,11 @@ Werkzeuge wie Claude Code, Cursor oder GitHub Copilot schreiben nicht nur Code-S
 
 ### 4.10 Entscheidungshilfe: Darf ich KI dafür nutzen?
 
+[](#abb-darf-ich) führt durch die Fragen.
+
+:::figure{#abb-darf-ich short="Entscheidungshilfe: Darf ich KI dafür nutzen?"}
+Zwei Fragen nach personenbezogenen Schülerdaten und nach Entscheidungen über Note oder Zulassung; danach Anonymisieren, Hochrisiko-Regeln oder unbedenklich.
+
 ```mermaid
 flowchart TD
     A[Aufgabe] --> B{Personenbezogene<br/>Schülerdaten im Spiel?}
@@ -313,6 +372,7 @@ flowchart TD
     D -- Ja --> E["Hochrisiko (Anhang III):<br/>nur als Hilfsmittel,<br/>Verantwortung bleibt bei dir"]
     D -- Nein --> F[Unbedenklich:<br/>Entwürfe, Ideen, Formulierungen<br/>– KI-Inhalte kennzeichnen]
 ```
+:::
 
 ---
 
@@ -323,7 +383,13 @@ Wenn du also das nächste Mal vor einer lästigen Aufgabe sitzt und keine Lust m
 
 Einfach anfangen ist am besten.
 
-![Wofür nutzen Lehrkräfte KI?](img/ki-nutzung-lehrer-wofuer.jpg)
+[](#abb-wofuer) zeigt die Einsatzbereiche.
+
+:::figure{#abb-wofuer short="Wofür Lehrkräfte KI-Tools nutzen"}
+Balkendiagramm aus dem Deutschen Schulbarometer 2025 der Robert Bosch Stiftung, Mehrfachnennungen. Vorn liegen Aufgaben für den Unterricht und Unterrichtsplanung, ganz hinten Bewertung und Lernverlaufsdaten.
+
+![Balkendiagramm: Aufgaben für den Unterricht 58 %, Unterrichtsplanung 56 %, Fragen für Leistungskontrollen 34 %, Kommunikation 29 %, individualisierte Lernangebote 28 %, Verwaltung 14 %, Chatbots für Schülerfragen 9 %, Bewertung von Schülerarbeiten 6 %, Analyse von Lernverlaufsdaten 3 %](img/ki-nutzung-lehrer-wofuer.jpg)
+:::
 
 ## 5. Teil 3 – Was dürfen meine Schüler:innen?
 
@@ -340,6 +406,11 @@ Dass dies dringend ist, zeigt die Zahl von oben: 23 % der Schüler:innen erledig
 
 ### 5.2 KI im Unterricht: Hilfsmittel oder Unterrichtsgegenstand?
 
+[](#abb-hilfsmittel) stellt die beiden Verwendungen gegenüber.
+
+:::figure{#abb-hilfsmittel short="KI als Hilfsmittel oder als Unterrichtsgegenstand"}
+Beispiele für beide Verwendungen im Unterricht nebeneinander.
+
 ```mermaid
 flowchart LR
     subgraph H[Als Hilfsmittel]
@@ -353,6 +424,7 @@ flowchart LR
         G3[Wer steckt dahinter?]
     end
 ```
+:::
 
 Beides ist wertvoll – aber gerade die zweite Sicht kommt zu kurz. Schüler:innen, die KI *als Gegenstand* verstanden haben, nutzen sie danach *als Hilfsmittel* deutlich souveräner.
 
@@ -380,6 +452,11 @@ Sobald eine KI nicht mehr nur *redet*, sondern *handelt* (Dateien öffnet, Mails
 
 **Die „Lethal Trifecta".** Der Sicherheitsforscher Simon Willison beschreibt, dass ein Agent besonders gefährlich wird, wenn **drei Eigenschaften zusammenkommen**:[^trifecta]
 
+[](#abb-trifecta) zeigt die drei Bedingungen.
+
+:::figure{#abb-trifecta short="Die Lethal Trifecta bei KI-Agenten"}
+Drei Eigenschaften, die zusammen einen Datendiebstahl praktisch vorprogrammieren: Zugriff auf private Daten, Kontakt mit nicht vertrauenswürdigen Inhalten, Fähigkeit zur Kommunikation nach außen.
+
 ```mermaid
 flowchart TD
     A[1 · Zugriff auf<br/>private Daten] --> X{Alle drei<br/>zugleich?}
@@ -387,6 +464,7 @@ flowchart TD
     C[3 · Fähigkeit zur<br/>Kommunikation nach außen<br/>z. B. Mail senden, Web-Request] --> X
     X -->|ja| D["☠️ Datendiebstahl praktisch vorprogrammiert"]
 ```
+:::
 
 Hat ein Agent alle drei, kann ein Angreifer ihn austricksen: In einer scheinbar harmlosen Mail oder Webseite stehen versteckte Anweisungen (**Prompt Injection**), die der Agent als Befehl missversteht – und damit private Daten nach außen schickt.
 
