@@ -1,0 +1,76 @@
+---
+// Die drei neuesten Beiträge. Bewusst im normalen Seitenlayout statt als
+// dunkler Block: der Blog ist kein Angebot, und in der Übersicht oben steht
+// er aus demselben Grund als schmale Leiste unter den drei Bereichen.
+import { getCollection } from "astro:content";
+import Section from "../components/Section.astro";
+import { PATHS } from "../consts";
+import { postPath } from "../blog/consts";
+import type { Sprache } from "../i18n/ui";
+
+interface Props {
+  lang?: Sprache;
+}
+const { lang = "de" } = Astro.props;
+const en = lang === "en";
+
+const latestPosts = (await getCollection("posts", ({ data }) => !data.draft && !data.preview))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 3);
+
+// Das Datum gehört zur Sprache der Seite, nicht zum Beitrag:
+// "12 Sept 2026" statt "12. Sep. 2026".
+const postFmt = new Intl.DateTimeFormat(en ? "en-GB" : "de-DE", { year: "numeric", month: "short", day: "numeric" });
+
+const de = {
+  eyebrow: "Blog",
+  title: "Mein persönlicher Blog",
+  lead: "Gedanken zu Themen, die mich umtreiben – IT-Sicherheit, KI, IT in der Bildung und vieles mehr. Für Professionals, Lehrkräfte, Eltern, Schüler:innen und Neugierige.",
+  alle: "Alle Beiträge",
+};
+
+const enT: typeof de = {
+  eyebrow: "Blog",
+  title: "My personal blog",
+  lead: "Thoughts on what occupies me – IT security, AI, technology in education and plenty more. For professionals, teachers, parents, students and the curious.",
+  alle: "All posts",
+};
+
+const T = en ? enT : de;
+---
+
+<Section id="blog" background="muted" eyebrow={T.eyebrow} title={T.title} lead={T.lead}>
+  {en && <p class="mx-auto mb-6 max-w-4xl text-sm text-ink-500">Some blog posts are written in German only.</p>}
+  <ul class="mx-auto grid max-w-4xl gap-4 sm:grid-cols-3">
+    {
+      latestPosts.map((post) => (
+        <li>
+          <a
+            href={postPath(post.id)}
+            lang={en ? "de" : undefined}
+            class="group flex h-full flex-col rounded-2xl border border-ink-200 bg-surface p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md"
+          >
+            <time datetime={post.data.pubDate.toISOString()} class="text-xs text-ink-500">
+              {postFmt.format(post.data.pubDate)}
+            </time>
+            <span class="mt-2 flex-1 font-semibold leading-snug text-ink-900 group-hover:text-brand-700">
+              {post.data.title}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="mt-8 text-center">
+    <a
+      href={PATHS.blog}
+      class="inline-flex items-center gap-2 rounded-lg border border-ink-200 bg-surface px-5 py-3 text-sm font-medium text-ink-800 shadow-sm transition hover:border-brand-300 hover:text-brand-700"
+    >
+      {T.alle}
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+      </svg>
+    </a>
+  </div>
+</Section>

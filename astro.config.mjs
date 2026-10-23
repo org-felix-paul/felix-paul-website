@@ -3,15 +3,19 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import { unified } from "@astrojs/markdown-remark";
 import rehypeSlug from "rehype-slug";
-import rehypeTableScroll from "./src/blog/plugins/rehype-table-scroll.mjs";
+import rehypeTableWrap from "./src/blog/plugins/rehype-table-wrap.mjs";
 import remarkMermaid from "./src/blog/plugins/remark-mermaid.mjs";
+import remarkDirective from "remark-directive";
+import remarkFigures from "./src/blog/plugins/remark-figures.mjs";
 import { echteEnglischeRouten } from "./src/i18n/pages.mjs";
 
-// One origin for everything: the main site at "/", the blog at "/blog/"
-// and the education section at "/education/". Die Referenzprojekte liegen
-// seit September 2026 nicht mehr hier, sondern als GitHub Pages unter
-// github.felix-paul.de — siehe PROJECTS in src/consts.ts.
-// Ein Satz aus /en/-Routen, hinter denen wirklich Englisch steht.
+import mdx from "@astrojs/mdx";
+
+// Ein Origin für alles: Hauptseite unter "/", Blog unter "/blog/", Schul-
+// angebote unter "/schools/". Die Referenzprojekte liegen als GitHub Pages
+// unter github.felix-paul.de — siehe PROJECTS in src/consts.ts.
+
+// Die /en/-Routen, hinter denen wirklich Englisch steht.
 const uebersetzt = echteEnglischeRouten();
 
 export default defineConfig({
@@ -34,37 +38,36 @@ export default defineConfig({
     },
     fallback: { en: "de" },
   },
-  integrations: [
-    sitemap({
-      // Form confirmation pages are dead ends with no search value and would
-      // only dilute the crawl budget.
-      filter: (page) =>
-        !page.endsWith("/thank-you/") &&
-        !page.endsWith("/education/danke/") &&
-        // Rückfall-Seiten unter /en/ zeigen deutschen Text und kanonisieren
-        // auf die deutsche URL. Sie in die Sitemap zu schreiben, wäre
-        // widersprüchlich: sie sagen selbst, sie seien nicht das Original.
-        // Echt übersetzte /en/-Seiten stehen dagegen drin — und zwar
-        // automatisch, sobald die Datei unter src/pages/en/ liegt.
-        (!page.includes("/en/") || uebersetzt.has(new URL(page).pathname)),
-    }),
-  ],
+  integrations: [sitemap({
+    // Form confirmation pages are dead ends with no search value and would
+    // only dilute the crawl budget.
+    filter: (page) =>
+      !page.endsWith("/thank-you/") &&
+      // Rückfall-Seiten unter /en/ zeigen deutschen Text und kanonisieren
+      // auf die deutsche URL. Sie in die Sitemap zu schreiben, wäre
+      // widersprüchlich: sie sagen selbst, sie seien nicht das Original.
+      // Echt übersetzte /en/-Seiten stehen dagegen drin — und zwar
+      // automatisch, sobald die Datei unter src/pages/en/ liegt.
+      (!page.includes("/en/") || uebersetzt.has(new URL(page).pathname)),
+  }), mdx()],
   markdown: {
-    // Astro 6 configures the markdown pipeline through unified(); the top-level
-    // remarkPlugins/rehypePlugins keys are deprecated. Astro's defaults (GFM,
-    // smartypants, Shiki) stay active, these two are added on top and now apply
-    // to both sections' markdown.
+    // Seit Astro 6 läuft die Markdown-Pipeline über unified(); die früheren
+    // Schlüssel remarkPlugins/rehypePlugins sind veraltet. Astros Standards
+    // (GFM, SmartyPants, Shiki) bleiben aktiv, die Plugins kommen obendrauf
+    // und gelten für alle Markdown-Collections.
     processor: unified({
-      remarkPlugins: [remarkMermaid],
-      // rehype-slug gives every heading a GitHub-style anchor id so the tables
-      // of contents can jump to a section.
-      rehypePlugins: [rehypeSlug, rehypeTableScroll],
+      // remark-directive liefert die :::figure / :::table / :anchor-Syntax,
+      // remark-figures macht daraus nummerierte Abbildungen, Tabellen, Anker
+      // und füllt leere Verweise [](#id) – siehe docs/how-to/write-a-blog-post.md.
+      remarkPlugins: [remarkDirective, remarkMermaid, remarkFigures],
+      // rehype-slug gibt jeder Überschrift eine GitHub-artige Anker-ID, damit
+      // Inhaltsverzeichnisse auf Abschnitte springen können.
+      rehypePlugins: [rehypeSlug, rehypeTableWrap],
     }),
   },
-  // Tailwind läuft seit Astro 7 (Vite 8) über das Vite-Plugin statt über
-  // PostCSS. Der PostCSS-Weg löste `@import "tailwindcss"` unter Vite 8 nicht
-  // mehr auf und suchte die Datei im Projektwurzelverzeichnis. Das Vite-Plugin
-  // ist für Vite-Projekte ohnehin der von Tailwind empfohlene Weg.
+  // Tailwind über das Vite-Plugin (der von Tailwind empfohlene Weg für
+  // Vite-Projekte). Der PostCSS-Weg löste `@import "tailwindcss"` unter
+  // Vite 8 nicht mehr auf.
   vite: {
     plugins: [tailwindcss()],
   },

@@ -1,0 +1,127 @@
+---
+// Bildungsangebote: die drei Zielgruppen und ein Einblick in die Schul-
+// workshops. Die Karten kommen aus derselben Content-Collection wie
+// /schools/, aber bewusst knapper: hier steht nur, WAS es gibt (Titel,
+// Untertitel, Teaser). Zielgruppe, Dauer und Preis – also alles, was man zum
+// Abwägen braucht – stehen auf /schools/ und der jeweiligen Angebotsseite.
+// Wer nur diese Seite scrollt, kennt trotzdem jedes Angebot beim Namen.
+import { getCollection } from "astro:content";
+import Section from "../components/Section.astro";
+import ZielgruppenHinweis from "../components/ZielgruppenHinweis.astro";
+import { PATHS } from "../consts";
+import { SCHOOLS_PATHS, workshopPath } from "../schools/consts";
+import type { Sprache } from "../i18n/ui";
+
+interface Props {
+  lang?: Sprache;
+}
+const { lang = "de" } = Astro.props;
+const en = lang === "en";
+
+// Nur ein Vorgeschmack auf der Startseite: der volle Katalog ist, wofür
+// /schools/ da ist, und alles hier zu wiederholen ließ nichts zum
+// Durchklicken übrig.
+const alleAngebote = (await getCollection("angebote", ({ data }) => !data.preview)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const angebote = alleAngebote.slice(0, 2);
+const weitereAngebote = alleAngebote.length - angebote.length;
+
+const de = {
+  eyebrow: "Bildung",
+  title: "Bildungsangebote",
+  lead: "Workshops, Vorträge und Fortbildungen – für Schulen, Universitäten, Unternehmen und Privatpersonen.",
+  einblick: "Einblick in unsere Workshops für Schulen",
+  weitere: "weitere Schulworkshops",
+  weitereText:
+    "Elternabende, Cybersicherheit, Cybermobbing, AGs zu Vibe Coding und Zehnfingersystem – mit Zielgruppen, Dauer und Preisen.",
+  alleAnsehen: "Alle ansehen",
+  alleWorkshops: "Alle Schulworkshops ansehen",
+  vergangene: "Vergangene Workshops & Materialien",
+};
+
+const enT: typeof de = {
+  eyebrow: "Education",
+  title: "Training & workshops",
+  lead: "Workshops, talks and professional training – for schools, universities, companies and individuals.",
+  einblick: "A look at the school workshops",
+  weitere: "more school workshops",
+  weitereText:
+    "Parents' evenings, cyber security, cyber bullying, clubs on vibe coding and touch typing — with audiences, durations and prices.",
+  alleAnsehen: "See all",
+  alleWorkshops: "See all school workshops",
+  vergangene: "Past workshops & materials",
+};
+
+const T = en ? enT : de;
+---
+
+<Section id="bildung" background="muted" eyebrow={T.eyebrow} title={T.title} lead={T.lead}>
+  <ZielgruppenHinweis compact lang={lang} />
+
+  <p class="mt-8 text-sm font-semibold uppercase tracking-wider text-ink-500">
+    {T.einblick}
+    {
+      en && (
+        <span class="ml-1.5 rounded-sm bg-ink-100 px-1.5 py-0.5 text-[0.65rem] font-semibold tracking-wider text-ink-600">
+          pages in German
+        </span>
+      )
+    }
+  </p>
+
+  <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      angebote.map((a) => (
+        <a
+          href={workshopPath(a.id)}
+          lang={en ? "de" : undefined}
+          class="group flex h-full flex-col rounded-2xl border border-ink-200 bg-surface p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
+        >
+          <h3 class="text-base font-semibold text-ink-900">{a.data.title}</h3>
+          <p class="mt-1 text-sm text-emerald-700">{a.data.subtitle}</p>
+          <p class="mt-3 flex-1 text-sm leading-relaxed text-ink-600">{a.data.teaser}</p>
+        </a>
+      ))
+    }
+
+    {/* Dritte Kachel: der Rest des Katalogs, sichtbar als eigener Weg statt
+         als Link unter den Karten. */}
+    <a
+      href={PATHS.schools}
+      class="group flex h-full flex-col justify-center rounded-2xl border border-dashed border-emerald-300 bg-emerald-50/60 p-5 text-center transition hover:border-emerald-400 hover:bg-emerald-50"
+    >
+      <span class="font-display text-3xl font-bold text-emerald-700">+{weitereAngebote}</span>
+      <span class="mt-1 text-sm font-semibold text-emerald-900">{T.weitere}</span>
+      <span class="mt-2 text-xs leading-relaxed text-emerald-900">{T.weitereText}</span>
+      <span class="mt-3 inline-flex items-center justify-center gap-1 text-sm font-medium text-emerald-800">
+        {T.alleAnsehen}
+        <svg class="h-4 w-4 transition group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </span>
+    </a>
+  </div>
+
+  <div class="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+    <a
+      href={PATHS.schools}
+      class="rounded-lg bg-emerald-600 px-5 py-3 text-sm font-medium text-on-accent shadow-sm transition hover:bg-emerald-700"
+    >
+      {T.alleWorkshops}
+    </a>
+    <a
+      href={SCHOOLS_PATHS.insights}
+      class="rounded-lg border border-ink-200 bg-surface px-5 py-3 text-sm font-medium text-ink-800 shadow-sm transition hover:border-emerald-300 hover:text-emerald-700"
+    >
+      {T.vergangene}
+    </a>
+  </div>
+  {
+    en && (
+      <p class="mt-4 text-center text-xs text-ink-500">
+        The school programme is written for the German school system and is only available in German.
+      </p>
+    )
+  }
+</Section>

@@ -1,10 +1,10 @@
 ---
-// Education chrome on top of the shared Layout. Head/metadata is owned by the
+// Schools chrome on top of the shared Layout. Head/metadata is owned by the
 // shared Layout; this file supplies branding defaults and Header/Footer only.
 import Layout from "../layouts/Layout.astro";
 import { FAVICONS } from "../consts";
 import Header from "./components/Header.astro";
-import { EDU } from "./consts";
+import { SCHOOLS } from "./consts";
 
 interface Props {
   title?: string;
@@ -16,8 +16,8 @@ interface Props {
 
 const {
   title,
-  description = EDU.description,
-  ogImage = EDU.ogImage,
+  description = SCHOOLS.description,
+  ogImage = SCHOOLS.ogImage,
   ogType = "website",
   schema = [],
 } = Astro.props;
@@ -27,7 +27,7 @@ const {
   title={title}
   description={description}
   ogImage={ogImage}
-  siteName={EDU.name}
+  siteName={SCHOOLS.name}
   ogType={ogType}
   schema={schema}
   favicon={FAVICONS.schools}

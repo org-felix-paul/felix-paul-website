@@ -5,7 +5,8 @@ import Header from "../components/Header.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import EnvBanner from "../components/EnvBanner.astro";
 import { SITE, PATHS, PORTRAIT, FAVICONS } from "../consts";
-import { echteEnglischeRouten } from "../i18n/pages.mjs";
+import { echteEnglischeRouten, gegenstueck } from "../i18n/pages.mjs";
+import type { Sprache } from "../i18n/ui";
 
 interface Props {
   title?: string;
@@ -22,7 +23,7 @@ interface Props {
   /** Keep the page out of search results (confirmation pages, 404). */
   noindex?: boolean;
   /** Document language. Only real /en/ pages set this; fallback pages stay German. */
-  lang?: string;
+  lang?: Sprache;
 }
 
 const {
@@ -51,15 +52,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).toString()
 // steht — die als englische Alternative auszuzeichnen wäre schlicht gelogen
 // und würde Suchmaschinen englischen Nutzern deutsche Seiten anbieten.
 // Deshalb zählt nur, wofür eine Datei unter src/pages/en/ existiert.
-const uebersetzteRouten = echteEnglischeRouten();
 const pfad = Astro.url.pathname;
-const istEnglisch = uebersetzteRouten.has(pfad);
-const deutscherPfad = istEnglisch ? pfad.replace(/^\/en\//, "/") : pfad;
-const englischerPfad = istEnglisch
-  ? pfad
-  : uebersetzteRouten.has(`/en${pfad}`)
-    ? `/en${pfad}`
-    : null;
+const istEnglisch = echteEnglischeRouten().has(pfad);
+const andereSprache = gegenstueck(pfad);
+const deutscherPfad = istEnglisch ? andereSprache : pfad;
+const englischerPfad = istEnglisch ? pfad : andereSprache;
 const absolut = (p: string) => new URL(p, Astro.site ?? SITE.url).toString();
 const ogImageUrl = new URL(ogImage, Astro.site ?? SITE.url).toString();
 const ogImageType = ogImage.endsWith(".jpg") || ogImage.endsWith(".jpeg")
@@ -84,7 +81,7 @@ const structuredData = {
       url: SITE.url,
       image: new URL(PORTRAIT.press, SITE.url).toString(),
       description:
-        "Informatiker & Mathematiker (M.Sc.), Keynote-Speaker zu KI, IT Security und Kryptographie, Anbieter von Bildungsangeboten und Gründer von dSolve. Hauptberuflic  Atruvia AG.",
+        "Informatiker & Mathematiker (M.Sc.), Keynote-Speaker zu KI, IT Security und Kryptographie, Anbieter von Bildungsangeboten und Gründer von dSolve. Hauptberuflich Solution Architekt bei der Atruvia AG.",
       jobTitle: ["Solution Architekt", "Keynote-Speaker"],
       worksFor: { "@type": "Organization", name: "Atruvia AG" },
       founder: { "@id": `${SITE.url}/#dsolve` },
@@ -235,7 +232,7 @@ const structuredData = {
       })();
     </script>
 
-    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   </head>
   <body class="flex min-h-screen flex-col bg-surface text-ink-900">
     <EnvBanner />
@@ -245,10 +242,10 @@ const structuredData = {
     >
       Zum Inhalt springen
     </a>
-    <slot name="header"><Header lang={lang === "en" ? "en" : "de"} /></slot>
+    <slot name="header"><Header lang={lang} /></slot>
     <main id="main" class="flex-1">
       <slot />
     </main>
-    <SiteFooter lang={lang === "en" ? "en" : "de"} />
+    <SiteFooter lang={lang} />
   </body>
 </html>

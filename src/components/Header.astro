@@ -4,7 +4,7 @@
 // Hier sitzt auch die Sprachauswahl für die Navigation: SiteHeader bleibt eine
 // reine Darstellungskomponente, die Beschriftungen und Ziele als Daten bekommt.
 import SiteHeader from "./SiteHeader.astro";
-import { SITE, NAV, PATHS } from "../consts";
+import { SITE, NAV, PATHS, isGroup, type NavEntry, type NavItem } from "../consts";
 import { lokalisiere, nurDeutsch } from "../i18n/pages.mjs";
 import { uebersetzer, type Sprache } from "../i18n/ui";
 
@@ -22,10 +22,13 @@ const englisch = lang === "en";
 // Die Ziele wandern auf ihre englische Fassung, wo es sie gibt. Ob ein Ziel
 // deutsch bleibt, wird berechnet und nicht gepflegt: entsteht später eine
 // englische Seite, verschwindet der Hinweis von selbst.
-const zieleAnpassen = (e: any) =>
-  "items" in e
-    ? { ...e, items: e.items.map(zieleAnpassen) }
-    : { ...e, href: lokalisiere(e.href, lang), fremdsprachig: nurDeutsch(e.href) };
+const zielAnpassen = (e: NavItem): NavItem => ({
+  ...e,
+  href: lokalisiere(e.href, lang),
+  fremdsprachig: nurDeutsch(e.href),
+});
+const zieleAnpassen = (e: NavEntry): NavEntry =>
+  isGroup(e) ? { ...e, items: e.items.map(zielAnpassen) } : zielAnpassen(e);
 
 const navigation = englisch ? NAV.map(zieleAnpassen) : NAV;
 
