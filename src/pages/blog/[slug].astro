@@ -17,7 +17,19 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, remarkPluginFrontmatter } = await render(post);
+// Von remark-figures gesammelt: alle Abbildungen und Tabellen des Beitrags,
+// in Dokumentreihenfolge nummeriert. Die Verzeichnisse stehen nach dem
+// Inhalt, also hinter den Quellen (Fußnoten), wie in einer Arbeit.
+const figures = (remarkPluginFrontmatter.figures ?? []) as { id: string; n: number; short: string }[];
+const tables = (remarkPluginFrontmatter.tables ?? []) as { id: string; n: number; short: string }[];
+// Fehler aus remark-figures (falscher Verweis, Abbildung ohne Bild, …) hier
+// werfen: ein Fehler im Loader wird von Astro nur protokolliert, ein Fehler
+// beim Rendern der Seite bricht den Build ab – so soll es sein.
+const figureErrors = (remarkPluginFrontmatter.figureErrors ?? []) as string[];
+if (figureErrors.length > 0) {
+  throw new Error(`Beitrag ${post.id}:\n` + figureErrors.join("\n"));
+}
 
 // Feedback on a post goes through the public repo; the source file is linked
 // so a reader can open a pull request against exactly this text.
@@ -92,6 +104,26 @@ const schema = [
     <div class="mx-auto max-w-3xl px-6 py-16">
       <div class="prose-content">
         <Content />
+        {figures.length > 0 && (
+          <section id="abbildungsverzeichnis">
+            <h2>Abbildungsverzeichnis</h2>
+            <ol class="figure-list">
+              {figures.map((f) => (
+                <li><a href={`#${f.id}`}>Abbildung {f.n}</a>: {f.short}</li>
+              ))}
+            </ol>
+          </section>
+        )}
+        {tables.length > 0 && (
+          <section id="tabellenverzeichnis">
+            <h2>Tabellenverzeichnis</h2>
+            <ol class="figure-list">
+              {tables.map((t) => (
+                <li><a href={`#${t.id}`}>Tabelle {t.n}</a>: {t.short}</li>
+              ))}
+            </ol>
+          </section>
+        )}
       </div>
 
       <div class="mt-12 rounded-2xl bg-brand-50 p-6 md:p-8">
