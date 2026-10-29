@@ -1,0 +1,14 @@
+# Site search index, built after `astro build` (see package.json "build").
+# Only pages with data-pagefind-body are indexed (src/layouts/Layout.astro):
+# no noindex pages, no /en/ fallback pages, no blog demos in public/.
+site: dist
+# One index for both languages; otherwise the German search page would never
+# find the translated English pages.
+force_language: de
+# Index only what a visitor actually sees.
+exclude_selectors:
+  - "[hidden]"
+  - "[aria-hidden='true']"
+  - ".sr-only"
+  - "noscript"
+  - "template"
