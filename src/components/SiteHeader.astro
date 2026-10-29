@@ -12,6 +12,7 @@
 // past it. A group lights up when any of its children is the current section.
 import ThemeToggle from "./ThemeToggle.astro";
 import LanguageLink from "./LanguageLink.astro";
+import SearchLink from "./SearchLink.astro";
 import { isGroup, type NavEntry } from "../consts";
 import { uebersetzer, type Sprache } from "../i18n/ui";
 
@@ -179,6 +180,7 @@ const t = uebersetzer(lang);
     }
 
     <div class="hidden items-center gap-2 lg:flex">
+      <SearchLink />
       <LanguageLink />
       <ThemeToggle />
       {
@@ -194,6 +196,7 @@ const t = uebersetzer(lang);
     </div>
 
     <div class="flex items-center gap-1 lg:hidden">
+      <SearchLink />
       <LanguageLink />
       <ThemeToggle />
     <button

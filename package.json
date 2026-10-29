@@ -5,13 +5,13 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && pagefind",
     "preview": "astro preview",
     "check": "astro check",
     "check:links": "node scripts/check-links.mjs",
     "check:links:live": "node scripts/check-links.mjs --live",
     "check:contrast": "node scripts/check-contrast.mjs",
-    "verify": "astro check && astro build && node scripts/check-links.mjs",
+    "verify": "astro check && npm run build && node scripts/check-links.mjs",
     "slug": "node src/blog/slug.mjs"
   },
   "dependencies": {
@@ -32,6 +32,7 @@
     "typescript": "^5.7.0"
   },
   "devDependencies": {
-    "github-slugger": "^2.0.0"
+    "github-slugger": "^2.0.0",
+    "pagefind": "^1.5.2"
   }
 }

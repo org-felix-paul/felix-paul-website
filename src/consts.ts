@@ -57,6 +57,8 @@ export const PATHS = {
   bildung: "/#bildung",
   /** The one confirmation page every form returns to. */
   thankYou: "/thank-you/",
+  /** Full-text search over the whole domain; index built by Pagefind after astro build. */
+  search: "/search/",
 } as const;
 
 /** Per-section browser-tab icon. Same files that serve as each section's
