@@ -7,7 +7,7 @@ export const SCHOOLS = {
   name: "Felix Paul",
   tagline: "Bildungsangebote für Schulen zu KI & IT-Security",
   description:
-    "Lehrerfortbildungen, Schülerworkshops, Kursserien und Elternabende zu KI und IT-Security – vom Pädagogischen Tag bis zur AG. Von einem Informatiker mit Lehramtsabschluss.",
+    "Lehrerfortbildungen, Schülerworkshops, Kursserien und Elternabende zu KI und IT-Security – vom Pädagogischen Tag bis zur AG. Von einem Informatiker mit abgeschlossenem Lehramtsstudium.",
   /** Section root; every schools URL is built from this. */
   base: PATHS.schools,
   ogImage: "/schools/og-default.jpg",
