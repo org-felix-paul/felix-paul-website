@@ -14,6 +14,8 @@ question is.
 | change colours, dark mode, fonts | [how-to/change-design.md](how-to/change-design.md) |
 | run the checks, understand the hook, deploy, set up a preview | [how-to/check-and-deploy.md](how-to/check-and-deploy.md) |
 | do the quarterly SEO review | [how-to/seo-review.md](how-to/seo-review.md) |
+| set up or fix the contact form | [how-to/contact-form.md](how-to/contact-form.md) |
+| see which tests and checks exist, which run automatically, which against the live site | [reference/testing.md](reference/testing.md) |
 | look up which file defines what, and which URL comes from where | [reference/file-map.md](reference/file-map.md) |
 | understand why the project is built this way | [explanation/architecture.md](explanation/architecture.md) |
 | see the decisions and their trade-offs | [adr/](adr/README.md) |

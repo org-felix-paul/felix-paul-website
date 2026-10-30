@@ -137,7 +137,7 @@ Work on feature branches; one commit per feature; never commit to `main` without
 | Content | Astro content collections with Zod schemas | A typo in frontmatter fails the build, not the live site |
 | Diagrams | [Mermaid](https://mermaid.js.org/) in blog Markdown, rendered in the browser | Only loaded on pages that contain a diagram |
 | Fonts | Inter, self-hosted via `@fontsource-variable/inter` | No third-party request, no render-blocking |
-| Forms | [FormSubmit](https://formsubmit.co) | Static site, no backend; see [ADR 0004](docs/adr/0004-formsubmit-contact-form.md) |
+| Forms | Pages Function (`functions/api/contact.ts`) on the shared [contact-form](https://github.com/org-d-solve/contact-form) package: Zoho Mail API, Turnstile | No third-party form service, no cost; see [ADR 0010](docs/adr/0010-own-contact-form-function.md) |
 | Hosting | Cloudflare Pages | Free, git-connected, `_redirects` file for moved URLs |
 | Checks | `astro check`, own link checker, own contrast checker, pre-push hook | Broken links and unreadable colours never reach `main` |
 

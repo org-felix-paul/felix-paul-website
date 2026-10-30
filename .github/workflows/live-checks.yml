@@ -1,0 +1,51 @@
+# Daily checks against the live site felix-paul.de. Two independent jobs, so
+# one failure does not hide the other. A failed run makes GitHub mail the
+# person who last edited the schedule. Overview: docs/reference/testing.md.
+name: Live checks
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Site for the contact form check (default https://felix-paul.de)"
+        required: false
+
+jobs:
+  # Sends one enquiry in test mode and waits for the mail in the Zoho folder
+  # "test" (contact-form-check from the contact-form package). Secrets: names
+  # as in .env.example.
+  contact-form:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: node node_modules/contact-form/src/check.mjs
+        env:
+          FORM_CHECK_URL: ${{ inputs.url || 'https://felix-paul.de' }}
+          FORM_CHECK_FOLDER_ID: "7881373000000075001"
+          FORM_TEST_TOKEN: ${{ secrets.FORM_TEST_TOKEN }}
+          ZOHO_CLIENT_ID: ${{ secrets.ZOHO_CLIENT_ID }}
+          ZOHO_CLIENT_SECRET: ${{ secrets.ZOHO_CLIENT_SECRET }}
+          ZOHO_READ_REFRESH_TOKEN: ${{ secrets.ZOHO_READ_REFRESH_TOKEN }}
+          ZOHO_ACCOUNT_ID: ${{ secrets.ZOHO_ACCOUNT_ID }}
+
+  # Builds main and fetches every page from felix-paul.de (check:links:live).
+  links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run check:links:live

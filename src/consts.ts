@@ -61,6 +61,10 @@ export const PATHS = {
   search: "/search/",
 } as const;
 
+/** Public Turnstile site key of the contact form; the secret lives in the
+ *  Pages environment (docs/how-to/contact-form.md). */
+export const TURNSTILE_SITE_KEY = "0x4AAAAAAFrrGkBOWpggT0hC";
+
 /** Per-section browser-tab icon. Same files that serve as each section's
  *  wordmark, so a section has exactly one visual mark. */
 export const FAVICONS = {

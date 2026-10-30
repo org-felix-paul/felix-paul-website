@@ -94,7 +94,8 @@ Almost nothing. Astro ships static HTML with the CSS inlined. The scripts
 that exist: the header (mobile menu, dropdown groups, scroll-spy), the theme
 toggle, the blog list filter and search, and Mermaid on posts that contain a
 diagram. There is no analytics, no cookie, no third-party request except
-YouTube embeds and the FormSubmit form action.
+YouTube embeds and the Turnstile check on the contact form. The only
+server-side code is the form handler in `functions/api/contact.ts`.
 
 ## Checks instead of trust
 

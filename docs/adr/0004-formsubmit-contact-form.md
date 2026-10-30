@@ -1,6 +1,6 @@
 # 0004. Contact form via FormSubmit, no backend
 
-Status: accepted 2026-05-27
+Status: superseded by [0010](0010-own-contact-form-function.md) on 2026-10-29
 
 ## Context
 

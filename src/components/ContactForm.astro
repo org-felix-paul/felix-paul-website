@@ -1,8 +1,8 @@
 ---
-// Ein Formular für beide Sprachen. Die versteckten Felder gehen mit: eine
-// englische Anfrage darf keine deutsche Autoantwort auslösen, und nach dem
-// Absenden muss die englische Dankeseite kommen, nicht die deutsche.
-import { SITE, PATHS } from "../consts";
+// Ein Formular für beide Sprachen. Es postet an die eigene Pages Function
+// (functions/api/contact.ts); das versteckte Feld "lang" sorgt dafür, dass
+// nach dem Absenden die Dankeseite in der Sprache des Formulars kommt.
+import { SITE, PATHS, TURNSTILE_SITE_KEY } from "../consts";
 import { lokalisiere } from "../i18n/pages.mjs";
 import type { Sprache } from "../i18n/ui";
 
@@ -13,11 +13,6 @@ const { lang = "de" } = Astro.props;
 const en = lang === "en";
 
 const T = {
-  betreff: en ? "New enquiry via felix-paul.de" : "Neue Anfrage über felix-paul.de",
-  weiter: en ? `${SITE.url}/en/thank-you/` : `${SITE.url}/thank-you/`,
-  autoantwort: en
-    ? "Thank you for your message via felix-paul.de. I have received your enquiry and usually reply within 48 hours. Best regards, Felix Paul"
-    : "Vielen Dank für Ihre Nachricht über felix-paul.de. Ich habe Ihre Anfrage erhalten und melde mich in der Regel innerhalb von 48 Stunden zurück. Beste Grüße, Felix Paul",
   name: en ? "Name *" : "Name *",
   namePlatzhalter: en ? "Jane Doe" : "Max Mustermann",
   email: en ? "Email *" : "E-Mail *",
@@ -30,19 +25,11 @@ const T = {
 ---
 
 <form
-  action={`https://formsubmit.co/${SITE.email}`}
+  action="/api/contact"
   method="POST"
   class="space-y-5 rounded-2xl border border-ink-200 bg-surface p-6 shadow-sm md:p-8"
 >
-  <input type="hidden" name="_subject" value={T.betreff} />
-  <input type="hidden" name="_template" value="table" />
-  <input type="hidden" name="_captcha" value="true" />
-  <input type="hidden" name="_next" value={T.weiter} />
-  <input
-    type="hidden"
-    name="_autoresponse"
-    value={T.autoantwort}
-  />
+  <input type="hidden" name="lang" value={lang} />
   <input type="text" name="_honey" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
 
   <div>
@@ -115,6 +102,8 @@ const T = {
     </label>
   </div>
 
+  <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-language={lang}></div>
+
   <button
     type="submit"
     class="inline-flex w-full items-center justify-center rounded-lg bg-brand-700 px-5 py-3 text-sm font-medium text-on-accent shadow-sm transition hover:bg-brand-800 sm:w-auto"
@@ -126,3 +115,5 @@ const T = {
     {T.direkt} <a class="text-brand-700 underline" href={`mailto:${SITE.email}`}>{SITE.email}</a>
   </p>
 </form>
+
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
