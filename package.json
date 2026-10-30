@@ -27,7 +27,7 @@
     "astro": "^7.4.1",
     "contact-form": "github:org-d-solve/contact-form#v1.0.0",
     "mdast-util-to-string": "^4.0.0",
-    "mermaid": "^12.0.0",
+    "mermaid": "^12.2.0",
     "rehype-slug": "^6.0.0",
     "remark-directive": "^4.0.0",
     "tailwindcss": "^4.0.0",
